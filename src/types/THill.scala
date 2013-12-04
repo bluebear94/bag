@@ -1,5 +1,8 @@
 package types
 
+import util.BigIntOps
+import java.math.BigInteger
+
 class THill(n: Long) extends TNumerical {
   def getVal(): Long = {
     n
@@ -8,7 +11,7 @@ class THill(n: Long) extends TNumerical {
     2
   }
   override def toString(): String = {
-    "#" + n.toString()
+    "↼" + n.toString()
   }
   def equals(that: Type): Boolean = {
     val tt: Int = that.getType()
@@ -20,5 +23,27 @@ class THill(n: Long) extends TNumerical {
           case _ => false
         }
         )
+  }
+  override def gt(that: Type): Boolean = {
+    val tt: Int = that.getType()
+    (tt) match {
+      case 1 =>
+        BigIntOps.lt(that.asInstanceOf[TMountain].getVal(),
+            new BigInteger(toString()))
+      case 2 => n > that.asInstanceOf[THill].getVal()
+      case 4 => n > that.asInstanceOf[TFish].getVal()
+      case _ => throw new UnsupportedOperationException()
+    }
+  }
+  override def lt(that: Type): Boolean = {
+    val tt: Int = that.getType()
+    (tt) match {
+      case 1 =>
+        BigIntOps.gt(that.asInstanceOf[TMountain].getVal(),
+            new BigInteger(toString()))
+      case 2 => n < that.asInstanceOf[THill].getVal()
+      case 4 => n < that.asInstanceOf[TFish].getVal()
+      case _ => throw new UnsupportedOperationException()
+    }
   }
 }
