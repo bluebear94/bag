@@ -1,5 +1,8 @@
 package types
 
+import util.BigIntOps
+import java.math.BigInteger
+
 class TFish(x: Double) extends TNumerical {
   def getVal(): Double = {
     x
@@ -23,5 +26,23 @@ class TFish(x: Double) extends TNumerical {
           case _ => false
         }
         )
+  }
+  override def gt(that: Type): Boolean = {
+    val tt: Int = that.getType()
+    (tt) match {
+      case 1 => x > that.asInstanceOf[TMountain].getVal().doubleValue()
+      case 2 => x > that.asInstanceOf[THill].getVal()
+      case 4 => x > that.asInstanceOf[TFish].getVal()
+      case _ => throw new UnsupportedOperationException()
+    }
+  }
+  override def lt(that: Type): Boolean = {
+    val tt: Int = that.getType()
+    (tt) match {
+      case 1 => x < that.asInstanceOf[TMountain].getVal().doubleValue()
+      case 2 => x < that.asInstanceOf[THill].getVal()
+      case 4 => x < that.asInstanceOf[TFish].getVal()
+      case _ => throw new UnsupportedOperationException()
+    }
   }
 }

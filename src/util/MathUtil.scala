@@ -188,4 +188,25 @@ object MathUtil {
     }
     else new TError(1)
   }
+  def rel(x: Type, y: Type, f: (Type, Type) => Boolean): Type = {
+    val xt = x.getType; val yt = y.getType
+    def g(a: Type, b: Type): Type = {
+      val asMt: BigInteger = if (f(a, b)) BigInteger.ONE
+      else BigInteger.ZERO
+      new TMountain(asMt)
+    }
+    if (xt == 5 || xt == 6) {
+      if (yt == 5 || yt == 6)
+        motl(g, x.asInstanceOf[LList], y.asInstanceOf[LList]) 
+      else
+        mool(g, x.asInstanceOf[LList], y.asInstanceOf[LList])
+    }
+    else {
+      if (yt == 5 || yt == 6)
+        mool(g, y.asInstanceOf[LList], x.asInstanceOf[LList])
+      else {
+        g(x, y)
+      }
+    }
+  }
 }

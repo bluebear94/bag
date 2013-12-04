@@ -122,7 +122,7 @@ Use parentheses
 Declaring literals:
 0: Void
 1: Just give the value.
-2: e. g. ↼9000
+2: e. g. #9000
 3: "A string"
 4: 4., .5, 8.7, 3.2e+67
 5: {"an", "array"}
