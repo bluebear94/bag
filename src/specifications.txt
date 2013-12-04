@@ -1,0 +1,236 @@
++--------------------------------------+
+| hello world                          |
+|                                      |
+|                                      |
+|                                      |
+|                                      |
+|                                      |
+|                                      |
+|                                      |
+|                                      |
+|                                      |
++---------400x300 drawscreen-----------+
+|                                      |
+|                                      |
+|                                      |
+|                                      |
+|                                      |
+|                                      |
+|                                      |
+|                                      |
+| 1+1                                  |
+|                                    2 |
++---------------REPL-------------------+
+|                                      |
++--------------------------------------+
+
+Types:
+-1: Error
+0: Void
+1: Mountain (arbitrary-precision integer)
+2: Hill (64-bit integer)
+3: String
+4: Fish (64-bit IEEE float)
+Leading or trailing zeroes dropped (e. g. .54 or 4.)
+5: Array
+6: Linked list
+7: Function
+8: Map
+9: Image
+
+Variable format (file):
+0 - 2: 02, 04, 97
+3: type
+4 - 7: version
+
+[1, 2] bytes in little-endian order
+[4] same specs as IEEE
+[3] UTF-8, 32bit length prefixed
+[5, 6]:
+8 - 11: # elems
+rept [
+size,
+body
+]
+[7]:
+postfix order ({varname} is length-prefixed)
+E000xxxx{varname}: function call with xxxx args
+E001{varname}{kind}: assignment (pop from stack)
+E002{varname}{kind}: pre[]crement
+E003{varname}{kind}: post[]crement
+E1{type}{body}: push literal onto stack
+E004{varname}: push contents of variable onto stack
+E934xxxxxxxx: jump to point in program
+E935: return to calling program
+E936: pop from stack and return value
+E937xxxx: like #
+E938: Uses the last entry on stack for #
+E939: list indexing
+E940xxxxxxxx: make list with elements on stack
+E941xxxxxxxx: Starts a protected block with some length
+E942xxxxxxxx: make map with elements on stack
+[8]:
+8 - 11: # elems
+rept [
+size1, body1,
+size2, body2
+]
+
+Syntax:
+
+Basic operators:
+
+a + b
+a - b
+a * b
+a / b (returns floating-point type)
+a \ b (truncates result to int, only applicable on types 1 and 2)
+a % b (modulus, only on 1 and 2)
+a ^ b (exponentiation)
+a += b, a -= b, etc.
+a++, ++a (post and pre increment, decrement occurs similarly)
+a**, **a (post and pre doubling)
+a//, //a (post and pre halving)
+a\\, \\a
+a^^, ^^a (post and pre squaring)
+a == b, a != b, a > b, a < b, a >= b, a <= b (distributes over lists)
+a && b, a || b (with short-circuit evaluation)
+a &' b, a |' b, a ^^ b (without)
+a & b, a | b, a ^' b (bitwise)
+a @ b (arithmetic mean)
+list[0]
+a ? "True" : "False"
+
+Variables:
+
+Local variables: Just refer by name.
+Parameters: $0 is the number of parameters. $n gives a one-indexed value
+Globals: Use $ before the name. ($name)
+Relative directories: $dir.name
+Nested: $dir.inner.moar.name
+Absolute: $root.rootvar
+From standard library: $:abs(-2)
+returns 2
+From other libraries: $tcp:getreq("83.65.163.2")
+To assign: var = name
+To delete: var =
+
+Function calls:
+Use parentheses
+
+Declaring literals:
+0: Void
+1: Just give the value.
+2: e. g. #9000
+3: "A string"
+4: 4., .5, 8.7, 3.2e+67
+5: {"an", "array"}
+6: ["a", "linked", "list"]
+7:
+λ
+luna($1)
+Endλ
+or, more concisely:
+λ; luna($1); Endλ
+8: 
+«"hello"→"there", "how"→"are you"»
+STANDARD LIBRARY FUNCTIONS
+
+abs(n): Returns absolute value
+sin, cos, tan, asin, acos, atan, sinh, cosh, tanh, asinh, acosh, atanh: Exactly what you'd expect.
+sqrt(n): Returns the square root.
+exp, ln(n)
+min, max: Returns min or max in a list.
+mini, maxi: Returns the index.
+π(): Returns π
+floor, ceil(x)
+map(f, l...): Map function.
+foldl, foldr(l, base, accum): Folds from left or right.
+cumfoldl, cumfoldr(l, base, accum): Returns list of cumulative applications of folding
+cons(v, l)
+car, cdr(l)
+isempty(l)
+hluna(s): Displays on bottom scn
+luna(s): on top
+hask, ask: Returns inputted value
+cld, clh()
+output(x, y, string)
+getkey()
+format("%s is %d", {"a", 4})
+gettype()
+mttohill(mt)
+hilltomt(hill)
+atoll(array)
+lltoa(linked)
+string(any)
+fr64, fr32, fr16, fr8(fname): File reading
+fw64, fw32, fw16, fw8(fname, l): File writing
+fl(mode): Shows list of:
+mode = 0: Both files and directories
+mode = 1: Files only
+mode = 2: Directories only
+ntosb(number, base)
+stonb(string, base)
+left(l|s, l)
+mid(l|s, i, l)
+mid(l|s, i)
+imid(l|s, i0, i1)
+right(l|s, l)
+edit(fname): 1 if saved
+compile(fname): returns success
+insert(l, x, i)
+delete(0, l, i)
+delete(1, l, x)
+
+The mutate library
+Provides functions to mutate values.
+cons, cdr, econs, ecdr
+resize, insert, delete
+
+CONTROL STRUCTURES
+
+If ...
+...
+
+If ...; Then
+...
+...
+EndIf
+
+For i, 1, 5
+...
+EndFor
+
+While ...
+...
+EndWhile
+
+Repeat ...
+...
+EndRept
+
+Lbl ...
+Goto ...
+
+
+KEYWORDS:
+
+Ans
+Answer
+Cycle
+EndFor
+EndIf
+EndRept
+EndWhile
+Elif
+Else
+Exit
+For
+Goto
+If
+Lbl
+Repeat
+Return
+Stop
+Then
+While
