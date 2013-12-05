@@ -100,12 +100,19 @@ a & b, a | b, a ^' b (bitwise)
 a @ b (arithmetic mean)
 list[0]
 a ? "True" : "False"
+<<<<<<< HEAD
 f ∘ g (function composition)
+=======
+>>>>>>> 8e24a3af70c5440b65c5b018670b218a8aeb8139
 
 Variables:
 
 Local variables: Just refer by name.
+<<<<<<< HEAD
 Parameters: #0 is the number of parameters. #n gives a one-indexed value
+=======
+Parameters: $0 is the number of parameters. $n gives a one-indexed value
+>>>>>>> 8e24a3af70c5440b65c5b018670b218a8aeb8139
 Globals: Use $ before the name. ($name)
 Relative directories: $dir.name
 Nested: $dir.inner.moar.name
