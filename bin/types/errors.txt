@@ -1,10 +1,12 @@
 1
-You tried to put a DVD in a toaster
+Data Type
 2
-Manliness must be compatible
+Dim Mismatch
 3
-You're speaking gibberish
+Syntax
 4
-You tampered with a .variable file
+Corrupted Var
 5
-You're not manly enough
+Invalid Dim
+999
+Unknown
