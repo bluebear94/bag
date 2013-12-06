@@ -19,6 +19,7 @@ abstract class RunningInstance(fname: String, c: RunningInstance) {
   val needle: Int = 0
   val calling = c
   var environment = new HashMap[String, Type]()
+  var stack = List()
   def getVar(name: String): Type = {
     if (name.startsWith("$")) {
       // TODO A global variable or a command.
