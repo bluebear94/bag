@@ -1,6 +1,6 @@
 package types
 
-class TString(s: String) extends Type {
+case class TString(s: String) extends Type {
   def getVal(): String = {
     s
   }

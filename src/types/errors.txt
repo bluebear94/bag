@@ -8,5 +8,7 @@ Syntax
 Corrupted Var
 5
 Invalid Dim
+6
+Domain
 999
 Unknown

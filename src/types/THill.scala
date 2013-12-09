@@ -3,7 +3,7 @@ package types
 import util.BigIntOps
 import java.math.BigInteger
 
-class THill(n: Long) extends TNumerical {
+case class THill(n: Long) extends TNumerical {
   def getVal(): Long = {
     n
   }

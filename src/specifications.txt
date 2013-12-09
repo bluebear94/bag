@@ -31,7 +31,7 @@ Types:
 2: Hill (64-bit integer)
 3: String
 4: Fish (64-bit IEEE float)
-Leading or trailing zeroes dropped (e. g. .54 or 4.)
+Leading xor trailing zeroes dropped (e. g. .54 or 4.)
 5: Array
 6: Linked list
 7: Function

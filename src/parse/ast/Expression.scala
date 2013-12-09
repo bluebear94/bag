@@ -1,34 +1,103 @@
 package parse.ast
 
-import types.Type
+import types._
 import run.RunningInstance
 import scala.util.parsing.combinator._
 import java.math.BigInteger
 import types._
 import org.scalatest._
 import scala.util.parsing.input.CharSequenceReader
+import cmdreader._
 
-class XprInt extends JavaTokenParsers {
+class XprInt extends JavaTokenParsers with PackratParsers {
   // Regex for valid identifiers.
   def id: Parser[String] = """[$[[^!@#$%^&*()_-=+~{}[]\|:;'",.<>/?][^@#$%^&*()_-=+~{}[]\|:;'",.<>/?]*:]?]?[[^!@#$%^&*()_-=+~{}[]\|:;'",.<>/?][^@#$%^&*()_-=+~{}[]\|:;'",.<>/?]*|!]""".r // EEK
   // note: ! is allowed, just not at the beginning (otherwise it has to be the only character)
-  sealed trait Expression {
+  trait Expression {
     def eval(ci: RunningInstance): Type
+    // As you know, we are storing variables (including functions)
+    // in intermediate bytecode (see specifications.txt).
+    // def toByteCode: Array[Byte]
+  }
+  trait LValue extends Expression {
+    def assign(ci: RunningInstance, t: Type): Unit
   }
   case class Literal(t: Type) extends Expression {
     def eval(ci: RunningInstance): Type = t
   }
-  case class Variable(name: String) extends Expression {
+  case class Variable(name: String) extends LValue {
     def eval(ci: RunningInstance): Type = ci.getVar(name)
+    def assign(ci: RunningInstance, t: Type) = ci.setVar(name, t)
   }
-  def void: Parser[Expression] = "Void" ^^^ {new Literal(new TVoid())}
-  def variable: Parser[Expression] = id ^^ {s => Variable(s)}
-  def mountain: Parser[Expression] = wholeNumber ^^ {s => new Literal(new TMountain(new BigInteger(s)))}
-  def hill: Parser[Expression] = """↼[-]?\d+""".r ^^ {s => new Literal(new THill(s.substring(1).toLong))}
-  def string: Parser[Expression] = stringLiteral ^^ {s => new Literal(new TString(s))}
-  def fish: Parser[Expression] = floatingPointNumber ^^ {s => new Literal(new TFish(s.toFloat))}
-  def literal: Parser[Expression] = void | mountain | hill | string | fish
-  def expression: Parser[Expression] = literal | variable
+  case class FCall(name: String, args: Array[Expression]) extends Expression {
+    def eval(ci: RunningInstance): Type
+  }
+  case class AList(isArray: Boolean, args: Array[Expression]) extends Expression {
+    def eval(ci: RunningInstance): Type
+  }
+  // How am I going to parse operations while respecting the order of
+  // operations given by the getPrecedence method in the
+  // CommandOperator class?
+  case class Operator(name: String, l: Expression, r: Expression) extends Expression {
+    def getCmd(): CommandOperator = {
+      Global.getCmd(name)
+    }
+    def eval(ci: RunningInstance): Type = {
+      getCmd()(Array[Type](
+              l match {
+          		case Literal(t) => t
+          		case _ => l.eval(ci)
+              },
+              r match {
+              	case Literal(t) => t
+              	case _ => r.eval(ci)
+              }
+          )
+      )
+    }
+    def getPrec: Int = {
+        getCmd().getPrecedence
+      }
+  }
+  case class Ternary(p: Expression, t: Expression, f: Expression) extends Expression {
+    def eval(ci: RunningInstance): Type = {
+      if (p.eval(ci).toBoolean)
+        t.eval(ci)
+      else
+        f.eval(ci)
+    }
+  }
+  case class Hashtag(x: Expression) extends LValue {
+    def eval(ci: RunningInstance): Type = {
+      val t = x.eval(ci)
+      t match {
+        case TMountain(n) => ci.argn(n.intValue)
+        case THill(n) => ci.argn(n.asInstanceOf[Int])
+        case TFish(n) => ci.argn(n.asInstanceOf[Int])
+        case TString(n) => ci.getVar(n)
+        case _ => new TError(1)
+      }
+    }
+    def assign(ci: RunningInstance, t: Type): Unit = {
+      val t2 = x.eval(ci)
+      t2 match {
+        case TMountain(n) => ci.setargn(n.intValue, t)
+        case THill(n) => ci.setargn(n.asInstanceOf[Int], t)
+        case TFish(n) => ci.setargn(n.asInstanceOf[Int], t)
+        case TString(n) => ci.setVar(n, t)
+        case _ => new TError(1)
+      }
+    }
+  }
+  lazy val void: Parser[Expression] = "Void" ^^^ {new Literal(new TVoid())}
+  lazy val variable: Parser[Expression] = id ^^ {s => Variable(s)}
+  lazy val mountain: Parser[Expression] = wholeNumber ^^ {s => new Literal(new TMountain(new BigInteger(s)))}
+  lazy val hill: Parser[Expression] = """↼[-]?\d+""".r ^^ {s => new Literal(new THill(s.substring(1).toLong))}
+  lazy val string: Parser[Expression] = stringLiteral ^^ {s => new Literal(new TString(s))}
+  lazy val fish: Parser[Expression] = floatingPointNumber ^^ {s => new Literal(new TFish(s.toFloat))}
+  lazy val literal: Parser[Expression] = void | mountain | hill | string | fish
+  lazy val commaDelimited: PackratParser[String] = "\\s*" | (expression <~ "\\s*,\\s*" ~ commaDelimited)
+  lazy val expression: PackratParser[Expression] = literal | variable
   // Some tests :P
   class ExpressionParsersTest extends FlatSpec with ShouldMatchers {
     private def parsing[T](s:String)(implicit p:Parser[T]):T = {
