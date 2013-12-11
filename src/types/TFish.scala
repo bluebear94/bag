@@ -3,7 +3,7 @@ package types
 import util.BigIntOps
 import java.math.BigInteger
 
-class TFish(x: Double) extends TNumerical {
+case class TFish(x: Double) extends TNumerical {
   def getVal(): Double = {
     x
   }

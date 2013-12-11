@@ -3,7 +3,7 @@ package types
 import java.math.BigInteger
 import util.BigIntOps
 
-class TMountain(n: BigInteger) extends TNumerical {
+case class TMountain(n: BigInteger) extends TNumerical {
   
   def getVal(): BigInteger = {
     n

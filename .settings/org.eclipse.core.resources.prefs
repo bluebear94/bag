@@ -1,2 +1,3 @@
 eclipse.preferences.version=1
 encoding//src/crossp.amethyst=UTF-8
+encoding//src/parse/ast/Expression.scala=UTF-8

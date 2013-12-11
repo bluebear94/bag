@@ -1,8 +1,9 @@
 package cmdreader.std
 
-import cmdreader.CommandOperator
+import cmdreader._
 import types._
 import util._
+import java.math.BigInteger
 
 class OAdd extends CommandOperator {
   override def getName(): String = "add"
@@ -13,4 +14,8 @@ class OAdd extends CommandOperator {
     else new THill(0L)
     )(MathUtil.add(_, _))
   }
+  def getPrecedence() = PStandard.ADD_SUBT
+  def isReversed() = false
+  def hasAssignmentEquiv() = true
+  def getDoubleBase() = Some(new TMountain(BigInteger.ONE))
 }
