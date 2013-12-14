@@ -9,16 +9,14 @@ import org.scalatest._
 import scala.util.parsing.input.CharSequenceReader
 import cmdreader._
 import scala.collection.mutable._
-
-class XprInt extends JavaTokenParsers with PackratParsers {
-  // Regex for valid identifiers.
-  def id: Parser[String] = """[$[[^!@#$%^&*()_-=+~{}[]\|:;'",.<>/?][^@#$%^&*()_-=+~{}[]\|:;'",.<>/?]*:]?]?[[^!@#$%^&*()_-=+~{}[]\|:;'",.<>/?][^@#$%^&*()_-=+~{}[]\|:;'",.<>/?]*|!]""".r // EEK
-  // note: ! is allowed, just not at the beginning (otherwise it has to be the only character)
+import util.MathUtil
+import scala.util.matching.Regex
   trait Expression {
     def eval(ci: RunningInstance): Type
     // As you know, we are storing variables (including functions)
     // in intermediate bytecode (see specifications.txt).
     // def toByteCode: Array[Byte]
+    // def toString: String
   }
   trait LValue extends Expression {
     def assign(ci: RunningInstance, t: Type): Unit
@@ -30,15 +28,28 @@ class XprInt extends JavaTokenParsers with PackratParsers {
     def eval(ci: RunningInstance): Type = ci.getVar(name)
     def assign(ci: RunningInstance, t: Type) = ci.setVar(name, t)
   }
-  case class FCall(f: Type, args: Array[Expression]) extends Expression {
+  case class Assign(left: LValue, right: Expression) extends Expression {
     def eval(ci: RunningInstance): Type = {
-      if (f.getType == 7) f.asInstanceOf[TFunction](args.map(_.eval(ci)))
+      left.assign(ci, right.eval(ci))
+      left.eval(ci)
+    }
+  }
+  case class AssignOp(left: LValue, right: Expression, op: String) extends Expression {
+    def eval(ci: RunningInstance): Type = {
+      left.assign(ci, Operator(op, left, right).eval(ci))
+      left.eval(ci)
+    }
+  }
+  case class FCall(f: Expression, args: Array[Expression]) extends Expression {
+    def eval(ci: RunningInstance): Type = {
+      val g = f.eval(ci)
+      if (g.getType == 7) g.asInstanceOf[TFunction](args.map(_.eval(ci)))
       else new TError(1)
     }
   }
   case class Lambda(lines: List[Expression]) extends Expression {
     def eval(ci: RunningInstance): Type = {
-      lines.map(_.eval(ci)).last
+      new TASTFunc(lines, ci)
     }
   }
   case class AList(isArray: Boolean, args: Array[Expression]) extends Expression {
@@ -124,6 +135,16 @@ class XprInt extends JavaTokenParsers with PackratParsers {
       new TVoid
     }
   }
+  case class For(v: String, st: Expression, end: Expression, inc: Expression, b: List[Expression]) extends Expression {
+    def eval(ci: RunningInstance): Type = {
+      ci.setVar(v, st.eval(ci))
+      while (!ci.getVar(v).gt(end.eval(ci))) {
+        b.map(_.eval(ci))
+        ci.setVar(v, MathUtil.add(ci.getVar(v), inc.eval(ci)))
+      }
+      new TVoid
+    }
+  }
   case class Hashtag(x: Expression) extends LValue {
     def eval(ci: RunningInstance): Type = {
       val t = x.eval(ci)
@@ -146,21 +167,38 @@ class XprInt extends JavaTokenParsers with PackratParsers {
       }
     }
   }
+class XprInt extends JavaTokenParsers with PackratParsers {
+  // Regex for valid identifiers.
+  //[$[[^!@#$%^&*()_-=+~{}[]\|:;'",.<>/?][^@#$%^&*()_-=+~{}[]\|:;'",.<>/?]*:]?]?
+  def id: Regex = """[[^!@#$%^&*()_-=+~{}[]\|:;'",.<>/?][^@#$%^&*()_-=+~{}[]\|:;'",<>/?]*|!]""".r // EEK
+  // note: ! is allowed, just not at the beginning (otherwise it has to be the only character)
   lazy val void: Parser[Expression] = "Void" ^^^ {new Literal(new TVoid())}
-  lazy val variable: Parser[Expression] = id ^^ {s => Variable(s)}
+  lazy val variable: Parser[Expression] = ("$".r | "".r | ("$".r ~ id ~ ":".r)) ~ id ^^ {s => Variable(s._1 + s._2)}
   lazy val mountain: Parser[Expression] = wholeNumber ^^ {s => new Literal(new TMountain(new BigInteger(s)))}
   lazy val hill: Parser[Expression] = """↼[-]?\d+""".r ^^ {s => new Literal(new THill(s.substring(1).toLong))}
   lazy val string: Parser[Expression] = stringLiteral ^^ {s => new Literal(new TString(s))}
   lazy val fish: Parser[Expression] = floatingPointNumber ^^ {s => new Literal(new TFish(s.toFloat))}
   lazy val literal: Parser[Expression] = void | mountain | hill | string | fish
+  val lineDelimiter: Parser[String] = ";" | "\n"
   lazy val commaDelimited: PackratParser[List[Expression]] = repsep(expression, ",")
-  lazy val lineDelimited: PackratParser[List[Expression]] = repsep(expression, ";" | "\n")
+  lazy val lineDelimited: PackratParser[List[Expression]] = repsep(expression, lineDelimiter)
   lazy val array: PackratParser[Expression] = "{" ~> commaDelimited <~ "}" ^^ {l => AList(true, l.toArray[Expression])}
   lazy val linked: PackratParser[Expression] = "[" ~> commaDelimited <~ "]" ^^ {l => AList(true, l.toArray[Expression])}
   lazy val hashtag: PackratParser[Expression] = "#" ~> expression ^^ {x => Hashtag(x)}
   lazy val lambda: PackratParser[Expression] = "λ" ~> lineDelimited <~ "Endλ" ^^ {l => Lambda(l)}
+  lazy val call: PackratParser[Expression] = variable ~ "(" ~ commaDelimited <~ ")" ^^ {sh => FCall(sh._1._1, sh._2.toArray[Expression])}
+  lazy val ifst: PackratParser[Expression] = "If " ~> expression ~ lineDelimiter ~ expression ^^ {sh => If(sh._1._1, sh._2)}
+  //lazy val ifThen: PackratParser[Expression]
+  //lazy val ifThenElse: PackratParser[Expression]
+  //lazy val forst: PackratParser[Expression]
+  //lazy val whilst: PackratParser[Expression]
+  //lazy val repeat: PackratParser[Expression]
+  //lazy val indexing: PackratParser[Expression]
+  //lazy val control: PackratParser[Expression] = ifst | ifThen | ifThenElse | forst | whilst | repeat
+  //lazy val assign: PackratParser[Expression]
+  //lazy val assignOp: PackratParser[Expression]
   lazy val compound: PackratParser[Expression] = array | linked | hashtag | lambda
-  lazy val expression: PackratParser[Expression] = literal | variable
+  lazy val expression: PackratParser[Expression] = literal | variable | compound
   // Some tests :P
   class ExpressionParsersTest extends FlatSpec with ShouldMatchers {
     private def parsing[T](s:String)(implicit p:Parser[T]):T = {

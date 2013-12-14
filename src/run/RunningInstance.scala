@@ -23,7 +23,12 @@ abstract class RunningInstance(fname: String, c: RunningInstance, args: Array[Ty
   def getVar(name: String): Type = {
     if (name.startsWith("$")) {
       // TODO A global variable or a command.
-      new TVoid()
+      if (name.indexOf(":") == -1) {
+        new TCmdFunc(name)
+      }
+      else {
+        new TVoid // TODO over here
+      }
     }
     else {
       if (environment.isDefinedAt(name)) {
@@ -42,6 +47,9 @@ abstract class RunningInstance(fname: String, c: RunningInstance, args: Array[Ty
   def setVar(name: String, t: Type): Unit = {
     if (name.startsWith("$")) {
       // TODO A global variable or a command.
+      if (name.indexOf(":") == -1) {
+        // TODO over here
+      }
     }
     else {
       environment(name) = t
