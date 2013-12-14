@@ -36,6 +36,11 @@ class XprInt extends JavaTokenParsers with PackratParsers {
       else new TError(1)
     }
   }
+  case class Lambda(lines: List[Expression]) extends Expression {
+    def eval(ci: RunningInstance): Type = {
+      lines.map(_.eval(ci)).last
+    }
+  }
   case class AList(isArray: Boolean, args: Array[Expression]) extends Expression {
     def eval(ci: RunningInstance): Type = {
       if (isArray)
@@ -76,6 +81,49 @@ class XprInt extends JavaTokenParsers with PackratParsers {
         f.eval(ci)
     }
   }
+  case class If(p: Expression, t: Expression) extends Expression {
+    def eval(ci: RunningInstance): Type = {
+      if (p.eval(ci).toBoolean) {
+        t.eval(ci)
+      }
+      new TVoid
+    }
+  }
+  case class IfThen(p: Expression, t: List[Expression]) extends Expression {
+    def eval(ci: RunningInstance): Type = {
+      if (p.eval(ci).toBoolean) {
+        t.map(_.eval(ci))
+      }
+      new TVoid
+    }
+  }
+  case class IfThenElse(p: Expression, t: List[Expression], f: List[Expression]) extends Expression {
+    def eval(ci: RunningInstance): Type = {
+      if (p.eval(ci).toBoolean) {
+        t.map(_.eval(ci))
+      }
+      else {
+        f.map(_.eval(ci))
+      }
+      new TVoid
+    }
+  }
+  case class While(p: Expression, b: List[Expression]) extends Expression {
+    def eval(ci: RunningInstance): Type = {
+      while (p.eval(ci).toBoolean) {
+        b.map(_.eval(ci))
+      }
+      new TVoid
+    }
+  }
+  case class Repeat(p: Expression, b: List[Expression]) extends Expression {
+    def eval(ci: RunningInstance): Type = {
+      do {
+        b.map(_.eval(ci))
+      } while (!p.eval(ci).toBoolean)
+      new TVoid
+    }
+  }
   case class Hashtag(x: Expression) extends LValue {
     def eval(ci: RunningInstance): Type = {
       val t = x.eval(ci)
@@ -104,10 +152,14 @@ class XprInt extends JavaTokenParsers with PackratParsers {
   lazy val hill: Parser[Expression] = """↼[-]?\d+""".r ^^ {s => new Literal(new THill(s.substring(1).toLong))}
   lazy val string: Parser[Expression] = stringLiteral ^^ {s => new Literal(new TString(s))}
   lazy val fish: Parser[Expression] = floatingPointNumber ^^ {s => new Literal(new TFish(s.toFloat))}
-  lazy val literal: Parser[Expression] = void | mountain | hill | string | fish | array | linked
+  lazy val literal: Parser[Expression] = void | mountain | hill | string | fish
   lazy val commaDelimited: PackratParser[List[Expression]] = repsep(expression, ",")
+  lazy val lineDelimited: PackratParser[List[Expression]] = repsep(expression, ";" | "\n")
   lazy val array: PackratParser[Expression] = "{" ~> commaDelimited <~ "}" ^^ {l => AList(true, l.toArray[Expression])}
   lazy val linked: PackratParser[Expression] = "[" ~> commaDelimited <~ "]" ^^ {l => AList(true, l.toArray[Expression])}
+  lazy val hashtag: PackratParser[Expression] = "#" ~> expression ^^ {x => Hashtag(x)}
+  lazy val lambda: PackratParser[Expression] = "λ" ~> lineDelimited <~ "Endλ" ^^ {l => Lambda(l)}
+  lazy val compound: PackratParser[Expression] = array | linked | hashtag | lambda
   lazy val expression: PackratParser[Expression] = literal | variable
   // Some tests :P
   class ExpressionParsersTest extends FlatSpec with ShouldMatchers {
