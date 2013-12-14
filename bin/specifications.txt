@@ -31,7 +31,7 @@ Types:
 2: Hill (64-bit integer)
 3: String
 4: Fish (64-bit IEEE float)
-Leading or trailing zeroes dropped (e. g. .54 or 4.)
+Leading xor trailing zeroes dropped (e. g. .54 or 4.)
 5: Array
 6: Linked list
 7: Function
@@ -100,19 +100,12 @@ a & b, a | b, a ^' b (bitwise)
 a @ b (arithmetic mean)
 list[0]
 a ? "True" : "False"
-<<<<<<< HEAD
 f ∘ g (function composition)
-=======
->>>>>>> 8e24a3af70c5440b65c5b018670b218a8aeb8139
 
 Variables:
 
 Local variables: Just refer by name.
-<<<<<<< HEAD
 Parameters: #0 is the number of parameters. #n gives a one-indexed value
-=======
-Parameters: $0 is the number of parameters. $n gives a one-indexed value
->>>>>>> 8e24a3af70c5440b65c5b018670b218a8aeb8139
 Globals: Use $ before the name. ($name)
 Relative directories: $dir.name
 Nested: $dir.inner.moar.name
@@ -129,7 +122,7 @@ Use parentheses
 Declaring literals:
 0: Void
 1: Just give the value.
-2: e. g. #9000
+2: e. g. ↼9000
 3: "A string"
 4: 4., .5, 8.7, 3.2e+67
 5: {"an", "array"}

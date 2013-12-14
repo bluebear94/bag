@@ -2,8 +2,8 @@ package types
 
 import cmdreader.Global
 
-class TCmdFunc(name: String) extends Type {
+class TCmdFunc(name: String) extends TFunction {
   def apply(args: Array[Type]): Type = Global.getCmd(name)(args)
-  def equals(that: Type): Boolean = name == that.toString
-  def toString(): String = name
+  override def equals(that: Type): Boolean = name == that.toString
+  override def toString(): String = name
 }
