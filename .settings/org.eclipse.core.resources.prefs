@@ -2,4 +2,5 @@ eclipse.preferences.version=1
 encoding//src/crossp.amethyst=UTF-8
 encoding//src/parse/ast/Expression.scala=UTF-8
 encoding//src/specifications.txt=UTF-8
+encoding//src/types/LMap.scala=UTF-8
 encoding//src/types/TBinFunc.scala=UTF-8

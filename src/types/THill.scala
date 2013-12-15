@@ -3,7 +3,8 @@ package types
 import util.BigIntOps
 import java.math.BigInteger
 
-case class THill(n: Long) extends TNumerical {
+case class THill(n2: Long) extends TNumerical {
+  var n = n2
   def getVal(): Long = {
     n
   }
@@ -46,4 +47,6 @@ case class THill(n: Long) extends TNumerical {
       case _ => throw new UnsupportedOperationException()
     }
   }
+  def intValue(): Int = n.toInt
+  def snv(nn: Long) = n = nn
 }

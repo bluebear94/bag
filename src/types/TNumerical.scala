@@ -5,4 +5,5 @@ abstract class TNumerical extends Type {
   def toBoolean(): Boolean = {
     getVal() == 0
   }
+  def intValue(): Int
 }

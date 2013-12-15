@@ -1,6 +1,7 @@
 package types
 
-case class TString(s: String) extends Type {
+case class TString(s2: String) extends Type {
+  var s = s2
   def getVal(): String = {
     s
   }
@@ -16,5 +17,8 @@ case class TString(s: String) extends Type {
   def equals(that: Type): Boolean = {
     that.getType() == 3 &&
     that.asInstanceOf[TString].getVal() == s
+  }
+  def si(i: Int, c: Char) = {
+    s = s.substring(0, i - 1) + new String(Array(c)) + s.substring(i + 1)
   }
 }

@@ -7,6 +7,9 @@ class LLinked(a: ListBuffer[Type]) extends LList {
   def l(): Buffer[Type] = {
     a
   }
+  def lu(i: Int, n: Type) {
+    a(i) = n
+  }
   def getType(): Int = {
     6
   }

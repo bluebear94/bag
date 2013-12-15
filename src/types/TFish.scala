@@ -45,4 +45,5 @@ case class TFish(x: Double) extends TNumerical {
       case _ => throw new UnsupportedOperationException()
     }
   }
+  def intValue(): Int = x.toInt
 }

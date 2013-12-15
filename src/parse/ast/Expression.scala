@@ -9,8 +9,9 @@ import org.scalatest._
 import scala.util.parsing.input.CharSequenceReader
 import cmdreader._
 import scala.collection.mutable._
-import util.MathUtil
+import util._
 import scala.util.matching.Regex
+
   trait Expression {
     def eval(ci: RunningInstance): Type
     // As you know, we are storing variables (including functions)
@@ -20,6 +21,7 @@ import scala.util.matching.Regex
   }
   trait LValue extends Expression {
     def assign(ci: RunningInstance, t: Type): Unit
+    // def nuke(ci: RunningInstance): Unit
   }
   case class Literal(t: Type) extends Expression {
     def eval(ci: RunningInstance): Type = t
@@ -58,6 +60,20 @@ import scala.util.matching.Regex
         new LArray(args.map(_.eval(ci)).to[ArrayBuffer])
       else
         new LLinked(args.map(_.eval(ci)).to[ListBuffer])
+    }
+  }
+  case class Index(l: Expression, i: Expression) extends Expression {
+    def eval(ci: RunningInstance): Type = {
+      Indexing.index(l.eval(ci), i.eval(ci))
+    }
+  }
+  case class LIndex(l: LValue, i: Expression) extends LValue {
+    def eval(ci: RunningInstance): Type = {
+      Indexing.index(l.eval(ci), i.eval(ci))
+    }
+    def assign(ci: RunningInstance, n: Type) = {
+      val t: Type = l.eval(ci)
+      Indexing.setIndex(t, i.eval(ci), n)
     }
   }
   // How am I going to parse operations while respecting the order of
@@ -188,16 +204,29 @@ class XprInt extends JavaTokenParsers with PackratParsers {
   lazy val lambda: PackratParser[Expression] = "λ" ~> lineDelimited <~ "Endλ" ^^ {l => Lambda(l)}
   lazy val call: PackratParser[Expression] = variable ~ "(" ~ commaDelimited <~ ")" ^^ {sh => FCall(sh._1._1, sh._2.toArray[Expression])}
   lazy val ifst: PackratParser[Expression] = "If " ~> expression ~ lineDelimiter ~ expression ^^ {sh => If(sh._1._1, sh._2)}
-  //lazy val ifThen: PackratParser[Expression]
-  //lazy val ifThenElse: PackratParser[Expression]
+  lazy val ifThen: PackratParser[Expression] = "If " ~> expression ~ lineDelimiter ~ "Then" ~ lineDelimiter ~ lineDelimited <~ lineDelimiter ~ "EndIf" ^^
+  {sh => IfThen(sh._1._1._1._1, sh._2)}
+  lazy val ifThenElse: PackratParser[Expression] = "If " ~> expression ~ lineDelimiter ~ "Then" ~ lineDelimiter ~ lineDelimited ~
+  lineDelimiter ~ "Else" ~ lineDelimiter ~ lineDelimited <~ lineDelimiter ~ "EndIf" ^^
+  {sh => IfThenElse(
+      sh._1._1._1._1._1._1._1._1,
+      sh._1._1._1._1._2,
+      sh._2
+      )} // what the fuck
   //lazy val forst: PackratParser[Expression]
   //lazy val whilst: PackratParser[Expression]
   //lazy val repeat: PackratParser[Expression]
-  //lazy val indexing: PackratParser[Expression]
+  lazy val indexing: PackratParser[Expression] = expression ~ "[" ~ expression <~ "]" ^^
+  {sh => {
+    val thing = sh._1._1
+    val index = sh._2
+    if (thing.isInstanceOf[LValue]) LIndex(thing.asInstanceOf[LValue], index)
+    else Index(thing, index)
+  }}
   //lazy val control: PackratParser[Expression] = ifst | ifThen | ifThenElse | forst | whilst | repeat
   //lazy val assign: PackratParser[Expression]
   //lazy val assignOp: PackratParser[Expression]
-  lazy val compound: PackratParser[Expression] = array | linked | hashtag | lambda
+  lazy val compound: PackratParser[Expression] = array | linked | hashtag | lambda | indexing
   lazy val expression: PackratParser[Expression] = literal | variable | compound
   // Some tests :P
   class ExpressionParsersTest extends FlatSpec with ShouldMatchers {
