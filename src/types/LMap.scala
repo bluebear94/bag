@@ -15,4 +15,5 @@ class LMap(h: HashMap[Type, Type]) extends Type {
   def lu(i: Type, n: Type) = {
     h(i) = n
   }
+  def >/< = new LMap(h.clone)
 }

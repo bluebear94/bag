@@ -36,10 +36,10 @@ abstract class RunningInstance(fname: String, c: RunningInstance, args: Array[Ty
       }
       else {
         if (calling != null) {
-          calling.getVar(name)
+          calling.getVar(name).>/< // make sure to strip away any references
         }
         else {
-          new TVoid()
+          new TVoid
         }
       }
     }

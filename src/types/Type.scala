@@ -15,6 +15,7 @@ abstract class Type {
     throw new UnsupportedOperationException()
   }
   override def toString(): String
+  def >/<(): Type
 }
 
 

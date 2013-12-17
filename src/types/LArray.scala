@@ -16,4 +16,5 @@ class LArray(a: ArrayBuffer[Type]) extends LList {
   override def toString(): String = {
     "{" + elems + "}"
   }
+  def >/< = new LArray(a.clone)
 }

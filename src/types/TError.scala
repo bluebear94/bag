@@ -11,4 +11,5 @@ class TError(errno: Int) extends Type {
   override def toString(): String = {
     "Error #" + errno
   }
+  def >/< = new TError(errno)
 }

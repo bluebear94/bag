@@ -151,12 +151,12 @@ import scala.util.matching.Regex
       new TVoid
     }
   }
-  case class For(v: String, st: Expression, end: Expression, inc: Expression, b: List[Expression]) extends Expression {
+  case class For(v: LValue, st: Expression, end: Expression, inc: Expression, b: List[Expression]) extends Expression {
     def eval(ci: RunningInstance): Type = {
-      ci.setVar(v, st.eval(ci))
-      while (!ci.getVar(v).gt(end.eval(ci))) {
+      v.assign(ci, st.eval(ci))
+      while (!v.eval(ci).gt(end.eval(ci))) {
         b.map(_.eval(ci))
-        ci.setVar(v, MathUtil.add(ci.getVar(v), inc.eval(ci)))
+        v.assign(ci, MathUtil.add(v.eval(ci), inc.eval(ci)))
       }
       new TVoid
     }
@@ -213,9 +213,18 @@ class XprInt extends JavaTokenParsers with PackratParsers {
       sh._1._1._1._1._2,
       sh._2
       )} // what the fuck
-  //lazy val forst: PackratParser[Expression]
-  //lazy val whilst: PackratParser[Expression]
-  //lazy val repeat: PackratParser[Expression]
+  lazy val forst: PackratParser[Expression] = "For " ~> commaDelimited ~ lineDelimiter ~ lineDelimited <~ lineDelimiter ~ "EndFor" ^^ {sh =>
+    {
+      val top = sh._1._1
+      For(top(0).asInstanceOf[LValue], top(1), top(2), if (top.length == 3) Literal(THill(1L)) else top(3), sh._2)
+    }
+  }
+  lazy val whilst: PackratParser[Expression] = "While " ~> expression ~ lineDelimiter ~ lineDelimited <~ lineDelimiter ~ "EndWhile" ^^ {sh =>
+    While(sh._1._1, sh._2)
+  }
+  lazy val repeat: PackratParser[Expression] = "Repeat " ~> expression ~ lineDelimiter ~ lineDelimited <~ lineDelimiter ~ "EndRept" ^^ {sh =>
+    Repeat(sh._1._1, sh._2)
+  }
   lazy val indexing: PackratParser[Expression] = expression ~ "[" ~ expression <~ "]" ^^
   {sh => {
     val thing = sh._1._1
@@ -223,11 +232,11 @@ class XprInt extends JavaTokenParsers with PackratParsers {
     if (thing.isInstanceOf[LValue]) LIndex(thing.asInstanceOf[LValue], index)
     else Index(thing, index)
   }}
-  //lazy val control: PackratParser[Expression] = ifst | ifThen | ifThenElse | forst | whilst | repeat
+  lazy val control: PackratParser[Expression] = ifst | ifThen | ifThenElse | forst | whilst | repeat
   //lazy val assign: PackratParser[Expression]
   //lazy val assignOp: PackratParser[Expression]
   lazy val compound: PackratParser[Expression] = array | linked | hashtag | lambda | indexing
-  lazy val expression: PackratParser[Expression] = literal | variable | compound
+  lazy val expression: PackratParser[Expression] = literal | variable | compound | control
   // Some tests :P
   class ExpressionParsersTest extends FlatSpec with ShouldMatchers {
     private def parsing[T](s:String)(implicit p:Parser[T]):T = {

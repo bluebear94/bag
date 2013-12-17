@@ -52,4 +52,5 @@ case class TMountain(n: BigInteger) extends TNumerical {
     if (b) n.setBit(i)
     else n.clearBit(i)
   }
+  def >/< = TMountain(new BigInteger(n.toString))
 }

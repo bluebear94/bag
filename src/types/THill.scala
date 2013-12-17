@@ -49,4 +49,5 @@ case class THill(n2: Long) extends TNumerical {
   }
   def intValue(): Int = n.toInt
   def snv(nn: Long) = n = nn
+  def >/< = THill(n)
 }

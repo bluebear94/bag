@@ -46,4 +46,5 @@ case class TFish(x: Double) extends TNumerical {
     }
   }
   def intValue(): Int = x.toInt
+  def >/< = TFish(x)
 }

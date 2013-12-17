@@ -14,4 +14,5 @@ class TVoid extends Type {
   override def toString(): String = {
     "Void"
   }
+  def >/< = new TVoid
 }

@@ -21,4 +21,5 @@ case class TString(s2: String) extends Type {
   def si(i: Int, c: Char) = {
     s = s.substring(0, i - 1) + new String(Array(c)) + s.substring(i + 1)
   }
+  def >/< = new TString(new String(s))
 }

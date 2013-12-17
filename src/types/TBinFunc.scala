@@ -7,4 +7,5 @@ class TBinFunc(bytecode: Array[Byte], source: String, ci: RunningInstance) exten
   def getBytecode(): Array[Byte] = bytecode
   override def equals(that: Type): Boolean = that.isInstanceOf[TBinFunc] && that.asInstanceOf[TBinFunc].getBytecode() == bytecode
   override def toString(): String = "λ\n" + source + "\nEndλ"
+  def >/< = new TBinFunc(bytecode.clone, new String(source), ci)
 }
