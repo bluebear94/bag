@@ -12,4 +12,5 @@ class TError(errno: Int) extends Type {
     "Error #" + errno
   }
   def >/< = new TError(errno)
+  def toBytecode: Array[Byte] = Array[Byte]()
 }

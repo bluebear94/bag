@@ -1,7 +1,7 @@
 package types
 
 import java.math.BigInteger
-import util.BigIntOps
+import util._
 
 case class TMountain(n: BigInteger) extends TNumerical {
   
@@ -53,4 +53,8 @@ case class TMountain(n: BigInteger) extends TNumerical {
     else n.clearBit(i)
   }
   def >/< = TMountain(new BigInteger(n.toString))
+  def toBytecode: Array[Byte] = {
+    val s = n.toByteArray
+    MakeByteArrays.intToByteArray(s.length) ++ s
+  }
 }

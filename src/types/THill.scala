@@ -50,4 +50,11 @@ case class THill(n2: Long) extends TNumerical {
   def intValue(): Int = n.toInt
   def snv(nn: Long) = n = nn
   def >/< = THill(n)
+  def toBytecode: Array[Byte] = {
+    var a = new Array[Byte](8)
+    for (i <- 0 until 7) {
+      a(8 - i) = (n & (0xFFL << 8 * i) >> 8 * i).toByte
+    }
+    a
+  }
 }

@@ -8,5 +8,6 @@ abstract class TFunction extends Type {
   def equals(that: Type): Boolean = false
   def toBoolean(): Boolean = true
   override def toString(): String = "a function"
-  // Implementations coming soon!
+    //TODO method stub
+  def toBytecode = Array[Byte]()
 }

@@ -43,7 +43,7 @@ Variable format (file):
 3: type
 4 - 7: version
 
-[1, 2] bytes in little-endian order
+[1, 2] bytes in big-endian order
 [4] same specs as IEEE
 [3] UTF-8, 32bit length prefixed
 [5, 6]:

@@ -14,5 +14,8 @@ class TVoid extends Type {
   override def toString(): String = {
     "Void"
   }
+  def toBytecode: Array[Byte] = {
+    Array()
+  }
   def >/< = new TVoid
 }

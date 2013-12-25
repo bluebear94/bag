@@ -69,4 +69,20 @@ abstract class RunningInstance(fname: String, c: RunningInstance, args: Array[Ty
     }
     else new TError(6)
   }
+  def getVar(name: String, r: Int): Type = {
+    if (r == 0) getVar(name)
+    else calling.getVar(name, r - 1)
+  }
+  def setVar(name: String, t: Type, r: Int): Unit = {
+    if (r == 0) setVar(name, t)
+    else calling.setVar(name, t, r - 1)
+  }
+  def argn(i: Int, r: Int): Type = {
+    if (r == 0) argn(i)
+    else calling.argn(i, r - 1)
+  }
+  def setargn(i: Int, t: Type, r: Int): Type = {
+    if (r == 0) setargn(i, t)
+    else calling.setargn(i, t, r - 1)
+  }
 }

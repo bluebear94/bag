@@ -4,7 +4,6 @@ package types
  * A fundamental part of the Amethyst language.
  */
 abstract class Type {
-
   def getType(): Int
   def toBoolean(): Boolean
   def equals(that: Type): Boolean
@@ -16,6 +15,7 @@ abstract class Type {
   }
   override def toString(): String
   def >/<(): Type
+  def toBytecode: Array[Byte]
 }
 
 
