@@ -186,7 +186,7 @@ case class SBWrapper(x: Expression) extends SBExpression {
   def eval(ci: RunningInstance): Type = x.eval(ci)
 }
 class XprInt extends JavaTokenParsers with PackratParsers {
-  var ops: TreeMap[Int, Parser[List[Expression] => Expression]] = new TreeMap[Int, Parser[List[Expression] => Expression]]()
+  var ops: TreeMap[Int, Parser[(Expression, Expression) => Expression]] = new TreeMap[Int, Parser[(Expression, Expression) => Expression]]()
   // Regex for valid identifiers.
   //[$[[^!@#$%^&*()_-=+~{}[]\|:;'",.<>/?][^@#$%^&*()_-=+~{}[]\|:;'",.<>/?]*:]?]?
   def id: Regex = """[[^!@#$%^&*()_-=+~{}[]\|:;'",.<>/?][^@#$%^&*()_-=+~{}[]\|:;'",<>/?]*|!]""".r // EEK
@@ -236,7 +236,7 @@ class XprInt extends JavaTokenParsers with PackratParsers {
   //lazy val assign: PackratParser[Expression]
   //lazy val assignOp: PackratParser[Expression]
   lazy val compound: PackratParser[SBExpression] = array | linked | hashtag | lambda | indexing
-  lazy val expression: PackratParser[Expression] = sbexpression | control
+  lazy val expression: PackratParser[Expression] = sbexpression | control | operator(0)
   lazy val sbwrapper: PackratParser[SBExpression] = "(" ~> expression <~ ")" ^^ { x => SBWrapper(x) }
   lazy val sbexpression: PackratParser[SBExpression] = literal | variable | compound | sbwrapper
   def loadOps = {
@@ -255,29 +255,27 @@ class XprInt extends JavaTokenParsers with PackratParsers {
             // update parser
             val oldp = ops.get(prec)
             // create a parser
-            val cp: Parser[List[Expression] => Expression] = opn ^^^ { l =>
-              if (dir) {
-                l.init.foldRight(l.last)(Operator(opn, _, _))
-              } else {
-                l.tail.foldLeft(l.head)(Operator(opn, _, _))
-              }
+            val cp: Parser[(Expression, Expression) => Expression] = opn ^^^ { (a, b) =>
+              if (dir) Operator(opn, b, a)
+              else Operator(opn, a, b)
             }
             // now update the map with the new parser combined
             ops.put(prec, oldp | cp)
           } else {
             // create a new entry in the map
-            val cp: Parser[List[Expression] => Expression] = opn ^^^ { l =>
-              if (dir) {
-                l.init.foldRight(l.last)(Operator(opn, _, _))
-              } else {
-                l.tail.foldLeft(l.head)(Operator(opn, _, _))
-              }
+            val cp: Parser[(Expression, Expression) => Expression] = opn ^^^ { (a, b) =>
+              if (dir) Operator(opn, b, a)
+              else Operator(opn, a, b)
             }
             ops.put(prec, cp)
           }
         }
       }
     }
+  }
+  def operator(level: Int): Parser[Expression] = {
+    if (level > ops.lastKey) sbexpression
+    else operator(ops.ceilingKey(level)) * ops.get(level)
   }
 }
 
