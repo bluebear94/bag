@@ -18,14 +18,12 @@ case class TFish(x: Double) extends TNumerical {
   }
   def equalsT(that: Type): Boolean = {
     val tt: Int = that.getType()
-    x.equals(
-        (tt) match {
-          case 1 => that.asInstanceOf[TMountain].getVal().equals(x)
-          case 2 => x == that.asInstanceOf[THill].getVal()
-          case 4 => x == that.asInstanceOf[TFish].getVal()
-          case _ => false
-        }
-        )
+    (tt) match {
+      case 1 => that.asInstanceOf[TMountain].getVal().doubleValue.equals(x)
+      case 2 => x == that.asInstanceOf[THill].getVal()
+      case 4 => x == that.asInstanceOf[TFish].getVal()
+      case _ => false
+    }
   }
   override def gt(that: Type): Boolean = {
     val tt: Int = that.getType()

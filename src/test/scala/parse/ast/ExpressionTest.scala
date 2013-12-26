@@ -60,17 +60,17 @@ class ExpressionParsersTest extends FlatSpec with Matchers {
       parsing(".5") should equal (Literal(TFish(.5)))
     }
     "XprInt" should "parse arrays and linked lists" in {
-      implicit val parserToTest = literal
-      parsing("{3, 4, 5}") should equal (Literal(new LArray(
-          (Array[Type](
-        		  TMountain(new BigInteger("3")),
-        		  TMountain(new BigInteger("4")),
-        		  TMountain(new BigInteger("5")))).to[ArrayBuffer])))
-      parsing("[3, 4, 5]") should equal (Literal(new LLinked(
-          (Array[Type](
-        		  TMountain(new BigInteger("3")),
-        		  TMountain(new BigInteger("4")),
-        		  TMountain(new BigInteger("5")))).to[ListBuffer])))
+      implicit val parserToTest = array | linked
+      parsing("{3, 4, 5}") should equal (AList(true, Array(
+          Literal(TMountain(new BigInteger("3"))),
+          Literal(TMountain(new BigInteger("4"))),
+          Literal(TMountain(new BigInteger("5")))
+      )))
+      parsing("[3, 4, 5]") should equal (AList(false, Array(
+          Literal(TMountain(new BigInteger("3"))),
+          Literal(TMountain(new BigInteger("4"))),
+          Literal(TMountain(new BigInteger("5")))
+      )))
     }
     "XprInt" should "use operators" in {
       implicit val parserToTest = expression // TODO: change the type of parser

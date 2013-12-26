@@ -11,6 +11,7 @@ import cmdreader._
 import scala.collection.mutable._
 import util._
 import scala.util.matching.Regex
+import java.util.TreeMap // darn, no mutable TreeMap yet
 
 trait Expression {
   def eval(ci: RunningInstance): Type
@@ -19,11 +20,12 @@ trait Expression {
   // def toByteCode: Array[Byte]
   // def toString: String
 }
-trait LValue extends Expression {
+trait SBExpression extends Expression
+trait LValue extends SBExpression {
   def assign(ci: RunningInstance, t: Type): Unit
   // def nuke(ci: RunningInstance): Unit
 }
-case class Literal(t: Type) extends Expression {
+case class Literal(t: Type) extends SBExpression {
   def eval(ci: RunningInstance): Type = t
 }
 case class Variable(name: String) extends LValue {
@@ -42,19 +44,19 @@ case class AssignOp(left: LValue, right: Expression, op: String) extends Express
     left.eval(ci)
   }
 }
-case class FCall(f: Expression, args: Array[Expression]) extends Expression {
+case class FCall(f: SBExpression, args: Array[Expression]) extends SBExpression {
   def eval(ci: RunningInstance): Type = {
     val g = f.eval(ci)
     if (g.getType == 7) g.asInstanceOf[TFunction](args.map(_.eval(ci)))
     else new TError(1)
   }
 }
-case class Lambda(lines: List[Expression]) extends Expression {
+case class Lambda(lines: List[Expression]) extends SBExpression {
   def eval(ci: RunningInstance): Type = {
     new TASTFunc(lines, ci)
   }
 }
-case class AList(isArray: Boolean, args: Array[Expression]) extends Expression {
+case class AList(isArray: Boolean, args: Array[Expression]) extends SBExpression {
   def eval(ci: RunningInstance): Type = {
     if (isArray)
       new LArray(args.map(_.eval(ci)).to[ArrayBuffer])
@@ -62,7 +64,7 @@ case class AList(isArray: Boolean, args: Array[Expression]) extends Expression {
       new LLinked(args.map(_.eval(ci)).to[ListBuffer])
   }
 }
-case class Index(l: Expression, i: Expression) extends Expression {
+case class Index(l: Expression, i: Expression) extends SBExpression {
   def eval(ci: RunningInstance): Type = {
     Indexing.index(l.eval(ci), i.eval(ci))
   }
@@ -180,39 +182,39 @@ case class Hashtag(x: Expression) extends LValue {
     }
   }
 }
+case class SBWrapper(x: Expression) extends SBExpression {
+  def eval(ci: RunningInstance): Type = x.eval(ci)
+}
 class XprInt extends JavaTokenParsers with PackratParsers {
+  var ops: TreeMap[Int, Parser[List[Expression] => Expression]] = new TreeMap[Int, Parser[List[Expression] => Expression]]()
   // Regex for valid identifiers.
   //[$[[^!@#$%^&*()_-=+~{}[]\|:;'",.<>/?][^@#$%^&*()_-=+~{}[]\|:;'",.<>/?]*:]?]?
   def id: Regex = """[[^!@#$%^&*()_-=+~{}[]\|:;'",.<>/?][^@#$%^&*()_-=+~{}[]\|:;'",<>/?]*|!]""".r // EEK
   // note: ! is allowed, just not at the beginning (otherwise it has to be the only character)
-  lazy val void: Parser[Expression] = "Void" ^^^ { new Literal(new TVoid()) }
-  lazy val variable: Parser[Expression] = ("$".r | "".r | ("$".r ~ id ~ ":".r)) ~ id ^^ { s => Variable(s._1 + s._2) }
-  lazy val mountain: Parser[Expression] = wholeNumber ^^ { s => new Literal(new TMountain(new BigInteger(s))) }
-  lazy val hill: Parser[Expression] = """↼[-]?\d+""".r ^^ { s => new Literal(new THill(s.substring(1).toLong)) }
-  lazy val string: Parser[Expression] = stringLiteral ^^ { s => new Literal(new TString(s)) }
-  lazy val fish: Parser[Expression] = floatingPointNumber ^^ { s => new Literal(new TFish(s.toFloat)) }
-  lazy val literal: Parser[Expression] = void | mountain | hill | string | fish
+  lazy val void: Parser[SBExpression] = "Void" ^^^ { new Literal(new TVoid()) }
+  lazy val variable: Parser[SBExpression] = ("$".r | "".r | ("$".r ~ id ~ ":".r)) ~ id ^^ { s => Variable(s._1 + s._2) }
+  lazy val mountain: Parser[SBExpression] = wholeNumber ^^ { s => new Literal(new TMountain(new BigInteger(s))) }
+  lazy val hill: Parser[SBExpression] = """↼[-]?\d+""".r ^^ { s => new Literal(new THill(s.substring(1).toLong)) }
+  lazy val string: Parser[SBExpression] = stringLiteral ^^ { s => new Literal(new TString(s)) }
+  lazy val fish: Parser[SBExpression] = floatingPointNumber ^^ { s => new Literal(new TFish(s.toDouble)) }
+  lazy val literal: Parser[SBExpression] = void | mountain | hill | string | fish
   val lineDelimiter: Parser[String] = ";" | "\n"
   lazy val commaDelimited: PackratParser[List[Expression]] = repsep(expression, ",")
   lazy val lineDelimited: PackratParser[List[Expression]] = repsep(expression, lineDelimiter)
-  lazy val array: PackratParser[Expression] = "{" ~> commaDelimited <~ "}" ^^ { l => AList(true, l.toArray[Expression]) }
-  lazy val linked: PackratParser[Expression] = "[" ~> commaDelimited <~ "]" ^^ { l => AList(true, l.toArray[Expression]) }
-  lazy val hashtag: PackratParser[Expression] = "#" ~> expression ^^ { x => Hashtag(x) }
-  lazy val lambda: PackratParser[Expression] = "λ" ~> lineDelimited <~ "Endλ" ^^ { l => Lambda(l) }
-  lazy val call: PackratParser[Expression] = variable ~ "(" ~ commaDelimited <~ ")" ^^ { sh => FCall(sh._1._1, sh._2.toArray[Expression]) }
+  lazy val array: PackratParser[SBExpression] = "{" ~> commaDelimited <~ "}" ^^ { l => AList(true, l.toArray[Expression]) }
+  lazy val linked: PackratParser[SBExpression] = "[" ~> commaDelimited <~ "]" ^^ { l => AList(true, l.toArray[Expression]) }
+  lazy val hashtag: PackratParser[SBExpression] = "#" ~> sbexpression ^^ { x => Hashtag(x) }
+  lazy val lambda: PackratParser[SBExpression] = "λ" ~> lineDelimited <~ "Endλ" ^^ { l => Lambda(l) }
+  lazy val call: PackratParser[Expression] = sbexpression ~ "(" ~ commaDelimited <~ ")" ^^ { sh => FCall(sh._1._1, sh._2.toArray[Expression]) }
   lazy val ifst: PackratParser[Expression] = "If " ~> expression ~ lineDelimiter ~ expression ^^ { sh => If(sh._1._1, sh._2) }
   lazy val ifThen: PackratParser[Expression] = "If " ~> expression ~ lineDelimiter ~ "Then" ~ lineDelimiter ~ lineDelimited <~ lineDelimiter ~ "EndIf" ^^
     { sh => IfThen(sh._1._1._1._1, sh._2) }
-  lazy val ifThenElse: PackratParser[Expression] = "If " ~> expression ~ lineDelimiter ~ "Then" ~ lineDelimiter ~ lineDelimited ~
-    lineDelimiter ~ "Else" ~ lineDelimiter ~ lineDelimited <~ lineDelimiter ~ "EndIf" ^^ { sh =>
-      sh match {
-        case e ~ _ ~ _ ~ _ ~ body ~ _ ~ _ ~ _ ~ body2 => IfThenElse(e, body, body2)
-      }
-    } // what the fuck
-  lazy val forst: PackratParser[Expression] = "For " ~> commaDelimited ~ lineDelimiter ~ lineDelimited <~ lineDelimiter ~ "EndFor" ^^ { sh =>
-    {
-      val top = sh._1._1
-      For(top(0).asInstanceOf[LValue], top(1), top(2), if (top.length == 3) Literal(THill(1L)) else top(3), sh._2)
+  lazy val ifThenElse: PackratParser[Expression] = ("If " ~> expression <~ lineDelimiter) ~ ("Then" ~> lineDelimiter ~> lineDelimited <~
+    lineDelimiter) ~ ("Else" ~> lineDelimiter ~> lineDelimited <~ lineDelimiter <~ "EndIf") ^^
+    { case (condExpr ~ thens ~ elses) => IfThenElse(condExpr, thens, elses) }
+  lazy val forst: PackratParser[Expression] = ("For " ~> commaDelimited <~ lineDelimiter) ~ lineDelimited <~ (lineDelimiter ~ "EndFor") ^^ {
+    case (f3 ~ body) => f3(0) match {
+      case lv: LValue => For(lv, f3(1), f3(2), if (f3.length == 3) Literal(THill(1L)) else f3(3), body)
     }
   }
   lazy val whilst: PackratParser[Expression] = "While " ~> expression ~ lineDelimiter ~ lineDelimited <~ lineDelimiter ~ "EndWhile" ^^ { sh =>
@@ -221,7 +223,7 @@ class XprInt extends JavaTokenParsers with PackratParsers {
   lazy val repeat: PackratParser[Expression] = "Repeat " ~> expression ~ lineDelimiter ~ lineDelimited <~ lineDelimiter ~ "EndRept" ^^ { sh =>
     Repeat(sh._1._1, sh._2)
   }
-  lazy val indexing: PackratParser[Expression] = expression ~ "[" ~ expression <~ "]" ^^
+  lazy val indexing: PackratParser[SBExpression] = sbexpression ~ "[" ~ expression <~ "]" ^^
     { sh =>
       {
         val thing = sh._1._1
@@ -233,9 +235,50 @@ class XprInt extends JavaTokenParsers with PackratParsers {
   lazy val control: PackratParser[Expression] = ifst | ifThen | ifThenElse | forst | whilst | repeat
   //lazy val assign: PackratParser[Expression]
   //lazy val assignOp: PackratParser[Expression]
-  lazy val compound: PackratParser[Expression] = array | linked | hashtag | lambda | indexing
-  lazy val expression: PackratParser[Expression] = literal | variable | compound | control
-  // Some tests :P
+  lazy val compound: PackratParser[SBExpression] = array | linked | hashtag | lambda | indexing
+  lazy val expression: PackratParser[Expression] = sbexpression | control
+  lazy val sbwrapper: PackratParser[SBExpression] = "(" ~> expression <~ ")" ^^ { x => SBWrapper(x) }
+  lazy val sbexpression: PackratParser[SBExpression] = literal | variable | compound | sbwrapper
+  def loadOps = {
+    val ll = Global.liblist.keySet.toList
+    for (ln <- ll) { // loop over every library loaded
+      val cl = Global.liblist(ln)
+      val col = cl.ccol
+      val isStdLib = ln == "std"
+      for (cmdsp <- col.opList.toList) {
+        val cmd = cmdsp._2
+        if (!cmd.isUnary) {
+          val prec = cmd.getPrecedence
+          val dir = cmd.isReversed
+          val opn = (if (isStdLib) "" else "$" + ln + ":") + cmd.getOpAlias
+          if (ops.containsKey(prec)) {
+            // update parser
+            val oldp = ops.get(prec)
+            // create a parser
+            val cp: Parser[List[Expression] => Expression] = opn ^^^ { l =>
+              if (dir) {
+                l.init.foldRight(l.last)(Operator(opn, _, _))
+              } else {
+                l.tail.foldLeft(l.head)(Operator(opn, _, _))
+              }
+            }
+            // now update the map with the new parser combined
+            ops.put(prec, oldp | cp)
+          } else {
+            // create a new entry in the map
+            val cp: Parser[List[Expression] => Expression] = opn ^^^ { l =>
+              if (dir) {
+                l.init.foldRight(l.last)(Operator(opn, _, _))
+              } else {
+                l.tail.foldLeft(l.head)(Operator(opn, _, _))
+              }
+            }
+            ops.put(prec, cp)
+          }
+        }
+      }
+    }
+  }
 }
 
 

@@ -18,9 +18,9 @@ case class THill(n2: Long) extends TNumerical {
     val tt: Int = that.getType()
     n.equals(
         (tt) match {
-          case 1 => that.asInstanceOf[TMountain].getVal().equals(n)
-          case 2 => that.asInstanceOf[THill].getVal().equals(n)
-          case 4 => that.asInstanceOf[TFish].getVal().equals(n)
+          case 1 => that.asInstanceOf[TMountain].getVal().longValue
+          case 2 => that.asInstanceOf[THill].getVal()
+          case 4 => that.asInstanceOf[TFish].getVal().toLong
           case _ => false
         }
         )
