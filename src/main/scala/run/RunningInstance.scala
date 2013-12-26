@@ -3,6 +3,7 @@ package run
 import java.io.FileInputStream
 import scala.collection.mutable._
 import types._
+import util._
 
 // If fname starts with "code:", then it is an instance of code.
 abstract class RunningInstance(fname: String, c: RunningInstance, args: Array[Type]) {
@@ -48,7 +49,11 @@ abstract class RunningInstance(fname: String, c: RunningInstance, args: Array[Ty
     if (name.startsWith("$")) {
       // TODO A global variable or a command.
       if (name.indexOf(":") == -1) {
-        // TODO over here
+        val p = PathNameConverter.aToOs(name.substring(1), false)
+        VariableWriter.writeValToVarfile(t, p match {
+          case (pn, true) => Global.current + "/" + pn
+          case (pn, false) => Global.root + "/" + pn
+        })
       }
     }
     else {

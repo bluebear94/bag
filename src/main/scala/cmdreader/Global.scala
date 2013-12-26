@@ -1,6 +1,7 @@
 package cmdreader
 
 import scala.collection.mutable.HashMap
+import java.io._
 
 object Global {
   var liblist: HashMap[String, CmdList] = new HashMap[String, CmdList]()
@@ -17,4 +18,6 @@ object Global {
         Global.liblist("std").ccol.opList(name)
       }
     }
+  var root: File = new File("amw/")
+  var current: File = root
 }
