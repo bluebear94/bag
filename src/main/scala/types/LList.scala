@@ -24,4 +24,10 @@ abstract class LList extends Type {
     val bsl = l.length
     MakeByteArrays.intToByteArray(bsl) ++ s
   }
+  override def equals(that: Any) = {
+    that match {
+      case other: LList => l.equals(other.l)
+      case _ => false
+    }
+  }
 }

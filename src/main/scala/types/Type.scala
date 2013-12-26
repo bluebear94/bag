@@ -6,7 +6,7 @@ package types
 abstract class Type {
   def getType(): Int
   def toBoolean(): Boolean
-  def equals(that: Type): Boolean
+  def equals(that: Any): Boolean
   def gt(that: Type): Boolean = {
     throw new UnsupportedOperationException()
   }

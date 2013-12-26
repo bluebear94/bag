@@ -14,7 +14,7 @@ case class THill(n2: Long) extends TNumerical {
   override def toString(): String = {
     "↼" + n.toString()
   }
-  def equals(that: Type): Boolean = {
+  def equalsT(that: Type): Boolean = {
     val tt: Int = that.getType()
     n.equals(
         (tt) match {

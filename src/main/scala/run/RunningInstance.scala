@@ -4,6 +4,8 @@ import java.io.FileInputStream
 import scala.collection.mutable._
 import types._
 import util._
+import rwvar.VariableWriter
+import cmdreader.Global
 
 // If fname starts with "code:", then it is an instance of code.
 abstract class RunningInstance(fname: String, c: RunningInstance, args: Array[Type]) {

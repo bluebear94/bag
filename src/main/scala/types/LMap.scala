@@ -28,4 +28,10 @@ class LMap(h: HashMap[Type, Type]) extends Type {
     val bsl = h.toList.length
     MakeByteArrays.intToByteArray(bsl) ++ s
   }
+  override def equals(that: Any) = {
+    that match {
+      case other: LMap => gm.equals(other.gm)
+      case _ => false
+    }
+  }
 }

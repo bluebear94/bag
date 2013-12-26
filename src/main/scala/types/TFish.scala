@@ -16,7 +16,7 @@ case class TFish(x: Double) extends TNumerical {
     if (raw.endsWith("0")) raw = raw.substring(0, raw.length() - 1)
     raw
   }
-  def equals(that: Type): Boolean = {
+  def equalsT(that: Type): Boolean = {
     val tt: Int = that.getType()
     x.equals(
         (tt) match {

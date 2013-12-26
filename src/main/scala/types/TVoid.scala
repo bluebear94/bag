@@ -2,8 +2,14 @@ package types
 
 class TVoid extends Type {
 
-  def equals(that: Type): Boolean = {
-    that.getType() == 0
+  def canEqual(that: Any): Boolean = {
+    that.isInstanceOf[TVoid]
+  }
+  override def equals(that: Any): Boolean = {
+    that match {
+      case other: TVoid => true
+      case _ => false
+    }
   }
   def getType(): Int = {
     0

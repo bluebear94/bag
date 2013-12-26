@@ -14,7 +14,7 @@ case class TMountain(n: BigInteger) extends TNumerical {
   override def toString(): String = {
     n.toString()
   }
-  def equals(that: Type): Boolean = {
+  def equalsT(that: Type): Boolean = {
     val tt: Int = that.getType()
         (tt) match {
           case 1 => that.asInstanceOf[TMountain].getVal().equals(n)

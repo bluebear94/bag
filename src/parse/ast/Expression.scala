@@ -286,7 +286,7 @@ class XprInt extends JavaTokenParsers with PackratParsers {
       parsing(".5") should equal (Literal(TFish(.5)))
     }
     "XprInt" should "parse arrays and linked lists" in {
-      implicit val parserToTest = literal
+      implicit val parserToTest = array | linked
       parsing("{3, 4, 5}") should equal (Literal(new LArray(
           (Array[Type](
         		  TMountain(new BigInteger("3")),
