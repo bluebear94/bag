@@ -44,6 +44,17 @@ case class AssignOp(left: LValue, right: Expression, op: String) extends Express
     left.eval(ci)
   }
 }
+case class DoubleOp(left: LValue, op: String, post: Boolean) extends Expression {
+  def eval(ci: RunningInstance): Type = {
+    val oldV = left.eval(ci).>/<
+    val db = Global.getCmd(op).getDoubleBase match {
+      case Some(v) => v
+      case None => throw new UnsupportedOperationException
+    }
+    left.assign(ci, Operator(op, left, Literal(db)).eval(ci))
+    if (post) oldV else left.eval(ci)
+  }
+}
 case class FCall(f: SBExpression, args: Array[Expression]) extends SBExpression {
   def eval(ci: RunningInstance): Type = {
     val g = f.eval(ci)
@@ -187,12 +198,13 @@ case class SBWrapper(x: Expression) extends SBExpression {
 }
 class XprInt extends JavaTokenParsers with PackratParsers {
   var ops: TreeMap[Int, Parser[(Expression, Expression) => Expression]] = new TreeMap[Int, Parser[(Expression, Expression) => Expression]]()
+  var opEq: Parser[Expression] = failure("SHIT!")
   // Regex for valid identifiers.
   //[$[[^!@#$%^&*()_-=+~{}[]\|:;'",.<>/?][^@#$%^&*()_-=+~{}[]\|:;'",.<>/?]*:]?]?
   def id: Regex = """[[^!@#$%^&*()_-=+~{}[]\|:;'",.<>/?][^@#$%^&*()_-=+~{}[]\|:;'",<>/?]*|!]""".r // EEK
   // note: ! is allowed, just not at the beginning (otherwise it has to be the only character)
   lazy val void: Parser[SBExpression] = "Void" ^^^ { new Literal(new TVoid()) }
-  lazy val variable: Parser[SBExpression] = ("$".r | "".r | ("$".r ~ id ~ ":".r)) ~ id ^^ { s => Variable(s._1 + s._2) }
+  lazy val variable: Parser[LValue] = ("$".r | "".r | ("$".r ~ id ~ ":".r)) ~ id ^^ { s => Variable(s._1 + s._2) }
   lazy val mountain: Parser[SBExpression] = wholeNumber ^^ { s => new Literal(new TMountain(new BigInteger(s))) }
   lazy val hill: Parser[SBExpression] = """↼[-]?\d+""".r ^^ { s => new Literal(new THill(s.substring(1).toLong)) }
   lazy val string: Parser[SBExpression] = stringLiteral ^^ { s => new Literal(new TString(s)) }
@@ -203,7 +215,7 @@ class XprInt extends JavaTokenParsers with PackratParsers {
   lazy val lineDelimited: PackratParser[List[Expression]] = repsep(expression, lineDelimiter)
   lazy val array: PackratParser[SBExpression] = "{" ~> commaDelimited <~ "}" ^^ { l => AList(true, l.toArray[Expression]) }
   lazy val linked: PackratParser[SBExpression] = "[" ~> commaDelimited <~ "]" ^^ { l => AList(true, l.toArray[Expression]) }
-  lazy val hashtag: PackratParser[SBExpression] = "#" ~> sbexpression ^^ { x => Hashtag(x) }
+  lazy val hashtag: PackratParser[LValue] = "#" ~> sbexpression ^^ { x => Hashtag(x) }
   lazy val lambda: PackratParser[SBExpression] = "λ" ~> lineDelimited <~ "Endλ" ^^ { l => Lambda(l) }
   lazy val call: PackratParser[Expression] = sbexpression ~ "(" ~ commaDelimited <~ ")" ^^ { sh => FCall(sh._1._1, sh._2.toArray[Expression]) }
   lazy val ifst: PackratParser[Expression] = "If " ~> expression ~ lineDelimiter ~ expression ^^ { sh => If(sh._1._1, sh._2) }
@@ -228,25 +240,36 @@ class XprInt extends JavaTokenParsers with PackratParsers {
       {
         val thing = sh._1._1
         val index = sh._2
-        if (thing.isInstanceOf[LValue]) LIndex(thing.asInstanceOf[LValue], index)
-        else Index(thing, index)
+        Index(thing, index)
       }
     }
+  lazy val lIndexing: PackratParser[LValue] = lvalue ~ "[" ~ expression <~ "]" ^^ {
+    sh =>
+      {
+        val thing = sh._1._1
+        val index = sh._2
+        LIndex(thing, index)
+      }
+  }
   lazy val control: PackratParser[Expression] = ifst | ifThen | ifThenElse | forst | whilst | repeat
-  //lazy val assign: PackratParser[Expression]
+  lazy val lvalue: PackratParser[LValue] = lIndexing | hashtag | variable
+  lazy val assign: PackratParser[Expression] = lvalue ~ "=" ~ expression ^^ {
+    case (left ~ o ~ right) =>
+      Assign(left, right)
+  }
   //lazy val assignOp: PackratParser[Expression]
-  lazy val compound: PackratParser[SBExpression] = array | linked | hashtag | lambda | indexing
+  lazy val compound: PackratParser[SBExpression] = array | linked | hashtag | lambda | lIndexing | indexing
   lazy val expression: PackratParser[Expression] = operator(ops.firstKey) | sbexpression | control
   lazy val sbwrapper: PackratParser[SBExpression] = "(" ~> expression <~ ")" ^^ { x => SBWrapper(x) }
   lazy val sbexpression: PackratParser[SBExpression] = literal | variable | compound | sbwrapper
-  def loadOps = {
+  def loadOps = { // Long-ass method to use necessary information about operators to build parsers for them
     val ll = Global.liblist.keySet.toList
     print(s"Loading operators from libraries: $ll\n")
     for (ln <- ll) { // loop over every library loaded
       print(s"Loading operators from $ln\n")
       val cl = Global.liblist(ln)
       val col = cl.ccol
-      println("Operators: "+ col.opList.keySet.toList)
+      println("Operators: " + col.opList.keySet.toList)
       val isStdLib = ln == "std"
       for (cmdsp <- col.opList.toList) {
         val cmd = cmdsp._2
@@ -254,6 +277,7 @@ class XprInt extends JavaTokenParsers with PackratParsers {
           val prec = cmd.getPrecedence
           val dir = cmd.isReversed
           val opn = (if (isStdLib) "" else "$" + ln + ":") + cmd.getOpAlias
+          val hasOE = cmd.hasAssignmentEquiv
           print(s"Loading operator $opn\n")
           if (ops.containsKey(prec)) {
             // update parser
@@ -272,6 +296,13 @@ class XprInt extends JavaTokenParsers with PackratParsers {
               else Operator(opn, a, b)
             }
             ops.put(prec, cp)
+          }
+          // now update the opEq parser, if appropriate
+          if (hasOE) {
+            val newParser: Parser[Expression] = lvalue ~ (opn + "=") ~ expression ^^ {
+              case (left ~ o ~ right) => AssignOp(left, right, opn)
+            }
+            opEq = newParser | opEq
           }
         }
       }
