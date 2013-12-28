@@ -9,8 +9,7 @@ class OSubt extends CommandOperator {
   override def getName(): String = "subt"
   override def getOpAlias() = "-"
   override def apply(args: Array[Type]): Type = {
-    args.fold(
-      THill(0L))(MathUtil.subtract(_, _))
+    args.tail.fold(args.head)(MathUtil.subtract(_, _))
   }
   def getPrecedence() = PStandard.ADD_SUBT
   def isReversed() = false

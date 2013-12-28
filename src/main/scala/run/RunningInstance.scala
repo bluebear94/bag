@@ -62,8 +62,10 @@ class RunningInstance(fname: String, c: RunningInstance, args: Array[Type]) {
   def argn(i: Int): Type = {
     i match {
       case 0 => new THill(args.length)
-      case _ => if (i > 0) args(i - 1)
-      else new TError(6)
+      case _ => {
+        if (i > 0 && i <= args.length) args(i - 1)
+        else new TError(6)
+      }
     }
   }
   def setargn(i: Int, t: Type): Type = {

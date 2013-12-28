@@ -197,20 +197,21 @@ case class SBWrapper(x: Expression) extends SBExpression {
   def eval(ci: RunningInstance): Type = x.eval(ci)
 }
 class XprInt extends JavaTokenParsers with PackratParsers {
-  var ops: TreeMap[Int, Parser[(Expression, Expression) => Expression]] = new TreeMap[Int, Parser[(Expression, Expression) => Expression]]()
-  var opEq: Parser[Expression] = failure("SHIT!")
+  var ops: TreeMap[Int, PackratParser[(Expression, Expression) => Expression]] =
+    new TreeMap[Int, PackratParser[(Expression, Expression) => Expression]]()
+  var opEq: PackratParser[Expression] = failure("SHIT!")
   // Regex for valid identifiers.
   //[$[[^!@#$%^&*()_-=+~{}[]\|:;'",.<>/?][^@#$%^&*()_-=+~{}[]\|:;'",.<>/?]*:]?]?
-  def id: Regex = """[[\x5C\Q^!@#$%^&*_-+~{}().[]=|:;'",<>/?\E][\x5C\Q^@#$%^&*_-+~{}()[]=|:;'",<>/?\E]*|!]""".r // EEK
+  def id: Regex = """[[^\x5C\Q^!@#$%^&*_-+~{}().[]=|:;'",<>/?\E][^\x5C\Q^@#$%^&*_-+~{}()[]=|:;'",<>/?\E]*|!]""".r // EEK
   // note: ! is allowed, just not at the beginning (otherwise it has to be the only character)
-  lazy val void: Parser[SBExpression] = "Void" ^^^ { new Literal(new TVoid()) }
-  lazy val variable: Parser[LValue] = ("$".r | "".r | ("$".r ~ id ~ ":".r)) ~ id ^^ { s => Variable(s._1 + s._2) }
-  lazy val mountain: Parser[SBExpression] = wholeNumber ^^ { s => new Literal(new TMountain(new BigInteger(s))) }
-  lazy val hill: Parser[SBExpression] = """↼[-]?\d+""".r ^^ { s => new Literal(new THill(s.substring(1).toLong)) }
-  lazy val string: Parser[SBExpression] = stringLiteral ^^ { s => new Literal(new TString(s)) }
-  lazy val fish: Parser[SBExpression] = floatingPointNumber ^^ { s => new Literal(new TFish(s.toDouble)) }
-  lazy val literal: Parser[SBExpression] = void | mountain | hill | string | fish
-  val lineDelimiter: Parser[String] = ";" | "\n"
+  lazy val void: PackratParser[SBExpression] = "Void" ^^^ { new Literal(new TVoid()) }
+  lazy val variable: PackratParser[LValue] = ("$".r | "".r | ("$".r ~ id ~ ":".r)) ~ id ^^ { s => Variable(s._1 + s._2) }
+  lazy val mountain: PackratParser[SBExpression] = wholeNumber ^^ { s => new Literal(new TMountain(new BigInteger(s))) }
+  lazy val hill: PackratParser[SBExpression] = """↼[-]?\d+""".r ^^ { s => new Literal(new THill(s.substring(1).toLong)) }
+  lazy val string: PackratParser[SBExpression] = stringLiteral ^^ { s => new Literal(new TString(s)) }
+  lazy val fish: PackratParser[SBExpression] = floatingPointNumber ^^ { s => new Literal(new TFish(s.toDouble)) }
+  lazy val literal: PackratParser[SBExpression] = void | fish ||| mountain | hill | string
+  val lineDelimiter: PackratParser[String] = ";" | "\n"
   lazy val commaDelimited: PackratParser[List[Expression]] = repsep(expression, ",")
   lazy val lineDelimited: PackratParser[List[Expression]] = repsep(expression, lineDelimiter)
   lazy val array: PackratParser[SBExpression] = "{" ~> commaDelimited <~ "}" ^^ { l => AList(true, l.toArray[Expression]) }
@@ -259,7 +260,7 @@ class XprInt extends JavaTokenParsers with PackratParsers {
   }
   //lazy val assignOp: PackratParser[Expression]
   lazy val compound: PackratParser[SBExpression] = array | linked | hashtag | lambda | lIndexing | indexing
-  lazy val expression: PackratParser[Expression] = sbexpression | operator(ops.firstKey) | control
+  lazy val expression: PackratParser[Expression] = operator(ops.firstKey) | assign | sbexpression | control
   lazy val sbwrapper: PackratParser[SBExpression] = "(" ~> expression <~ ")" ^^ { x => SBWrapper(x) }
   lazy val sbexpression: PackratParser[SBExpression] = sbwrapper | literal | compound | variable
   def loadOps = { // Long-ass method to use necessary information about operators to build parsers for them
@@ -308,7 +309,7 @@ class XprInt extends JavaTokenParsers with PackratParsers {
       }
     }
   }
-  def operator(level: Int): Parser[Expression] = {
+  def operator(level: Int): PackratParser[Expression] = {
     if (level > ops.lastKey) sbexpression
     else if (level == ops.lastKey) sbexpression * ops.get(level)
     else operator(ops.ceilingKey(level)) * ops.get(level)
