@@ -74,7 +74,7 @@ class ExpressionParsersTest extends FlatSpec with Matchers {
       Literal(TMountain(new BigInteger("5"))))))
   }
   "XprInt" should "use operators" in {
-    implicit val parserToTest = expression // TODO: change the type of parser
+    implicit val parserToTest = operator(ops.firstKey) // TODO: change the type of parser
     parsing("4 + 9") should equal(Operator("+", Literal(TMountain(new BigInteger("4"))), Literal(TMountain(new BigInteger("9")))))
     assertFail("4 +")
     parsing("7 - 3") should equal(Operator("-", Literal(TMountain(new BigInteger("7"))), Literal(TMountain(new BigInteger("3")))))

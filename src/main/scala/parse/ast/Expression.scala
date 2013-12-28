@@ -278,7 +278,8 @@ class XprInt extends JavaTokenParsers with PackratParsers {
     }
   }
   def operator(level: Int): Parser[Expression] = {
-    if (level >= ops.lastKey) sbexpression
+    if (level > ops.lastKey) sbexpression
+    else if (level == ops.lastKey) sbexpression * ops.get(level)
     else operator(ops.ceilingKey(level)) * ops.get(level)
   }
 }
