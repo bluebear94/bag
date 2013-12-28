@@ -87,6 +87,7 @@ case class LIndex(l: LValue, i: Expression) extends LValue {
   def assign(ci: RunningInstance, n: Type) = {
     val t: Type = l.eval(ci)
     Indexing.setIndex(t, i.eval(ci), n)
+    l.assign(ci, t)
   }
 }
 // How am I going to parse operations while respecting the order of
@@ -215,7 +216,7 @@ class XprInt extends JavaTokenParsers with PackratParsers {
   lazy val commaDelimited: PackratParser[List[Expression]] = repsep(expression, ",")
   lazy val lineDelimited: PackratParser[List[Expression]] = repsep(expression, lineDelimiter)
   lazy val array: PackratParser[SBExpression] = "{" ~> commaDelimited <~ "}" ^^ { l => AList(true, l.toArray[Expression]) }
-  lazy val linked: PackratParser[SBExpression] = "[" ~> commaDelimited <~ "]" ^^ { l => AList(true, l.toArray[Expression]) }
+  lazy val linked: PackratParser[SBExpression] = "[" ~> commaDelimited <~ "]" ^^ { l => AList(false, l.toArray[Expression]) }
   lazy val hashtag: PackratParser[LValue] = "#" ~> sbexpression ^^ { x => Hashtag(x) }
   lazy val lambda: PackratParser[SBExpression] = "λ" ~> lineDelimited <~ "Endλ" ^^ { l => Lambda(l) }
   lazy val call: PackratParser[SBExpression] = sbexpression ~ "(" ~ commaDelimited <~ ")" ^^ { sh => FCall(sh._1._1, sh._2.toArray[Expression]) }
@@ -259,7 +260,7 @@ class XprInt extends JavaTokenParsers with PackratParsers {
       Assign(left, right)
   }
   //lazy val assignOp: PackratParser[Expression]
-  lazy val compound: PackratParser[SBExpression] = array | linked | hashtag | lambda | lIndexing | indexing | call
+  lazy val compound: PackratParser[SBExpression] = lIndexing | indexing | array | linked | hashtag | lambda | call
   lazy val expression: PackratParser[Expression] = assign | operator(ops.firstKey) | sbexpression | control
   lazy val sbwrapper: PackratParser[SBExpression] = "(" ~> expression <~ ")" ^^ { x => SBWrapper(x) }
   lazy val sbexpression: PackratParser[SBExpression] = sbwrapper | literal | compound | variable
