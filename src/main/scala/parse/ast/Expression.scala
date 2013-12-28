@@ -236,14 +236,17 @@ class XprInt extends JavaTokenParsers with PackratParsers {
   //lazy val assign: PackratParser[Expression]
   //lazy val assignOp: PackratParser[Expression]
   lazy val compound: PackratParser[SBExpression] = array | linked | hashtag | lambda | indexing
-  lazy val expression: PackratParser[Expression] = sbexpression | control | operator(0)
+  lazy val expression: PackratParser[Expression] = operator(ops.firstKey) | sbexpression | control
   lazy val sbwrapper: PackratParser[SBExpression] = "(" ~> expression <~ ")" ^^ { x => SBWrapper(x) }
   lazy val sbexpression: PackratParser[SBExpression] = literal | variable | compound | sbwrapper
   def loadOps = {
     val ll = Global.liblist.keySet.toList
+    print(s"Loading operators from libraries: $ll\n")
     for (ln <- ll) { // loop over every library loaded
+      print(s"Loading operators from $ln\n")
       val cl = Global.liblist(ln)
       val col = cl.ccol
+      println("Operators: "+ col.opList.keySet.toList)
       val isStdLib = ln == "std"
       for (cmdsp <- col.opList.toList) {
         val cmd = cmdsp._2
@@ -251,6 +254,7 @@ class XprInt extends JavaTokenParsers with PackratParsers {
           val prec = cmd.getPrecedence
           val dir = cmd.isReversed
           val opn = (if (isStdLib) "" else "$" + ln + ":") + cmd.getOpAlias
+          print(s"Loading operator $opn\n")
           if (ops.containsKey(prec)) {
             // update parser
             val oldp = ops.get(prec)
@@ -274,7 +278,7 @@ class XprInt extends JavaTokenParsers with PackratParsers {
     }
   }
   def operator(level: Int): Parser[Expression] = {
-    if (level > ops.lastKey) sbexpression
+    if (level >= ops.lastKey) sbexpression
     else operator(ops.ceilingKey(level)) * ops.get(level)
   }
 }
