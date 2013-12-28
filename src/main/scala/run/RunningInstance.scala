@@ -8,15 +8,17 @@ import rwvar.VariableWriter
 import cmdreader.Global
 
 // If fname starts with "code:", then it is an instance of code.
-abstract class RunningInstance(fname: String, c: RunningInstance, args: Array[Type]) {
+class RunningInstance(fname: String, c: RunningInstance, args: Array[Type]) {
   // initial stuffs
-  val f: FileInputStream = new FileInputStream(fname)
-  val bytecode: Buffer[Byte] = ArrayBuffer[Byte]()
-  var b: Int = 0
-  while (b != 1) {
-    b = f.read()
-    if (b != 1) {
-      bytecode.append(b.asInstanceOf[Byte])
+  if (!fname.startsWith("code:")) {
+    val f: FileInputStream = new FileInputStream(fname)
+    val bytecode: Buffer[Byte] = ArrayBuffer[Byte]()
+    var b: Int = 0
+    while (b != 1) {
+      b = f.read()
+      if (b != 1) {
+        bytecode.append(b.asInstanceOf[Byte])
+      }
     }
   }
   val needle: Int = 0
@@ -28,20 +30,16 @@ abstract class RunningInstance(fname: String, c: RunningInstance, args: Array[Ty
       // TODO A global variable or a command.
       if (name.indexOf(":") == -1) {
         new TCmdFunc(name)
-      }
-      else {
+      } else {
         new TVoid // TODO over here
       }
-    }
-    else {
+    } else {
       if (environment.isDefinedAt(name)) {
         environment(name)
-      }
-      else {
+      } else {
         if (calling != null) {
           calling.getVar(name).>/< // make sure to strip away any references
-        }
-        else {
+        } else {
           new TVoid
         }
       }
@@ -57,8 +55,7 @@ abstract class RunningInstance(fname: String, c: RunningInstance, args: Array[Ty
           case (pn, false) => Global.root + "/" + pn
         })
       }
-    }
-    else {
+    } else {
       environment(name) = t
     }
   }
@@ -71,10 +68,9 @@ abstract class RunningInstance(fname: String, c: RunningInstance, args: Array[Ty
   }
   def setargn(i: Int, t: Type): Type = {
     if (i > 0) {
-       args(i - 1) = t
-       new TVoid
-    }
-    else new TError(6)
+      args(i - 1) = t
+      new TVoid
+    } else new TError(6)
   }
   def getVar(name: String, r: Int): Type = {
     if (r == 0) getVar(name)

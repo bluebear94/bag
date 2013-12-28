@@ -79,6 +79,8 @@ class ExpressionParsersTest extends FlatSpec with Matchers {
     parsing("4 + 9") should equal(Operator("+", Literal(TMountain(new BigInteger("4"))), Literal(TMountain(new BigInteger("9")))))
     assertFail("4 +")
     parsing("7 - 3") should equal(Operator("-", Literal(TMountain(new BigInteger("7"))), Literal(TMountain(new BigInteger("3")))))
-    parsing("5 * 8") should equal(Operator("*", Literal(TMountain(new BigInteger("5"))), Literal(TMountain(new BigInteger("8")))))
+    //parsing("5 * 8") should equal(Operator("*", Literal(TMountain(new BigInteger("5"))), Literal(TMountain(new BigInteger("8")))))
+    parsing("3 + 4 - 5") should equal(Operator("-", Operator("+", Literal(TMountain(new BigInteger("3"))),
+        Literal(TMountain(new BigInteger("4")))), Literal(TMountain(new BigInteger("5")))))
   }
 }

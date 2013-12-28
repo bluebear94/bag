@@ -201,7 +201,7 @@ class XprInt extends JavaTokenParsers with PackratParsers {
   var opEq: Parser[Expression] = failure("SHIT!")
   // Regex for valid identifiers.
   //[$[[^!@#$%^&*()_-=+~{}[]\|:;'",.<>/?][^@#$%^&*()_-=+~{}[]\|:;'",.<>/?]*:]?]?
-  def id: Regex = """[[^!@#$%^&*()_-=+~{}[]\|:;'",.<>/?][^@#$%^&*()_-=+~{}[]\|:;'",<>/?]*|!]""".r // EEK
+  def id: Regex = """[[\x5C\Q^!@#$%^&*_-+~{}().[]=|:;'",<>/?\E][\x5C\Q^@#$%^&*_-+~{}()[]=|:;'",<>/?\E]*|!]""".r // EEK
   // note: ! is allowed, just not at the beginning (otherwise it has to be the only character)
   lazy val void: Parser[SBExpression] = "Void" ^^^ { new Literal(new TVoid()) }
   lazy val variable: Parser[LValue] = ("$".r | "".r | ("$".r ~ id ~ ":".r)) ~ id ^^ { s => Variable(s._1 + s._2) }
@@ -259,9 +259,9 @@ class XprInt extends JavaTokenParsers with PackratParsers {
   }
   //lazy val assignOp: PackratParser[Expression]
   lazy val compound: PackratParser[SBExpression] = array | linked | hashtag | lambda | lIndexing | indexing
-  lazy val expression: PackratParser[Expression] = operator(ops.firstKey) | sbexpression | control
+  lazy val expression: PackratParser[Expression] = sbexpression | operator(ops.firstKey) | control
   lazy val sbwrapper: PackratParser[SBExpression] = "(" ~> expression <~ ")" ^^ { x => SBWrapper(x) }
-  lazy val sbexpression: PackratParser[SBExpression] = literal | variable | compound | sbwrapper
+  lazy val sbexpression: PackratParser[SBExpression] = sbwrapper | literal | compound | variable
   def loadOps = { // Long-ass method to use necessary information about operators to build parsers for them
     val ll = Global.liblist.keySet.toList
     print(s"Loading operators from libraries: $ll\n")
