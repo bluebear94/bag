@@ -85,7 +85,7 @@ case class LIndex(l: LValue, i: Expression) extends LValue {
     Indexing.index(l.eval(ci), i.eval(ci))
   }
   def assign(ci: RunningInstance, n: Type) = {
-    val t: Type = l.eval(ci)
+    var t: Type = l.eval(ci)
     Indexing.setIndex(t, i.eval(ci), n)
     l.assign(ci, t)
   }
