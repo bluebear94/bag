@@ -254,7 +254,7 @@ class XprInt extends JavaTokenParsers with PackratParsers {
       }
   }
   lazy val control: PackratParser[Expression] = ifst | ifThen | ifThenElse | forst | whilst | repeat
-  lazy val lvalue: PackratParser[LValue] = lIndexing | hashtag | variable
+  def lvalue: PackratParser[LValue] = lIndexing | hashtag | variable
   lazy val assign: PackratParser[Expression] = lvalue ~ "=" ~ expression ^^ {
     case (left ~ o ~ right) =>
       Assign(left, right)
@@ -262,12 +262,11 @@ class XprInt extends JavaTokenParsers with PackratParsers {
   //lazy val assignOp: PackratParser[Expression]
   lazy val compound: PackratParser[SBExpression] = lIndexing | indexing | array | linked | hashtag | lambda | call
   def expression: PackratParser[Expression] = opEq | assign | operator(ops.firstKey) | sbexpression | control
-  lazy val sbwrapper: PackratParser[SBExpression] = "(" ~> expression <~ ")" ^^ { x => SBWrapper(x) }
-  lazy val sbexpression: PackratParser[SBExpression] = sbwrapper | literal | compound | variable
+  def sbwrapper: PackratParser[SBExpression] = "(" ~> expression <~ ")" ^^ { x => SBWrapper(x) }
+  def sbexpression: PackratParser[SBExpression] = sbwrapper | literal | compound | variable
   def loadOps = { // Long-ass method to use necessary information about operators to build parsers for them
     val ll = Global.liblist.keySet.toList
     print(s"Loading operators from libraries: $ll\n")
-    var allops: PackratParser[String] = failure("No such operation")
     for (ln <- ll) { // loop over every library loaded
       print(s"Loading operators from $ln\n")
       val cl = Global.liblist(ln)
@@ -303,13 +302,12 @@ class XprInt extends JavaTokenParsers with PackratParsers {
           // now update the opEq parser, if appropriate
           if (hasOE) {
             println(s"Loading variation $opn=")
-            allops = opn | allops
+            opEq = lvalue ~ opn ~ "=" ~ expression ^^ {
+              case (left ~ o ~ "=" ~ right) => AssignOp(left, right, o)
+            }
           }
         }
       }
-    }
-    opEq = lvalue ~ allops ~ "=" ~ expression ^^ {
-      case (left ~ o ~ "=" ~ right) => AssignOp(left, right, o)
     }
   }
   def operator(level: Int): PackratParser[Expression] = {
