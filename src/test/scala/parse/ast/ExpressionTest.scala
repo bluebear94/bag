@@ -12,8 +12,6 @@ import cmdreader.Global
 class ExpressionParsersTest extends FlatSpec with Matchers {
   val parser = new XprInt()
   Global.loadLib("std")
-  Global.liblist("std").loadCmd("OAdd")
-  Global.liblist("std").loadCmd("OSubt")
   parser.loadOps
   import parser._
 

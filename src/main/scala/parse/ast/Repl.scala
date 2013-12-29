@@ -14,8 +14,6 @@ object Repl {
     val s: Scanner = new Scanner(System.in)
     val p = new XprInt
     Global.loadLib("std")
-    Global.liblist("std").loadCmd("OSubt")
-    Global.liblist("std").loadCmd("OAdd")
     p.loadOps
     import p._
     val pp = p.phrase(p.expression)

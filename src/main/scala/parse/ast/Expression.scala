@@ -34,7 +34,7 @@ case class Variable(name: String) extends LValue {
 }
 case class Assign(left: LValue, right: Expression) extends Expression {
   def eval(ci: RunningInstance): Type = {
-    left.assign(ci, right.eval(ci))
+    left.assign(ci, right.eval(ci).>/<)
     left.eval(ci)
   }
 }
@@ -263,7 +263,7 @@ class XprInt extends JavaTokenParsers with PackratParsers {
       Assign(left, right)
   }
   //lazy val assignOp: PackratParser[Expression]
-  lazy val compound: PackratParser[SBExpression] = lIndexing | indexing | array | linked | hashtag | lambda | call
+  lazy val compound: PackratParser[SBExpression] = lambda | lIndexing | indexing | array | linked | hashtag | call
   def expression: PackratParser[Expression] = control | getOpEq | assign | operator(ops.firstKey) | sbexpression
   def sbwrapper: PackratParser[SBExpression] = "(" ~> expression <~ ")" ^^ { x => SBWrapper(x) }
   def sbexpression: PackratParser[SBExpression] = sbwrapper | literal | compound | variable
