@@ -25,6 +25,8 @@ class RunningInstance(fname: String, c: RunningInstance, args: Array[Type]) {
   val calling = c
   var environment = new HashMap[String, Type]()
   var stack = List()
+  var ans = new TVoid
+  var answer = new TVoid
   def getVar(name: String): Type = {
     if (name.startsWith("$")) {
       // TODO A global variable or a command.

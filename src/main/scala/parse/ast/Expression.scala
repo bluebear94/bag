@@ -204,10 +204,12 @@ class XprInt extends JavaTokenParsers with PackratParsers {
   var opEq: PackratParser[Expression] = failure("No such assignment operator.")
   // Regex for valid identifiers.
   //[$[[^!@#$%^&*()_-=+~{}[]\|:;'",.<>/?][^@#$%^&*()_-=+~{}[]\|:;'",.<>/?]*:]?]?
-  def id: Regex = """[^\x5C\s\Q^!@#$%^&*_-+~{}().[]=|:;'",<>/?\E][^\x5C\s\Q^@#$%^&*_-+~{}()[]=|:;'",<>/?\E]*|!""".r // EEK
+  def id: Regex = """[^\x5C\s\Q^!@#$%^&*_-+~{}().[]=|:;'",<>/?λ\E][^\x5C\s\Q^@#$%^&*_-+~{}()[]=|:;'",<>/?λ\E]*|!""".r // EEK
   // note: ! is allowed, just not at the beginning (otherwise it has to be the only character)
   lazy val void: PackratParser[SBExpression] = "Void" ^^^ { new Literal(new TVoid()) }
-  lazy val variable: PackratParser[LValue] = ("$".r | "".r | ("$".r ~ (id | "") ~ ":".r)) ~ id ^^ { s => Variable(s._1 + s._2) }
+  lazy val variable: PackratParser[LValue] = (("$".r | "".r | ("$".r ~ (id | "") ~ ":".r)) ~ id)
+    .filter(w => !Keywords.keywords.contains(w._2)) ^^
+    { s => Variable(s._1 + s._2) }
   lazy val mountain: PackratParser[SBExpression] = wholeNumber ^^ { s => new Literal(new TMountain(new BigInteger(s))) }
   lazy val hill: PackratParser[SBExpression] = """↼[-]?\d+""".r ^^ { s => new Literal(new THill(s.substring(1).toLong)) }
   lazy val string: PackratParser[SBExpression] = stringLiteral ^^ { s => new Literal(new TString(s)) }
@@ -219,7 +221,7 @@ class XprInt extends JavaTokenParsers with PackratParsers {
   lazy val array: PackratParser[SBExpression] = "{" ~> commaDelimited <~ "}" ^^ { l => AList(true, l.toArray[Expression]) }
   lazy val linked: PackratParser[SBExpression] = "[" ~> commaDelimited <~ "]" ^^ { l => AList(false, l.toArray[Expression]) }
   lazy val hashtag: PackratParser[LValue] = "#" ~> sbexpression ^^ { x => Hashtag(x) }
-  lazy val lambda: PackratParser[SBExpression] = "λ" ~> lineDelimited <~ "Endλ" ^^ { l => Lambda(l) }
+  lazy val lambda: PackratParser[SBExpression] = ("λ" ~ lineDelimiter) ~> lineDelimited <~ (lineDelimiter ~ "Endλ") ^^ { l => Lambda(l) }
   lazy val call: PackratParser[SBExpression] = sbexpression ~ "(" ~ commaDelimited <~ ")" ^^ { sh => FCall(sh._1._1, sh._2.toArray[Expression]) }
   lazy val ifst: PackratParser[Expression] = "If " ~> expression ~ lineDelimiter ~ expression ^^ { sh => If(sh._1._1, sh._2) }
   lazy val ifThen: PackratParser[Expression] = "If " ~> expression ~ lineDelimiter ~ "Then" ~ lineDelimiter ~ lineDelimited <~ lineDelimiter ~ "EndIf" ^^
@@ -262,7 +264,7 @@ class XprInt extends JavaTokenParsers with PackratParsers {
   }
   //lazy val assignOp: PackratParser[Expression]
   lazy val compound: PackratParser[SBExpression] = lIndexing | indexing | array | linked | hashtag | lambda | call
-  def expression: PackratParser[Expression] = getOpEq | assign | operator(ops.firstKey) | sbexpression | control
+  def expression: PackratParser[Expression] = control | getOpEq | assign | operator(ops.firstKey) | sbexpression
   def sbwrapper: PackratParser[SBExpression] = "(" ~> expression <~ ")" ^^ { x => SBWrapper(x) }
   def sbexpression: PackratParser[SBExpression] = sbwrapper | literal | compound | variable
   def getOpEq: PackratParser[Expression] = {
