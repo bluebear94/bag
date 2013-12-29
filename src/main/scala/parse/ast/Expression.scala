@@ -8,7 +8,7 @@ import types._
 import org.scalatest._
 import scala.util.parsing.input.CharSequenceReader
 import cmdreader._
-import scala.collection.mutable._
+import scala.collection.mutable
 import util._
 import scala.util.matching.Regex
 import java.util.TreeMap // darn, no mutable TreeMap yet
@@ -70,9 +70,9 @@ case class Lambda(lines: List[Expression]) extends SBExpression {
 case class AList(isArray: Boolean, args: Array[Expression]) extends SBExpression {
   def eval(ci: RunningInstance): Type = {
     if (isArray)
-      new LArray(args.map(_.eval(ci)).to[ArrayBuffer])
+      new LArray(args.map(_.eval(ci)).to[mutable.ArrayBuffer])
     else
-      new LLinked(args.map(_.eval(ci)).to[ListBuffer])
+      new LLinked(args.map(_.eval(ci)).to[mutable.ListBuffer])
   }
 }
 case class Index(l: Expression, i: Expression) extends SBExpression {
@@ -200,6 +200,7 @@ case class SBWrapper(x: Expression) extends SBExpression {
 class XprInt extends JavaTokenParsers with PackratParsers {
   var ops: TreeMap[Int, PackratParser[(Expression, Expression) => Expression]] =
     new TreeMap[Int, PackratParser[(Expression, Expression) => Expression]]()
+  val oeOps: mutable.ListBuffer[String] = new mutable.ListBuffer[String]()
   var opEq: PackratParser[Expression] = failure("No such assignment operator.")
   // Regex for valid identifiers.
   //[$[[^!@#$%^&*()_-=+~{}[]\|:;'",.<>/?][^@#$%^&*()_-=+~{}[]\|:;'",.<>/?]*:]?]?
@@ -261,9 +262,15 @@ class XprInt extends JavaTokenParsers with PackratParsers {
   }
   //lazy val assignOp: PackratParser[Expression]
   lazy val compound: PackratParser[SBExpression] = lIndexing | indexing | array | linked | hashtag | lambda | call
-  def expression: PackratParser[Expression] = opEq | assign | operator(ops.firstKey) | sbexpression | control
+  def expression: PackratParser[Expression] = getOpEq | assign | operator(ops.firstKey) | sbexpression | control
   def sbwrapper: PackratParser[SBExpression] = "(" ~> expression <~ ")" ^^ { x => SBWrapper(x) }
   def sbexpression: PackratParser[SBExpression] = sbwrapper | literal | compound | variable
+  def getOpEq: PackratParser[Expression] = {
+    if (oeOps.isEmpty) failure("no such operator")
+    else lvalue ~ (oeOps.tail.foldLeft(literal(oeOps.head))((p, op) => p | op)) ~ "=" ~ expression ^^ {
+      case left ~ op ~ "=" ~ right => AssignOp(left, right, op)
+    }
+  }
   def loadOps = { // Long-ass method to use necessary information about operators to build parsers for them
     val ll = Global.liblist.keySet.toList
     print(s"Loading operators from libraries: $ll\n")
@@ -302,9 +309,10 @@ class XprInt extends JavaTokenParsers with PackratParsers {
           // now update the opEq parser, if appropriate
           if (hasOE) {
             println(s"Loading variation $opn=")
-            opEq = lvalue ~ opn ~ "=" ~ expression ^^ {
-              case (left ~ o ~ "=" ~ right) => AssignOp(left, right, o)
-            }
+            oeOps += opn
+            //opEq = lvalue ~ opn ~ "=" ~ expression ^^ {
+            //  case (left ~ o ~ "=" ~ right) => AssignOp(left, right, o)
+            //} | getOpEq
           }
         }
       }
