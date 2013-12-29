@@ -83,4 +83,9 @@ class ExpressionParsersTest extends FlatSpec with Matchers {
     parsing("3 + 4 - 5") should equal(Operator("-", Operator("+", Literal(TMountain(new BigInteger("3"))),
         Literal(TMountain(new BigInteger("4")))), Literal(TMountain(new BigInteger("5")))))
   }
+  "XprInt" should "handle variables" in {
+    implicit val parserToTest = expression
+    parsing("a = 3") should equal(Assign(Variable("a"), Literal(TMountain(new BigInteger("3")))))
+    parsing("a += 1") should equal(AssignOp(Variable("a"), Literal(TMountain(new BigInteger("1"))), "+"))
+  }
 }
