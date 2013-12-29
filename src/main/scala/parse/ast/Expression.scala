@@ -212,7 +212,12 @@ class XprInt extends JavaTokenParsers with PackratParsers {
     { s => Variable(s._1 + s._2) }
   lazy val mountain: PackratParser[SBExpression] = wholeNumber ^^ { s => new Literal(new TMountain(new BigInteger(s))) }
   lazy val hill: PackratParser[SBExpression] = """↼[-]?\d+""".r ^^ { s => new Literal(new THill(s.substring(1).toLong)) }
-  lazy val string: PackratParser[SBExpression] = stringLiteral ^^ { s => new Literal(new TString(s)) }
+  lazy val string: PackratParser[SBExpression] = stringLiteral ^^ { s =>
+    UnescapeString.unescape(s.substring(1, s.length - 1)) match {
+      case Some(ues) => Literal(new TString(ues))
+      case None => Literal(new TError(7))
+    }
+  }
   lazy val fish: PackratParser[SBExpression] = floatingPointNumber ^^ { s => new Literal(new TFish(s.toDouble)) }
   lazy val literal: PackratParser[SBExpression] = void | fish ||| mountain | hill | string
   val lineDelimiter: PackratParser[String] = ";" | "\n"
