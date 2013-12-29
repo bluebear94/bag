@@ -57,4 +57,5 @@ case class THill(n2: Long) extends TNumerical {
     }
     a
   }
+  override def toBoolean = n != 0
 }

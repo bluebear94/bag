@@ -53,4 +53,5 @@ case class TFish(x: Double) extends TNumerical {
     }
     a
   }
+  override def toBoolean = x != 0.0
 }

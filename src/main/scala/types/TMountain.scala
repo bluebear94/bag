@@ -47,6 +47,7 @@ case class TMountain(n: BigInteger) extends TNumerical {
           case _ => throw new UnsupportedOperationException()
         }
   }
+  override def toBoolean = !n.equals(BigInteger.ZERO)
   def intValue(): Int = n.intValue()
   def si(i: Int, b: Boolean) = {
     if (b) n.setBit(i)
