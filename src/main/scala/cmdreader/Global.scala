@@ -3,9 +3,11 @@ package cmdreader
 import scala.collection.mutable.HashMap
 import java.io._
 import java.lang._
+import run.RunningInstance
 
 object Global {
   var liblist: HashMap[String, CmdList] = new HashMap[String, CmdList]()
+  var top = new RunningInstance("code: testing", null, Array())
   def loadLib(lname: String) = {
     liblist(lname) = new CmdList(lname)
     val c = Class.forName("cmdreader." + lname + ".Loader")

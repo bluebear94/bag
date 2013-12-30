@@ -17,14 +17,14 @@ object Repl {
     p.loadOps
     import p._
     val pp = p.phrase(p.expression)
-    val ci = new RunningInstance("code: testing", null, Array())
+    Global.top = new RunningInstance("code: testing", null, Array())
     while (input != ":q") {
       input = s.nextLine
       if (input != ":q") {
         val tree = pp(new CharSequenceReader(input))
         println(tree)
         tree match {
-          case Success(t, _) => print(t.eval(ci))
+          case Success(t, _) => print(t.eval(Global.top))
           case NoSuccess(msg, _) => print("Something wrong: " + msg)
         }
 

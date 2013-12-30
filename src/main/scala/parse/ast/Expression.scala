@@ -58,8 +58,10 @@ case class DoubleOp(left: LValue, op: String, post: Boolean) extends Expression 
 case class FCall(f: SBExpression, args: Array[Expression]) extends SBExpression {
   def eval(ci: RunningInstance): Type = {
     val g = f.eval(ci)
-    if (g.getType == 7) g.asInstanceOf[TFunction](args.map(_.eval(ci)))
-    else new TError(1)
+    g match {
+      case h: TFunction => h(args.map(_.eval(ci)))
+      case _ => new TError(1)
+    }
   }
 }
 case class Lambda(lines: List[Expression]) extends SBExpression {
@@ -204,7 +206,7 @@ class XprInt extends JavaTokenParsers with PackratParsers {
   var opEq: PackratParser[Expression] = failure("No such assignment operator.")
   // Regex for valid identifiers.
   //[$[[^!@#$%^&*()_-=+~{}[]\|:;'",.<>/?][^@#$%^&*()_-=+~{}[]\|:;'",.<>/?]*:]?]?
-  def id: Regex = """[^\x5C\s\Q^!@#$%^&*_-+~{}().[]=|:;'",<>/?λ\E][^\x5C\s\Q^@#$%^&*_-+~{}()[]=|:;'",<>/?λ\E]*|!""".r // EEK
+  def id: Regex = """[^\x5C\s\Q^!@#$%^&*_-+~{}().[]=|:;'",<>/?\E][^\x5C\s\Q^@#$%^&*_-+~{}()[]=|:;'",<>/?\E]*|!""".r // EEK
   // note: ! is allowed, just not at the beginning (otherwise it has to be the only character)
   lazy val void: PackratParser[SBExpression] = "Void" ^^^ { new Literal(new TVoid()) }
   lazy val variable: PackratParser[LValue] = (("$".r | "".r | ("$".r ~ (id | "") ~ ":".r)) ~ id)
