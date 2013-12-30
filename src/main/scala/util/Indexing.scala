@@ -25,7 +25,7 @@ object Indexing {
     THill(if (t.getVal.testBit(i)) 1l else 0l)
   }
   def index(t: THill, i: Int): Type = {
-    THill(if ((t.getVal & (1 << i)) == 0) 1l else 0l)
+    THill(if ((t.getVal & (1 << i)) == 0) 0l else 1l)
   }
   def setIndex(t: Type, i: Type, n: Type): Unit = {
     val tt: Int = t.getType
