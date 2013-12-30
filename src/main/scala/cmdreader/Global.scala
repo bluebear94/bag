@@ -4,6 +4,7 @@ import scala.collection.mutable.HashMap
 import java.io._
 import java.lang._
 import run.RunningInstance
+import java.math.BigInteger
 
 object Global {
   var liblist: HashMap[String, CmdList] = new HashMap[String, CmdList]()
@@ -31,4 +32,5 @@ object Global {
   }
   var root: File = new File("amw/")
   var current: File = root
+  val TWO = new BigInteger("2")
 }
