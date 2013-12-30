@@ -11,5 +11,6 @@ class Loader {
     Global.liblist("std").loadCmd("ODiv")
     Global.liblist("std").loadCmd("OIDiv")
     Global.liblist("std").loadCmd("OMod")
+    Global.liblist("std").loadCmd("HLuna")
   }
 }

@@ -10,6 +10,9 @@ class LArray(a: ArrayBuffer[Type]) extends LList {
   def lu(i: Int, n: Type) {
     a(i) = n
   }
+  def app(n: Type) {
+    a += n
+  }
   def getType(): Int = {
     5
   }

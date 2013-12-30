@@ -13,7 +13,8 @@ object Indexing {
     else new TError(1)
   }
   def index(t: LList, i: Int): Type = {
-    t.l()(i)
+    if (i >= 0 && i < t.l.length) t.l()(i)
+    else new TError(5)
   }
   def index(t: LMap, i: Type): Type = {
     t.gm()(i)
@@ -36,7 +37,9 @@ object Indexing {
     else if (tt == 2) setIndex(t.asInstanceOf[THill], i.asInstanceOf[TNumerical].intValue, n.toBoolean)
   }
   def setIndex(t: LList, i: Int, n: Type): Unit = {
-    t.lu(i, n)
+    if (i >= 0 && i < t.l.length) t.lu(i, n)
+    else if (i == t.l.length) t.app(n)
+    else new TError(5)
   }
   def setIndex(t: LMap, i: Type, n: Type): Unit = {
     t.lu(i, n)
