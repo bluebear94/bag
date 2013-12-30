@@ -75,6 +75,9 @@ E940xxxxxxxx: make list with elements on stack (E950 for linked list instead)
 E941xxxxxxxx: Starts a protected block with some length
 E942xxxxxxxx: make map with elements on stack
 E947, E948, E949: analogs for E937 and E938 onto symbol stack (numbers are still on regular one)
+E950: store top entry of regular stack to top entry of symbol stack (popping the latter)
+E951: duplicate top element of regular stack
+E952: delete top element
 [8]:
 8 - 11: # elems
 rept [

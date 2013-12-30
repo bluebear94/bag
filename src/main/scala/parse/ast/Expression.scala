@@ -28,7 +28,10 @@ trait LValue extends SBExpression {
 }
 case class Literal(t: Type) extends SBExpression {
   def eval(ci: RunningInstance): Type = t
-  def toBytecode = Array(Bytes(Array[Byte](-0x1F, t.getType.toByte) ++ t.toBytecode))
+  def toBytecode = {
+    val bytecode = t.toBytecode
+    Array(Bytes(Array[Byte](-0x1F, t.getType.toByte) ++ MakeByteArrays.intToByteArray(bytecode.length) ++ bytecode))
+  }
 }
 case class Variable(name: String) extends LValue {
   def eval(ci: RunningInstance): Type = ci.getVar(name)
@@ -47,11 +50,18 @@ case class Assign(left: LValue, right: Expression) extends Expression {
     left.assign(ci, right.eval(ci).>/<)
     left.eval(ci)
   }
+  def toBytecode = {
+    BFuncs.app(left.toSymBytecode, BFuncs.app(
+        right.toBytecode, Array(Bytes(Array[Byte](-0x15, 0x50)))))
+  }
 }
 case class AssignOp(left: LValue, right: Expression, op: String) extends Expression {
   def eval(ci: RunningInstance): Type = {
     left.assign(ci, Operator(op, left, right).eval(ci))
     left.eval(ci)
+  }
+  def toBytecode = {
+    Assign(left, Operator(op, left, right)).toBytecode
   }
 }
 case class DoubleOp(left: LValue, op: String, post: Boolean) extends SBExpression {
@@ -63,6 +73,19 @@ case class DoubleOp(left: LValue, op: String, post: Boolean) extends SBExpressio
     }
     left.assign(ci, Operator(op, left, Literal(db)).eval(ci))
     if (post) oldV else left.eval(ci)
+  }
+  def toBytecode = {
+    val db = Global.getCmd(op).getDoubleBase match {
+      case Some(v) => v
+      case None => throw new UnsupportedOperationException
+    }
+    if (post) {
+      BFuncs.app(Array(Bytes(Array[Byte](-0x15, 0x51))), BFuncs.app(
+          AssignOp(left, Literal(db), op).toBytecode, Array(Bytes(Array[Byte](-0x15, 0x51)))))
+    }
+    else {
+      AssignOp(left, Literal(db), op).toBytecode
+    }
   }
 }
 case class FCall(f: SBExpression, args: Array[Expression]) extends SBExpression {
@@ -117,6 +140,11 @@ case class LIndex(l: LValue, i: Expression) extends LValue {
   }
   def toBytecode = {
     BFuncs.app(l.toBytecode,
+      i.toBytecode) ++
+      Array(Bytes(Array[Byte](-0x15, 0x39)))
+  }
+  def toSymBytecode = {
+    BFuncs.app(l.toSymBytecode,
       i.toBytecode) ++
       Array(Bytes(Array[Byte](-0x15, 0x39)))
   }
@@ -238,6 +266,13 @@ case class Repeat(p: Expression, b: List[Expression]) extends Expression {
     } while (!p.eval(ci).toBoolean)
     new TVoid
   }
+  def toBytecode = {
+    val predicate = p.toBytecode
+    val body = b.map(_.toBytecode).foldLeft(Array[Bin]())(BFuncs.app(_, _))
+    val bl = BFuncs.alen(body)
+    BFuncs.app(body, BFuncs.app(
+        predicate, Array(Bytes(Array[Byte](-0x15, 0x32)), Offset(-bl - BFuncs.alen(predicate)))))
+  }
 }
 case class For(v: LValue, st: Expression, end: Expression, inc: Expression, b: List[Expression]) extends Expression {
   def eval(ci: RunningInstance): Type = {
@@ -247,6 +282,9 @@ case class For(v: LValue, st: Expression, end: Expression, inc: Expression, b: L
       v.assign(ci, MathUtil.add(v.eval(ci), inc.eval(ci)))
     }
     new TVoid
+  }
+  def toBytecode = {
+    BFuncs.app(Assign(v, st).toBytecode, While(Operator("<=", v, end), b :+ AssignOp(v, inc, "+")).toBytecode)
   }
 }
 case class Hashtag(x: Expression) extends LValue {
@@ -269,6 +307,12 @@ case class Hashtag(x: Expression) extends LValue {
       case TString(n) => ci.setVar(n, t)
       case _ => new TError(1)
     }
+  }
+  def toBytecode = {
+    x.toBytecode ++ Array(Bytes(Array[Byte](-0x15, 0x38)))
+  }
+  def toSymBytecode = {
+    x.toBytecode ++ Array(Bytes(Array[Byte](-0x15, 0x48)))
   }
 }
 case class SBWrapper(x: Expression) extends SBExpression {
