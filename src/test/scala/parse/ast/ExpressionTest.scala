@@ -86,4 +86,10 @@ class ExpressionParsersTest extends FlatSpec with Matchers {
     parsing("a = 3") should equal(Assign(Variable("a"), Literal(TMountain(new BigInteger("3")))))
     parsing("a += 1") should equal(AssignOp(Variable("a"), Literal(TMountain(new BigInteger("1"))), "+"))
   }
+  "XprInt" should "handle more variables" in {
+    implicit val parserToTest = variable
+    parsing("$a") should equal(Variable("$a"))
+    parsing("$std:add") should equal(Variable("$std:add"))
+    parsing("$:add") should equal(Variable("$:add"))
+  }
 }

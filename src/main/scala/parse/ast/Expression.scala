@@ -17,7 +17,7 @@ trait Expression {
   def eval(ci: RunningInstance): Type
   // As you know, we are storing variables (including functions)
   // in intermediate bytecode (see specifications.txt).
-  // def toByteCode: Array[Byte]
+  //def toByteCode: Array[Bin]
   // def toString: String
 }
 trait SBExpression extends Expression
@@ -209,7 +209,9 @@ class XprInt extends JavaTokenParsers with PackratParsers {
   def id: Regex = """[^\x5C\s\Q^!@#$%^&*_-+~{}().[]=|:;'",<>/?\E][^\x5C\s\Q^@#$%^&*_-+~{}()[]=|:;'",<>/?\E]*|!""".r // EEK
   // note: ! is allowed, just not at the beginning (otherwise it has to be the only character)
   lazy val void: PackratParser[SBExpression] = "Void" ^^^ { new Literal(new TVoid()) }
-  lazy val variable: PackratParser[LValue] = (("$".r | "".r | ("$".r ~ (id | "") ~ ":".r)) ~ id)
+  lazy val variable: PackratParser[LValue] = ((("\\$".r ~ (id | "") ~ ":") ^^ {
+    case d ~ lib ~ c => "$" + lib + ":"
+  } | "\\$".r | "".r) ~ id)
     .filter(w => !Keywords.keywords.contains(w._2)) ^^
     { s => Variable(s._1 + s._2) }
   lazy val mountain: PackratParser[SBExpression] = wholeNumber ^^ { s => new Literal(new TMountain(new BigInteger(s))) }
@@ -280,6 +282,16 @@ class XprInt extends JavaTokenParsers with PackratParsers {
       case left ~ op ~ "=" ~ right => AssignOp(left, right, op)
     }
   }
+  def loadWithPrec(prec: Int, parser: PackratParser[(Expression, Expression) => Expression]) = {
+    if (ops.containsKey(prec)) {
+      // update parser
+      val oldp = ops.get(prec)
+      ops.put(prec, oldp | parser)
+    } else {
+      // create a new entry in the map
+      ops.put(prec, parser)
+    }
+  }
   def loadOps = { // Long-ass method to use necessary information about operators to build parsers for them
     val ll = Global.liblist.keySet.toList
     print(s"Loading operators from libraries: $ll\n")
@@ -297,24 +309,11 @@ class XprInt extends JavaTokenParsers with PackratParsers {
           val opn = (if (isStdLib) "" else "$" + ln + ":") + cmd.getOpAlias
           val hasOE = cmd.hasAssignmentEquiv
           print(s"Loading operator $opn\n")
-          if (ops.containsKey(prec)) {
-            // update parser
-            val oldp = ops.get(prec)
-            // create a parser
-            val cp: PackratParser[(Expression, Expression) => Expression] = opn ^^^ { (a: Expression, b: Expression) =>
-              if (dir) Operator(opn, b, a)
-              else Operator(opn, a, b)
-            }
-            // now update the map with the new parser combined
-            ops.put(prec, oldp | cp)
-          } else {
-            // create a new entry in the map
-            val cp: PackratParser[(Expression, Expression) => Expression] = opn ^^^ { (a: Expression, b: Expression) =>
-              if (dir) Operator(opn, b, a)
-              else Operator(opn, a, b)
-            }
-            ops.put(prec, cp)
+          val cp: PackratParser[(Expression, Expression) => Expression] = opn ^^^ { (a: Expression, b: Expression) =>
+            if (dir) Operator(opn, b, a)
+            else Operator(opn, a, b)
           }
+          loadWithPrec(prec, cp)
           // now update the opEq parser, if appropriate
           if (hasOE) {
             println(s"Loading variation $opn=")
@@ -326,11 +325,18 @@ class XprInt extends JavaTokenParsers with PackratParsers {
         }
       }
     }
+    // now add the logical and and or parsers (short-circuit)
+    val andParser: PackratParser[(Expression, Expression) => Expression] = "&&" ^^^
+      {(a: Expression, b: Expression) => Ternary(a, b, Literal(TMountain(BigInteger.ZERO)))}
+    val orParser: PackratParser[(Expression, Expression) => Expression] = "||" ^^^
+      {(a: Expression, b: Expression) => Ternary(a, Literal(TMountain(BigInteger.ONE)), b)}
+    loadWithPrec(PStandard.CONJUNCTION, andParser)
+    loadWithPrec(PStandard.DISJUNCTION, orParser)
   }
   def operator(level: Int): PackratParser[Expression] = {
     if (level > ops.lastKey) sbexpression
     else if (level == ops.lastKey) sbexpression * ops.get(level)
-    else operator(ops.ceilingKey(level)) * ops.get(level)
+    else operator(ops.higherKey(level)) * ops.get(level)
   }
 }
 

@@ -13,5 +13,7 @@ object PStandard {
   val LOOKUP = 900
   val ASSIGN = 100
   val TERNARY = 150
+  val CONJUNCTION = 100
+  val DISJUNCTION = 50
   val DOUBLE_OP = 1600
 }

@@ -30,8 +30,8 @@ class RunningInstance(fname: String, c: RunningInstance, args: Array[Type]) {
   def getVar(name: String): Type = {
     if (name.startsWith("$")) {
       // TODO A global variable or a command.
-      if (name.indexOf(":") == -1) {
-        new TCmdFunc(name)
+      if (name.indexOf(":") == 1) {
+        new TCmdFunc(name.substring(1))
       } else {
         new TVoid // TODO over here
       }

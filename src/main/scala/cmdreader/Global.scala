@@ -23,6 +23,12 @@ object Global {
       Global.liblist("std").ccol.opList(name)
     }
   }
+  def getCmdno(name: String): Command = {
+    val i = name.indexOf(":")
+    val lib = if (i == 0) "std" else name.substring(0, i)
+    val op = name.substring(i + 1)
+    Global.liblist(lib).commandList(op)
+  }
   var root: File = new File("amw/")
   var current: File = root
 }
