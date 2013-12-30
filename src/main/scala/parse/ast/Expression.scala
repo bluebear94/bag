@@ -44,7 +44,7 @@ case class AssignOp(left: LValue, right: Expression, op: String) extends Express
     left.eval(ci)
   }
 }
-case class DoubleOp(left: LValue, op: String, post: Boolean) extends Expression {
+case class DoubleOp(left: LValue, op: String, post: Boolean) extends SBExpression {
   def eval(ci: RunningInstance): Type = {
     val oldV = left.eval(ci).>/<
     val db = Global.getCmd(op).getDoubleBase match {
@@ -203,6 +203,7 @@ class XprInt extends JavaTokenParsers with PackratParsers {
   var ops: TreeMap[Int, PackratParser[(Expression, Expression) => Expression]] =
     new TreeMap[Int, PackratParser[(Expression, Expression) => Expression]]()
   val oeOps: mutable.ListBuffer[String] = new mutable.ListBuffer[String]()
+  val ooOps: mutable.ListBuffer[String] = new mutable.ListBuffer[String]()
   var opEq: PackratParser[Expression] = failure("No such assignment operator.")
   // Regex for valid identifiers.
   //[$[[^!@#$%^&*()_-=+~{}[]\|:;'",.<>/?][^@#$%^&*()_-=+~{}[]\|:;'",.<>/?]*:]?]?
@@ -278,11 +279,27 @@ class XprInt extends JavaTokenParsers with PackratParsers {
   }
   def expression: PackratParser[Expression] = control | ternary | getOpEq | assign | operator(ops.firstKey) | sbexpression
   def sbwrapper: PackratParser[SBExpression] = "(" ~> expression <~ ")" ^^ { x => SBWrapper(x) }
-  def sbexpression: PackratParser[SBExpression] = sbwrapper | literal | compound | variable
+  def sbexpression: PackratParser[SBExpression] = sbwrapper | literal | compound | (getLOpOp ||| getOpOpL) | variable
   def getOpEq: PackratParser[Expression] = {
     if (oeOps.isEmpty) failure("no such operator")
     else lvalue ~ (oeOps.tail.foldLeft(literal(oeOps.head))((p, op) => p | op)) ~ "=" ~ expression ^^ {
       case left ~ op ~ "=" ~ right => AssignOp(left, right, op)
+    }
+  }
+  def getOpOpL: PackratParser[SBExpression] = {
+    if (ooOps.isEmpty) failure("no such operator")
+    else {
+      (ooOps.tail.foldLeft(literal(ooOps.head))((p, op) => p | op)) ~ lvalue ^^ {
+        case op ~ l => DoubleOp(l, op.substring(op.length / 2), false)
+      }
+    }
+  }
+  def getLOpOp: PackratParser[SBExpression] = {
+    if (ooOps.isEmpty) failure("no such operator")
+    else {
+      lvalue ~ (ooOps.tail.foldLeft(literal(ooOps.head))((p, op) => p | op)) ^^ {
+        case l ~ op => DoubleOp(l, op.substring(op.length / 2), true)
+      }
     }
   }
   def loadWithPrec(prec: Int, parser: PackratParser[(Expression, Expression) => Expression]) = {
@@ -324,6 +341,13 @@ class XprInt extends JavaTokenParsers with PackratParsers {
             //opEq = lvalue ~ opn ~ "=" ~ expression ^^ {
             //  case (left ~ o ~ "=" ~ right) => AssignOp(left, right, o)
             //} | getOpEq
+          }
+          cmd.getDoubleBase match {
+            case Some(t) => {
+              ooOps += opn + opn
+              println(s"Loading variation $opn$opn")
+            }
+            case None => ()
           }
         }
       }
