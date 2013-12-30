@@ -17,20 +17,30 @@ trait Expression {
   def eval(ci: RunningInstance): Type
   // As you know, we are storing variables (including functions)
   // in intermediate bytecode (see specifications.txt).
-  //def toByteCode: Array[Bin]
+  def toBytecode: Array[Bin] // this is going to take FOREVER
   // def toString: String
 }
 trait SBExpression extends Expression
 trait LValue extends SBExpression {
   def assign(ci: RunningInstance, t: Type): Unit
   // def nuke(ci: RunningInstance): Unit
+  def toSymBytecode: Array[Bin]
 }
 case class Literal(t: Type) extends SBExpression {
   def eval(ci: RunningInstance): Type = t
+  def toBytecode = Array(Bytes(Array[Byte](-0x1F, t.getType.toByte) ++ t.toBytecode))
 }
 case class Variable(name: String) extends LValue {
   def eval(ci: RunningInstance): Type = ci.getVar(name)
   def assign(ci: RunningInstance, t: Type) = ci.setVar(name, t)
+  def toBytecode = {
+    val inB = name.getBytes
+    Array(Bytes(Array[Byte](-0x20, 0x04) ++ MakeByteArrays.intToByteArray(inB.length) ++ inB))
+  }
+  def toSymBytecode = {
+    val inB = name.getBytes
+    Array(Bytes(Array[Byte](-0x20, 0x05) ++ MakeByteArrays.intToByteArray(inB.length) ++ inB))
+  }
 }
 case class Assign(left: LValue, right: Expression) extends Expression {
   def eval(ci: RunningInstance): Type = {
@@ -63,6 +73,11 @@ case class FCall(f: SBExpression, args: Array[Expression]) extends SBExpression 
       case _ => new TError(1)
     }
   }
+  def toBytecode = {
+    BFuncs.app(args.map(_.toBytecode).foldLeft(Array[Bin]())(_ ++ _),
+      f.toBytecode) ++
+      Array(Bytes(Array[Byte](-0x20, 0x00) ++ MakeByteArrays.intToByteArray(args.length)))
+  }
 }
 case class Lambda(lines: List[Expression]) extends SBExpression {
   def eval(ci: RunningInstance): Type = {
@@ -76,10 +91,19 @@ case class AList(isArray: Boolean, args: Array[Expression]) extends SBExpression
     else
       new LLinked(args.map(_.eval(ci)).to[mutable.ListBuffer])
   }
+  def toBytecode = {
+    args.map(_.toBytecode).foldLeft(Array[Bin]())(_ ++ _) ++
+      Array(Bytes(Array[Byte](-0x15, if (isArray) 0x40 else 0x50)))
+  }
 }
 case class Index(l: Expression, i: Expression) extends SBExpression {
   def eval(ci: RunningInstance): Type = {
     Indexing.index(l.eval(ci), i.eval(ci))
+  }
+  def toBytecode = {
+    BFuncs.app(l.toBytecode,
+      i.toBytecode) ++
+      Array(Bytes(Array[Byte](-0x15, 0x39)))
   }
 }
 case class LIndex(l: LValue, i: Expression) extends LValue {
@@ -90,6 +114,11 @@ case class LIndex(l: LValue, i: Expression) extends LValue {
     var t: Type = l.eval(ci)
     Indexing.setIndex(t, i.eval(ci), n)
     l.assign(ci, t)
+  }
+  def toBytecode = {
+    BFuncs.app(l.toBytecode,
+      i.toBytecode) ++
+      Array(Bytes(Array[Byte](-0x15, 0x39)))
   }
 }
 // How am I going to parse operations while respecting the order of
@@ -113,6 +142,14 @@ case class Operator(name: String, l: Expression, r: Expression) extends Expressi
   def getPrec: Int = {
     getCmd().getPrecedence
   }
+  def toBytecode = {
+    val name2 = getCmd.getName
+    val col = name.indexOf(":")
+    val lib = if (col == -1) "" else {
+      name.substring(1, col - 1)
+    }
+    FCall(Variable("$" + lib + ":" + name2), Array(l, r)).toBytecode
+  }
 }
 case class Ternary(p: Expression, t: Expression, f: Expression) extends Expression {
   def eval(ci: RunningInstance): Type = {
@@ -120,6 +157,14 @@ case class Ternary(p: Expression, t: Expression, f: Expression) extends Expressi
       t.eval(ci)
     else
       f.eval(ci)
+  }
+  def toBytecode = {
+    val predicate = p.toBytecode
+    val trueBody = t.toBytecode
+    val falseBody = f.toBytecode
+    BFuncs.app(predicate, BFuncs.app(
+      Array(Bytes(Array[Byte](-0x15, 0x33)), Offset(6 + BFuncs.alen(falseBody))),
+      BFuncs.app(falseBody, trueBody)))
   }
 }
 case class If(p: Expression, t: Expression) extends Expression {
@@ -129,6 +174,13 @@ case class If(p: Expression, t: Expression) extends Expression {
     }
     new TVoid
   }
+  def toBytecode = {
+    val predicate = p.toBytecode
+    val trueBody = t.toBytecode
+    BFuncs.app(predicate, BFuncs.app(
+      Array(Bytes(Array[Byte](-0x15, 0x23)), Offset(6 + BFuncs.alen(trueBody))),
+      trueBody))
+  }
 }
 case class IfThen(p: Expression, t: List[Expression]) extends Expression {
   def eval(ci: RunningInstance): Type = {
@@ -136,6 +188,13 @@ case class IfThen(p: Expression, t: List[Expression]) extends Expression {
       t.map(_.eval(ci))
     }
     new TVoid
+  }
+  def toBytecode = {
+    val predicate = p.toBytecode
+    val trueBody = t.map(_.toBytecode).foldLeft(Array[Bin]())(BFuncs.app(_, _))
+    BFuncs.app(predicate, BFuncs.app(
+      Array(Bytes(Array[Byte](-0x15, 0x23)), Offset(6 + BFuncs.alen(trueBody))),
+      trueBody))
   }
 }
 case class IfThenElse(p: Expression, t: List[Expression], f: List[Expression]) extends Expression {
@@ -147,6 +206,14 @@ case class IfThenElse(p: Expression, t: List[Expression], f: List[Expression]) e
     }
     new TVoid
   }
+  def toBytecode = {
+    val predicate = p.toBytecode
+    val trueBody = t.map(_.toBytecode).foldLeft(Array[Bin]())(BFuncs.app(_, _))
+    val falseBody = f.map(_.toBytecode).foldLeft(Array[Bin]())(BFuncs.app(_, _))
+    BFuncs.app(predicate, BFuncs.app(
+      Array(Bytes(Array[Byte](-0x15, 0x33)), Offset(6 + BFuncs.alen(falseBody))),
+      BFuncs.app(falseBody, trueBody)))
+  }
 }
 case class While(p: Expression, b: List[Expression]) extends Expression {
   def eval(ci: RunningInstance): Type = {
@@ -154,6 +221,14 @@ case class While(p: Expression, b: List[Expression]) extends Expression {
       b.map(_.eval(ci))
     }
     new TVoid
+  }
+  def toBytecode = {
+    val predicate = p.toBytecode
+    val body = b.map(_.toBytecode).foldLeft(Array[Bin]())(BFuncs.app(_, _))
+    val bl = BFuncs.alen(body)
+    BFuncs.app(predicate, BFuncs.app(
+      Array(Bytes(Array[Byte](-0x15, 0x32)), Offset(12 + bl)), BFuncs.app(
+        body, Array(Bytes(Array[Byte](-0x15, 0x34)), Offset(-bl - 6 - BFuncs.alen(predicate))))))
   }
 }
 case class Repeat(p: Expression, b: List[Expression]) extends Expression {
@@ -198,6 +273,7 @@ case class Hashtag(x: Expression) extends LValue {
 }
 case class SBWrapper(x: Expression) extends SBExpression {
   def eval(ci: RunningInstance): Type = x.eval(ci)
+  def toBytecode = x.toBytecode
 }
 class XprInt extends JavaTokenParsers with PackratParsers {
   var ops: TreeMap[Int, PackratParser[(Expression, Expression) => Expression]] =
@@ -354,9 +430,9 @@ class XprInt extends JavaTokenParsers with PackratParsers {
     }
     // now add the logical and and or parsers (short-circuit)
     val andParser: PackratParser[(Expression, Expression) => Expression] = "&&" ^^^
-      {(a: Expression, b: Expression) => Ternary(a, b, Literal(TMountain(BigInteger.ZERO)))}
+      { (a: Expression, b: Expression) => Ternary(a, b, Literal(TMountain(BigInteger.ZERO))) }
     val orParser: PackratParser[(Expression, Expression) => Expression] = "||" ^^^
-      {(a: Expression, b: Expression) => Ternary(a, Literal(TMountain(BigInteger.ONE)), b)}
+      { (a: Expression, b: Expression) => Ternary(a, Literal(TMountain(BigInteger.ONE)), b) }
     loadWithPrec(PStandard.CONJUNCTION, andParser)
     loadWithPrec(PStandard.DISJUNCTION, orParser)
   }

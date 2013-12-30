@@ -4,10 +4,17 @@ import scala.collection.mutable._
 
 trait Bin
 case class AByte(b: Byte) extends Bin
+object AByte {
+  implicit def byteToAByte(b: Byte) = AByte(b)
+}
 case class Bytes(bs: Array[Byte]) extends Bin
+object Bytes {
+  implicit def byteArrayToBytes(b: Array[Bytes]) = Array(b)
+}
 case class Offset(n: Int) extends Bin
 case class BLabel(n: String) extends Bin
 case class BGoto(n: String) extends Bin
+case class BGotoIf(n: String) extends Bin
 object BFuncs {
   def enlen(b: Bin) = {
     b match {
@@ -16,6 +23,7 @@ object BFuncs {
       case Offset(_) => 4
       case BLabel(_) =>  0
       case BGoto(_) => 6
+      case BGotoIf(_) => 6
     }
   }
   def alen(b: Array[Bin]) = {

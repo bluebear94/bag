@@ -55,21 +55,26 @@ body
 ]
 [7]:
 postfix order ({varname} is length-prefixed)
-E000xxxx{varname}: function call with xxxx args
+E000xxxxxxxx: function call with xxxxxxxx args (top of stack: function, next xxxxxxxx:args)
 E001{varname}{kind}: assignment (pop from stack)
 E002{varname}{kind}: pre[]crement
 E003{varname}{kind}: post[]crement
 E1{type}{body}: push literal onto stack
 E004{varname}: push contents of variable onto stack
+E005{varname}: push variable onto symbol stack
+E006: move value on top of regular stack to top of symbol stack
+E932xxxxxxxx: jump to point in program if top of stack evaluates to false
+E933xxxxxxxx: jump to point in program if top of stack evaluates to true
 E934xxxxxxxx: jump to point in program
 E935: return to calling program
 E936: pop from stack and return value
 E937xxxx: like #
 E938: Uses the last entry on stack for #
-E939: list indexing
-E940xxxxxxxx: make list with elements on stack
+E939: list indexing (top: element#, 2nd: list)
+E940xxxxxxxx: make list with elements on stack (E950 for linked list instead)
 E941xxxxxxxx: Starts a protected block with some length
 E942xxxxxxxx: make map with elements on stack
+E947, E948, E949: analogs for E937 and E938 onto symbol stack (numbers are still on regular one)
 [8]:
 8 - 11: # elems
 rept [
