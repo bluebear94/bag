@@ -106,6 +106,10 @@ case class Lambda(lines: List[Expression]) extends SBExpression {
   def eval(ci: RunningInstance): Type = {
     new TASTFunc(lines, ci)
   }
+  def toBytecode = {
+    val lbc = lines.map(_.toBytecode).foldLeft(Array[Bin]())(BFuncs.app(_, _))
+    BFuncs.app(Array(Bytes(Array[Byte](-0x1F, 0x07) ++ MakeByteArrays.intToByteArray(lbc.length))), lbc)
+  }
 }
 case class AList(isArray: Boolean, args: Array[Expression]) extends SBExpression {
   def eval(ci: RunningInstance): Type = {
@@ -116,7 +120,7 @@ case class AList(isArray: Boolean, args: Array[Expression]) extends SBExpression
   }
   def toBytecode = {
     args.map(_.toBytecode).foldLeft(Array[Bin]())(_ ++ _) ++
-      Array(Bytes(Array[Byte](-0x15, if (isArray) 0x40 else 0x50)))
+      Array(Bytes(Array[Byte](-0x15, if (isArray) 0x40 else 0x45)))
   }
 }
 case class Index(l: Expression, i: Expression) extends SBExpression {

@@ -53,7 +53,7 @@ case class THill(n2: Long) extends TNumerical {
   def toBytecode: Array[Byte] = {
     var a = new Array[Byte](8)
     for (i <- 0 until 7) {
-      a(8 - i) = (n & (0xFFL << 8 * i) >> 8 * i).toByte
+      a(8 - i) = ((n & (0xFFL << 8 * i)) >> 8 * i).toByte
     }
     a
   }

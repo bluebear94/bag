@@ -59,7 +59,7 @@ E000xxxxxxxx: function call with xxxxxxxx args (top of stack: function, next xxx
 E001{varname}{kind}: assignment (pop from stack)
 E002{varname}{kind}: pre[]crement
 E003{varname}{kind}: post[]crement
-E1{type}{body}: push literal onto stack
+E1{type}{length}{body}: push literal onto stack
 E004{varname}: push contents of variable onto stack
 E005{varname}: push variable onto symbol stack
 E006: move value on top of regular stack to top of symbol stack
@@ -71,7 +71,7 @@ E936: pop from stack and return value
 E937xxxx: like #
 E938: Uses the last entry on stack for #
 E939: list indexing (top: element#, 2nd: list)
-E940xxxxxxxx: make list with elements on stack (E950 for linked list instead)
+E940xxxxxxxx: make list with elements on stack (E945 for linked list instead)
 E941xxxxxxxx: Starts a protected block with some length
 E942xxxxxxxx: make map with elements on stack
 E947, E948, E949: analogs for E937 and E938 onto symbol stack (numbers are still on regular one)

@@ -24,7 +24,10 @@ object Repl {
         val tree = pp(new CharSequenceReader(input))
         println(tree)
         tree match {
-          case Success(t, _) => print(t.eval(Global.top))
+          case Success(t, _) => {
+            println(BFuncs.bytecodeToString(BFuncs.flatten(t.toBytecode)))
+            print(t.eval(Global.top))
+          }
           case NoSuccess(msg, _) => print("Something wrong: " + msg)
         }
 
