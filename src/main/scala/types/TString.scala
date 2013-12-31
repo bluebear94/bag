@@ -27,7 +27,7 @@ case class TString(s2: String) extends Type {
   }
   def >/< = new TString(new String(s))
   def toBytecode: Array[Byte] = {
-    val bs = s.getBytes
+    val bs = s.getBytes("UTF-8")
     val bsl = bs.length
     MakeByteArrays.intToByteArray(bsl) ++ bs
   }

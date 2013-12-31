@@ -52,7 +52,7 @@ case class Assign(left: LValue, right: Expression) extends Expression {
   }
   def toBytecode = {
     BFuncs.app(left.toSymBytecode, BFuncs.app(
-        right.toBytecode, Array(Bytes(Array[Byte](-0x15, 0x50)))))
+      right.toBytecode, Array(Bytes(Array[Byte](-0x15, 0x50)))))
   }
 }
 case class AssignOp(left: LValue, right: Expression, op: String) extends Expression {
@@ -81,9 +81,8 @@ case class DoubleOp(left: LValue, op: String, post: Boolean) extends SBExpressio
     }
     if (post) {
       BFuncs.app(Array(Bytes(Array[Byte](-0x15, 0x51))), BFuncs.app(
-          AssignOp(left, Literal(db), op).toBytecode, Array(Bytes(Array[Byte](-0x15, 0x51)))))
-    }
-    else {
+        AssignOp(left, Literal(db), op).toBytecode, Array(Bytes(Array[Byte](-0x15, 0x51)))))
+    } else {
       AssignOp(left, Literal(db), op).toBytecode
     }
   }
@@ -107,7 +106,8 @@ case class Lambda(lines: List[Expression]) extends SBExpression {
     new TASTFunc(lines, ci)
   }
   def toBytecode = {
-    val lbc = lines.map(_.toBytecode).foldLeft(Array[Bin]())(BFuncs.app(_, _))
+    val lbc = lines.map(_.toBytecode).foldLeft(
+      Array[Bin]())((a: Array[Bin], b: Array[Bin]) =>BFuncs.app(a, BFuncs.app(Array(Bytes(Array[Byte](-0x15, 0x53))), b)))
     BFuncs.app(Array(Bytes(Array[Byte](-0x1F, 0x07) ++ MakeByteArrays.intToByteArray(lbc.length))), lbc)
   }
 }
@@ -223,7 +223,8 @@ case class IfThen(p: Expression, t: List[Expression]) extends Expression {
   }
   def toBytecode = {
     val predicate = p.toBytecode
-    val trueBody = t.map(_.toBytecode).foldLeft(Array[Bin]())(BFuncs.app(_, _))
+    val trueBody = t.map(_.toBytecode).foldLeft(
+      Array[Bin]())((a: Array[Bin], b: Array[Bin]) =>BFuncs.app(a, BFuncs.app(Array(Bytes(Array[Byte](-0x15, 0x53))), b)))
     BFuncs.app(predicate, BFuncs.app(
       Array(Bytes(Array[Byte](-0x15, 0x23)), Offset(6 + BFuncs.alen(trueBody))),
       trueBody))
@@ -240,8 +241,10 @@ case class IfThenElse(p: Expression, t: List[Expression], f: List[Expression]) e
   }
   def toBytecode = {
     val predicate = p.toBytecode
-    val trueBody = t.map(_.toBytecode).foldLeft(Array[Bin]())(BFuncs.app(_, _))
-    val falseBody = f.map(_.toBytecode).foldLeft(Array[Bin]())(BFuncs.app(_, _))
+    val trueBody = t.map(_.toBytecode).foldLeft(
+      Array[Bin]())((a: Array[Bin], b: Array[Bin]) =>BFuncs.app(a, BFuncs.app(Array(Bytes(Array[Byte](-0x15, 0x53))), b)))
+    val falseBody = f.map(_.toBytecode).foldLeft(
+      Array[Bin]())((a: Array[Bin], b: Array[Bin]) =>BFuncs.app(a, BFuncs.app(Array(Bytes(Array[Byte](-0x15, 0x53))), b)))
     BFuncs.app(predicate, BFuncs.app(
       Array(Bytes(Array[Byte](-0x15, 0x33)), Offset(6 + BFuncs.alen(falseBody))),
       BFuncs.app(falseBody, trueBody)))
@@ -256,7 +259,8 @@ case class While(p: Expression, b: List[Expression]) extends Expression {
   }
   def toBytecode = {
     val predicate = p.toBytecode
-    val body = b.map(_.toBytecode).foldLeft(Array[Bin]())(BFuncs.app(_, _))
+    val body = b.map(_.toBytecode).foldLeft(
+      Array[Bin]())((a: Array[Bin], b: Array[Bin]) =>BFuncs.app(a, BFuncs.app(Array(Bytes(Array[Byte](-0x15, 0x53))), b)))
     val bl = BFuncs.alen(body)
     BFuncs.app(predicate, BFuncs.app(
       Array(Bytes(Array[Byte](-0x15, 0x32)), Offset(12 + bl)), BFuncs.app(
@@ -272,10 +276,11 @@ case class Repeat(p: Expression, b: List[Expression]) extends Expression {
   }
   def toBytecode = {
     val predicate = p.toBytecode
-    val body = b.map(_.toBytecode).foldLeft(Array[Bin]())(BFuncs.app(_, _))
+    val body = b.map(_.toBytecode).foldLeft(
+      Array[Bin]())((a: Array[Bin], b: Array[Bin]) =>BFuncs.app(a, BFuncs.app(Array(Bytes(Array[Byte](-0x15, 0x53))), b)))
     val bl = BFuncs.alen(body)
     BFuncs.app(body, BFuncs.app(
-        predicate, Array(Bytes(Array[Byte](-0x15, 0x32)), Offset(-bl - BFuncs.alen(predicate)))))
+      predicate, Array(Bytes(Array[Byte](-0x15, 0x32)), Offset(-bl - BFuncs.alen(predicate)))))
   }
 }
 case class For(v: LValue, st: Expression, end: Expression, inc: Expression, b: List[Expression]) extends Expression {

@@ -1,9 +1,17 @@
 package types
 
 import run.RunningInstance
+import cmdreader.Global
 
 class TBinFunc(bytecode: Array[Byte], source: String, ci: RunningInstance) extends TFunction {
-  def apply(args: Array[Type]): Type = new TVoid // TODO, yet another stub
+  def apply(args: Array[Type]): Type = {
+    val newci = new RunningInstance("code: fcall", Global.top, args)
+    Global.top = newci
+    newci.run
+    val res = newci.answer
+    Global.top = Global.top.calling
+    res
+  }
   def getBytecode(): Array[Byte] = bytecode
   override def equals(that: Any): Boolean = {
     that match {
