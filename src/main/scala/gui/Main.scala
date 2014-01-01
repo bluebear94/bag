@@ -55,7 +55,7 @@ object Main extends SimpleSwingApplication {
       layout(inputAndButtons) = South
     }
     size = new Dimension(640, 768)
-    listenTo(lambdaButton, harpoonButton, runButton)
+    listenTo(lambdaButton, harpoonButton, runButton, inputScroll.keys, inputArea.keys)
     def insertAtCaret(s: String) = {
       val curPos = inputArea.caret.dot
       inputArea.text = inputArea.text.substring(0, curPos) + s + inputArea.text.substring(curPos)
@@ -65,22 +65,24 @@ object Main extends SimpleSwingApplication {
     }
     def runCode = {
       val toRun = inputArea.text
-      println(toRun)
-      inputArea.text = ""
-      import p._
-      val ast = p.expression(new p.PackratReader(new CharSequenceReader(toRun))) match {
-        case Success(t, _) => {
-          val tp = Global.top
-          tp.bytecode = BFuncs.flatten(t.toBytecode) ++ Array[Byte](-0x17, 0x53)
-          //try {
+      if (toRun != "") {
+        println(toRun)
+        inputArea.text = ""
+        import p._
+        val ast = p.expression(new p.PackratReader(new CharSequenceReader(toRun))) match {
+          case Success(t, _) => {
+            val tp = Global.top
+            tp.bytecode = BFuncs.flatten(t.toBytecode) ++ Array[Byte](-0x17, 0x53)
+            //try {
             tp.run
             println(tp.ans + "\n")
-          //}
-          //catch {
-          //  case e: Exception => println(e.getMessage)
-          //}
+            //}
+            //catch {
+            //  case e: Exception => println(e.getMessage)
+            //}
+          }
+          case NoSuccess(msg, _) => println(msg)
         }
-        case NoSuccess(msg, _) => println(msg)
       }
     }
     reactions += {
@@ -89,8 +91,8 @@ object Main extends SimpleSwingApplication {
         if (component == harpoonButton) insertAtCaret("↼")
         if (component == runButton) runCode
       }
-      case KeyPressed(inputArea, Key.Enter, Key.Control, Key.Location.Standard) => {
-        runCode
+      case KeyPressed(_, Key.Enter, m, _) => {
+        if (m == Key.Control || m == Key.Shift) runCode
       }
     }
   }

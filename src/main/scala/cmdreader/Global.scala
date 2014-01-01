@@ -33,5 +33,5 @@ object Global {
   var root: File = new File("amw/")
   var current: File = root
   val TWO = new BigInteger("2")
-  val version = "0.1"
+  val version = "0.2"
 }
