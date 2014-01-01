@@ -53,7 +53,6 @@ case class TMountain(n2: BigInteger) extends TNumerical {
   }
   def >/< = TMountain(new BigInteger(n.toString))
   def toBytecode: Array[Byte] = {
-    val s = n.toByteArray
-    MakeByteArrays.intToByteArray(s.length) ++ s
+    n.toByteArray
   }
 }

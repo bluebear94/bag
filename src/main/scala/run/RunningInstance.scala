@@ -97,18 +97,19 @@ class RunningInstance(fname: String, c: RunningInstance, args: Array[Type]) {
     else calling.setargn(i, t, r - 1)
   }
   def readInt(n: Int) = {
-    (bytecode(n) << 24) + (bytecode(n + 1) << 16) + (bytecode(n + 2) << 8) + bytecode(n + 3)
+    (tus(bytecode(n)) << 24) + (tus(bytecode(n + 1)) << 16) + (tus(bytecode(n + 2)) << 8) + tus(bytecode(n + 3))
   }
   def readString(n: Int) = {
     val length = readInt(n)
     val strSt = n + 4
     (new String(bytecode.slice(strSt, strSt + length), "UTF-8"), strSt + length)
   }
+  def tus(n: Byte) = if (n >= 0) n else 0x100 + n
   def run = { // runs the bytecode
     var needle = 0
     var isDone = false
     while (!isDone) {
-      val cmd = (bytecode(needle) << 8) + bytecode(needle + 1)
+      val cmd = (tus(bytecode(needle)) << 8) + tus(bytecode(needle + 1))
       needle += 2
       cmd match {
         case 0xE000 => {
@@ -118,7 +119,7 @@ class RunningInstance(fname: String, c: RunningInstance, args: Array[Type]) {
           val (args, ns) = stack.splitAt(argcount)
           stack = ns
           val toPush = function match {
-            case f: TFunction => f(args.toArray)
+            case f: TFunction => f(args.reverse.toArray)
             case _ => new TError(1)
           }
           stack = toPush :: stack
@@ -205,14 +206,16 @@ class RunningInstance(fname: String, c: RunningInstance, args: Array[Type]) {
             val valtype = cmd & 0xFF
             val size = readInt(needle)
             needle += 4
-            VariableReader.readData(bytecode.slice(needle, needle + size), valtype)
+            stack = VariableReader.readData(bytecode.slice(needle, needle + size), valtype) :: stack
             needle += size
           } else {
             throw new RuntimeException("Invalid command: " + cmd)
           }
         }
+        
       }
-      if (stack.head.isInstanceOf[TError]) {
+      if (needle >= bytecode.length - 1) isDone = true
+      if (!stack.isEmpty && stack.head.isInstanceOf[TError]) {
         throw new RuntimeException("Runtime " + stack.head)
       }
     }

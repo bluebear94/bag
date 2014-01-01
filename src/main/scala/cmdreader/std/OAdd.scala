@@ -10,7 +10,7 @@ class OAdd extends CommandOperator {
   override def getOpAlias() = "+"
   override def apply(args: Array[Type]): Type = {
     args.fold(
-    if (args(0).getType == 3) new TString("")
+    if (!args.isEmpty && args(0).getType == 3) new TString("")
     else new THill(0L)
     )(MathUtil.add(_, _))
   }

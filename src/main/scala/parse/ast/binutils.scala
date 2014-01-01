@@ -70,6 +70,6 @@ object BFuncs {
       val p = if (n >= 0) n else 0x100 + n
       def ohd(n: Int) = (if (n < 10) '0' + n else 55 + n).toChar
       new String(Array(ohd(p >> 4), ohd(p & 0x0F)))
-    }).foldLeft("")(_ + _)
+    }).foldLeft("")(_ + " " + _)
   }
 }

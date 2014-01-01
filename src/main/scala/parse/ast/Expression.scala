@@ -52,7 +52,7 @@ case class Assign(left: LValue, right: Expression) extends Expression {
   }
   def toBytecode = {
     BFuncs.app(left.toSymBytecode, BFuncs.app(
-      right.toBytecode, Array(Bytes(Array[Byte](-0x15, 0x50)))))
+      right.toBytecode, Array(Bytes(Array[Byte](-0x17, 0x50)))))
   }
 }
 case class AssignOp(left: LValue, right: Expression, op: String) extends Expression {
@@ -80,8 +80,8 @@ case class DoubleOp(left: LValue, op: String, post: Boolean) extends SBExpressio
       case None => throw new UnsupportedOperationException
     }
     if (post) {
-      BFuncs.app(Array(Bytes(Array[Byte](-0x15, 0x51))), BFuncs.app(
-        AssignOp(left, Literal(db), op).toBytecode, Array(Bytes(Array[Byte](-0x15, 0x51)))))
+      BFuncs.app(Array(Bytes(Array[Byte](-0x17, 0x51))), BFuncs.app(
+        AssignOp(left, Literal(db), op).toBytecode, Array(Bytes(Array[Byte](-0x17, 0x51)))))
     } else {
       AssignOp(left, Literal(db), op).toBytecode
     }
@@ -101,14 +101,20 @@ case class FCall(f: SBExpression, args: Array[Expression]) extends SBExpression 
       Array(Bytes(Array[Byte](-0x20, 0x00) ++ MakeByteArrays.intToByteArray(args.length)))
   }
 }
+object ML {
+  def multiline(lines: List[Expression]) = {
+    val lbc = lines.map(_.toBytecode)
+    lbc.foldLeft[Array[Bin]](Array(Bytes(Array[Byte]())))((a: Array[Bin], b: Array[Bin]) =>
+      BFuncs.app(b, BFuncs.app(Array(Bytes(Array[Byte](-0x17, 0x53))), a)))
+  }
+}
 case class Lambda(lines: List[Expression]) extends SBExpression {
   def eval(ci: RunningInstance): Type = {
     new TASTFunc(lines, ci)
   }
   def toBytecode = {
-    val lbc = lines.map(_.toBytecode).foldLeft(
-      Array[Bin]())((a: Array[Bin], b: Array[Bin]) =>BFuncs.app(a, BFuncs.app(Array(Bytes(Array[Byte](-0x15, 0x53))), b)))
-    BFuncs.app(Array(Bytes(Array[Byte](-0x1F, 0x07) ++ MakeByteArrays.intToByteArray(lbc.length))), lbc)
+    val lbc = ML.multiline(lines)
+    BFuncs.app(Array(Bytes(Array[Byte](-0x1F, 0x07) ++ MakeByteArrays.intToByteArray(BFuncs.alen(lbc)))), lbc)
   }
 }
 case class AList(isArray: Boolean, args: Array[Expression]) extends SBExpression {
@@ -120,7 +126,7 @@ case class AList(isArray: Boolean, args: Array[Expression]) extends SBExpression
   }
   def toBytecode = {
     args.map(_.toBytecode).foldLeft(Array[Bin]())(_ ++ _) ++
-      Array(Bytes(Array[Byte](-0x15, if (isArray) 0x40 else 0x45)))
+      Array(Bytes(Array[Byte](-0x17, if (isArray) 0x40 else 0x45)))
   }
 }
 case class Index(l: Expression, i: Expression) extends SBExpression {
@@ -130,7 +136,7 @@ case class Index(l: Expression, i: Expression) extends SBExpression {
   def toBytecode = {
     BFuncs.app(l.toBytecode,
       i.toBytecode) ++
-      Array(Bytes(Array[Byte](-0x15, 0x39)))
+      Array(Bytes(Array[Byte](-0x17, 0x39)))
   }
 }
 case class LIndex(l: LValue, i: Expression) extends LValue {
@@ -145,12 +151,12 @@ case class LIndex(l: LValue, i: Expression) extends LValue {
   def toBytecode = {
     BFuncs.app(l.toBytecode,
       i.toBytecode) ++
-      Array(Bytes(Array[Byte](-0x15, 0x39)))
+      Array(Bytes(Array[Byte](-0x17, 0x39)))
   }
   def toSymBytecode = {
     BFuncs.app(l.toSymBytecode,
       i.toBytecode) ++
-      Array(Bytes(Array[Byte](-0x15, 0x39)))
+      Array(Bytes(Array[Byte](-0x17, 0x39)))
   }
 }
 // How am I going to parse operations while respecting the order of
@@ -195,7 +201,7 @@ case class Ternary(p: Expression, t: Expression, f: Expression) extends Expressi
     val trueBody = t.toBytecode
     val falseBody = f.toBytecode
     BFuncs.app(predicate, BFuncs.app(
-      Array(Bytes(Array[Byte](-0x15, 0x33)), Offset(6 + BFuncs.alen(falseBody))),
+      Array(Bytes(Array[Byte](-0x17, 0x33)), Offset(6 + BFuncs.alen(falseBody))),
       BFuncs.app(falseBody, trueBody)))
   }
 }
@@ -210,7 +216,7 @@ case class If(p: Expression, t: Expression) extends Expression {
     val predicate = p.toBytecode
     val trueBody = t.toBytecode
     BFuncs.app(predicate, BFuncs.app(
-      Array(Bytes(Array[Byte](-0x15, 0x23)), Offset(6 + BFuncs.alen(trueBody))),
+      Array(Bytes(Array[Byte](-0x17, 0x23)), Offset(6 + BFuncs.alen(trueBody))),
       trueBody))
   }
 }
@@ -223,10 +229,9 @@ case class IfThen(p: Expression, t: List[Expression]) extends Expression {
   }
   def toBytecode = {
     val predicate = p.toBytecode
-    val trueBody = t.map(_.toBytecode).foldLeft(
-      Array[Bin]())((a: Array[Bin], b: Array[Bin]) =>BFuncs.app(a, BFuncs.app(Array(Bytes(Array[Byte](-0x15, 0x53))), b)))
+    val trueBody = ML.multiline(t)
     BFuncs.app(predicate, BFuncs.app(
-      Array(Bytes(Array[Byte](-0x15, 0x23)), Offset(6 + BFuncs.alen(trueBody))),
+      Array(Bytes(Array[Byte](-0x17, 0x23)), Offset(6 + BFuncs.alen(trueBody))),
       trueBody))
   }
 }
@@ -241,12 +246,10 @@ case class IfThenElse(p: Expression, t: List[Expression], f: List[Expression]) e
   }
   def toBytecode = {
     val predicate = p.toBytecode
-    val trueBody = t.map(_.toBytecode).foldLeft(
-      Array[Bin]())((a: Array[Bin], b: Array[Bin]) =>BFuncs.app(a, BFuncs.app(Array(Bytes(Array[Byte](-0x15, 0x53))), b)))
-    val falseBody = f.map(_.toBytecode).foldLeft(
-      Array[Bin]())((a: Array[Bin], b: Array[Bin]) =>BFuncs.app(a, BFuncs.app(Array(Bytes(Array[Byte](-0x15, 0x53))), b)))
+    val trueBody = ML.multiline(t)
+    val falseBody = ML.multiline(f)
     BFuncs.app(predicate, BFuncs.app(
-      Array(Bytes(Array[Byte](-0x15, 0x33)), Offset(6 + BFuncs.alen(falseBody))),
+      Array(Bytes(Array[Byte](-0x17, 0x33)), Offset(6 + BFuncs.alen(falseBody))),
       BFuncs.app(falseBody, trueBody)))
   }
 }
@@ -259,12 +262,11 @@ case class While(p: Expression, b: List[Expression]) extends Expression {
   }
   def toBytecode = {
     val predicate = p.toBytecode
-    val body = b.map(_.toBytecode).foldLeft(
-      Array[Bin]())((a: Array[Bin], b: Array[Bin]) =>BFuncs.app(a, BFuncs.app(Array(Bytes(Array[Byte](-0x15, 0x53))), b)))
+    val body = ML.multiline(b)
     val bl = BFuncs.alen(body)
     BFuncs.app(predicate, BFuncs.app(
-      Array(Bytes(Array[Byte](-0x15, 0x32)), Offset(12 + bl)), BFuncs.app(
-        body, Array(Bytes(Array[Byte](-0x15, 0x34)), Offset(-bl - 6 - BFuncs.alen(predicate))))))
+      Array(Bytes(Array[Byte](-0x17, 0x32)), Offset(12 + bl)), BFuncs.app(
+        body, Array(Bytes(Array[Byte](-0x17, 0x34)), Offset(-bl - 6 - BFuncs.alen(predicate))))))
   }
 }
 case class Repeat(p: Expression, b: List[Expression]) extends Expression {
@@ -276,11 +278,10 @@ case class Repeat(p: Expression, b: List[Expression]) extends Expression {
   }
   def toBytecode = {
     val predicate = p.toBytecode
-    val body = b.map(_.toBytecode).foldLeft(
-      Array[Bin]())((a: Array[Bin], b: Array[Bin]) =>BFuncs.app(a, BFuncs.app(Array(Bytes(Array[Byte](-0x15, 0x53))), b)))
+    val body = ML.multiline(b)
     val bl = BFuncs.alen(body)
     BFuncs.app(body, BFuncs.app(
-      predicate, Array(Bytes(Array[Byte](-0x15, 0x32)), Offset(-bl - BFuncs.alen(predicate)))))
+      predicate, Array(Bytes(Array[Byte](-0x17, 0x32)), Offset(-bl - BFuncs.alen(predicate)))))
   }
 }
 case class For(v: LValue, st: Expression, end: Expression, inc: Expression, b: List[Expression]) extends Expression {
@@ -318,10 +319,10 @@ case class Hashtag(x: Expression) extends LValue {
     }
   }
   def toBytecode = {
-    x.toBytecode ++ Array(Bytes(Array[Byte](-0x15, 0x38)))
+    x.toBytecode ++ Array(Bytes(Array[Byte](-0x17, 0x38)))
   }
   def toSymBytecode = {
-    x.toBytecode ++ Array(Bytes(Array[Byte](-0x15, 0x48)))
+    x.toBytecode ++ Array(Bytes(Array[Byte](-0x17, 0x48)))
   }
 }
 case class SBWrapper(x: Expression) extends SBExpression {

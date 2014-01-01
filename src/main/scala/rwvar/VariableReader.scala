@@ -6,16 +6,11 @@ import java.lang.Double
 import cmdreader.Global
 
 object VariableReader {
+  def tus(n: Byte) = if (n >= 0) n else 0x100 + n
   def readData(bc: Array[Byte], typeid: Int): Type = {
     typeid match {
       case 0 => new TVoid
-      case 1 => {
-        var cumVal = BigInteger.ZERO // haha
-        for (b <- bc) {
-          cumVal = cumVal.shiftLeft(8).add(BigInteger.valueOf(b))
-        }
-        new TMountain(cumVal)
-      }
+      case 1 => new TMountain(new BigInteger(bc))
       case 2 => {
         var cumVal = 0L
         for (b <- 0 until 8) {

@@ -7,6 +7,7 @@ class TBinFunc(bytecode: Array[Byte], source: String, ci: RunningInstance) exten
   def apply(args: Array[Type]): Type = {
     val newci = new RunningInstance("code: fcall", Global.top, args)
     Global.top = newci
+    newci.bytecode = this.bytecode
     newci.run
     val res = newci.answer
     Global.top = Global.top.calling
