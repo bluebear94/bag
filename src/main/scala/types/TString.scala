@@ -14,7 +14,7 @@ case class TString(s2: String) extends Type {
     s == ""
   }
   override def toString(): String = {
-    "\"" + s + "\""
+    s
   }
   def equals(that: Type): Boolean = {
     that.getType() == 3 &&

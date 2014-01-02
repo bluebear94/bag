@@ -15,6 +15,15 @@ import types.TVoid
 object Main extends SimpleSwingApplication {
   val mono = new Font("DejaVu Sans Mono", 0, 10)
   val p = new XprInt
+  def println(s: String) = {
+    homeScn.text += s + "\n"
+  }
+  val homeScn = new TextArea(20, 80) { // the middle panel, holding previous operations
+    font = mono
+    editable = false
+    charWrap = true
+    text = "Welcome to Amethyst " + Global.version + ".\n\n"
+  }
   def top = new MainFrame {
     Global.loadLib("std")
     p.loadOps
@@ -25,12 +34,6 @@ object Main extends SimpleSwingApplication {
       charWrap = true
     }
     val inputScroll = new ScrollPane(inputArea)
-    val homeScn = new TextArea(20, 80) { // the middle panel, holding previous operations
-      font = mono
-      editable = false
-      charWrap = true
-      text = "Welcome to Amethyst " + Global.version + ".\n\n"
-    }
     val homeScroll = new ScrollPane(homeScn)
     val drawScn = new BufferedCanvas { // the top panel, for drawing
       preferredSize = new Dimension(640, 480)
@@ -53,6 +56,8 @@ object Main extends SimpleSwingApplication {
       layout(drawScn) = North
       layout(homeScroll) = Center
       layout(inputAndButtons) = South
+      focusable = true
+      requestFocusInWindow
       listenTo(lambdaButton, harpoonButton, runButton, keys)
       reactions += {
         case ButtonClicked(component) => {
@@ -69,9 +74,6 @@ object Main extends SimpleSwingApplication {
     def insertAtCaret(s: String) = {
       val curPos = inputArea.caret.dot
       inputArea.text = inputArea.text.substring(0, curPos) + s + inputArea.text.substring(curPos)
-    }
-    def println(s: String) = {
-      homeScn.text += s + "\n"
     }
     def runCode() = {
       val toRun = inputArea.text
