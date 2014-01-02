@@ -7,6 +7,7 @@ import util._
 import rwvar._
 import cmdreader.Global
 import parse.ast._
+import java.io.File
 
 // If fname starts with "code:", then it is an instance of code.
 class RunningInstance(fname: String, c: RunningInstance, args: Array[Type]) {
@@ -63,6 +64,20 @@ class RunningInstance(fname: String, c: RunningInstance, args: Array[Type]) {
       }
     } else {
       environment(name) = t
+    }
+  }
+  def delVar(name: String): Unit = {
+    if (name.startsWith("$")) {
+      // TODO A global variable or a command.
+      if (name.indexOf(":") == -1) {
+        val p = PathNameConverter.aToOs(name.substring(1), false)
+        new File(p match {
+          case (pn, true) => Global.current + "/" + pn
+          case (pn, false) => Global.root + "/" + pn
+        }).delete
+      }
+    } else {
+      environment.remove(name)
     }
   }
   def argn(i: Int): Type = {
@@ -201,6 +216,13 @@ class RunningInstance(fname: String, c: RunningInstance, args: Array[Type]) {
           }
           stack = stack.tail
         }
+        case 0xE954 => stack = ans :: stack
+        case 0xE955 => stack = answer :: stack
+        case 0xE956 => {
+          symstack.head.nuke(this)
+          symstack = symstack.tail
+          stack = new TVoid :: stack
+        }
         case _ => {
           if ((cmd >> 8) == 0xE1) {
             val valtype = cmd & 0xFF
@@ -212,7 +234,7 @@ class RunningInstance(fname: String, c: RunningInstance, args: Array[Type]) {
             throw new RuntimeException("Invalid command: " + cmd)
           }
         }
-        
+
       }
       if (needle >= bytecode.length - 1) isDone = true
       if (!stack.isEmpty && stack.head.isInstanceOf[TError]) {

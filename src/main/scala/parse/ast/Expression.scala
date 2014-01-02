@@ -23,7 +23,7 @@ trait Expression {
 trait SBExpression extends Expression
 trait LValue extends SBExpression {
   def assign(ci: RunningInstance, t: Type): Unit
-  // def nuke(ci: RunningInstance): Unit
+  def nuke(ci: RunningInstance): Unit
   def toSymBytecode: Array[Bin]
 }
 case class Literal(t: Type) extends SBExpression {
@@ -36,6 +36,7 @@ case class Literal(t: Type) extends SBExpression {
 case class Variable(name: String) extends LValue {
   def eval(ci: RunningInstance): Type = ci.getVar(name)
   def assign(ci: RunningInstance, t: Type) = ci.setVar(name, t)
+  def nuke(ci: RunningInstance) = ci.delVar(name)
   def toBytecode = {
     val inB = name.getBytes
     Array(Bytes(Array[Byte](-0x20, 0x04) ++ MakeByteArrays.intToByteArray(inB.length) ++ inB))
@@ -53,6 +54,16 @@ case class Assign(left: LValue, right: Expression) extends Expression {
   def toBytecode = {
     BFuncs.app(left.toSymBytecode, BFuncs.app(
       right.toBytecode, Array(Bytes(Array[Byte](-0x17, 0x50)))))
+  }
+}
+case class Delete(left: LValue) extends Expression {
+  def eval(ci: RunningInstance): Type = {
+    left.nuke(ci)
+    new TVoid
+  }
+  def toBytecode = {
+    BFuncs.app(left.toSymBytecode,
+      Array(Bytes(Array[Byte](-0x17, 0x56))))
   }
 }
 case class AssignOp(left: LValue, right: Expression, op: String) extends Expression {
@@ -147,6 +158,9 @@ case class LIndex(l: LValue, i: Expression) extends LValue {
     var t: Type = l.eval(ci)
     Indexing.setIndex(t, i.eval(ci), n)
     l.assign(ci, t)
+  }
+  def nuke(ci: RunningInstance) = {
+    Indexing.delIndex(l.eval(ci), i.eval(ci))
   }
   def toBytecode = {
     BFuncs.app(l.toBytecode,
@@ -318,6 +332,13 @@ case class Hashtag(x: Expression) extends LValue {
       case _ => new TError(1)
     }
   }
+  def nuke(ci: RunningInstance) = {
+    val t = x.eval(ci)
+    t match {
+      case TString(n) => ci.delVar(n)
+      case _ => new TError(1)
+    }
+  }
   def toBytecode = {
     x.toBytecode ++ Array(Bytes(Array[Byte](-0x17, 0x38)))
   }
@@ -402,12 +423,16 @@ class XprInt extends JavaTokenParsers with PackratParsers {
     case (left ~ o ~ right) =>
       Assign(left, right)
   }
+  lazy val delete: PackratParser[Expression] = lvalue ~ "=" ^^  {
+    case (left ~ o) =>
+      Delete(left)
+  }
   //lazy val assignOp: PackratParser[Expression]
   lazy val compound: PackratParser[SBExpression] = lambda | lIndexing | indexing | array | linked | hashtag | call
   lazy val ternary: PackratParser[Expression] = sbexpression ~ "?" ~ expression ~ ":" ~ expression ^^ {
     case p ~ "?" ~ t ~ ":" ~ f => Ternary(p, t, f)
   }
-  def expression: PackratParser[Expression] = control | ternary | getOpEq | assign | operator(ops.firstKey) | sbexpression
+  def expression: PackratParser[Expression] = control | ternary | getOpEq | assign | delete | operator(ops.firstKey) | sbexpression
   def sbwrapper: PackratParser[SBExpression] = "(" ~> expression <~ ")" ^^ { x => SBWrapper(x) }
   def sbexpression: PackratParser[SBExpression] = sbwrapper | literal | compound | (getLOpOp ||| getOpOpL) | variable
   def getOpEq: PackratParser[Expression] = {

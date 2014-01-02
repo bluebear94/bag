@@ -56,4 +56,12 @@ object Indexing {
       else t.getVal & ~(1 << i)
     })
   }
+  def delIndex(t: Type, i: Type): Unit = {
+    t match {
+      case tt: LMap => delIndex(tt, i): Unit
+    }
+  }
+  def delIndex(t: LMap, i: Type): Unit = {
+    t.du(i)
+  }
 }

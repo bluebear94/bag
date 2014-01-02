@@ -74,6 +74,9 @@ E950: store top entry of regular stack to top entry of symbol stack (popping the
 E951: duplicate top element of regular stack
 E952: delete top element
 E953: pop top entry and store into Ans
+E954: recall value of Ans
+E955: recall value of Answer
+E956: delete value representing top entry in symbol stack
 [8]:
 8 - 11: # elems
 rept [

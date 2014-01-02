@@ -53,9 +53,19 @@ object Main extends SimpleSwingApplication {
       layout(drawScn) = North
       layout(homeScroll) = Center
       layout(inputAndButtons) = South
+      listenTo(lambdaButton, harpoonButton, runButton, keys)
+      reactions += {
+        case ButtonClicked(component) => {
+          if (component == lambdaButton) insertAtCaret("λ")
+          if (component == harpoonButton) insertAtCaret("↼")
+          if (component == runButton) runCode()
+        }
+        case KeyPressed(_, Key.Enter, m, _) => {
+          if (m == Key.Control || m == Key.Shift) runCode()
+        }
+      }
     }
     size = new Dimension(640, 768)
-    listenTo(lambdaButton, harpoonButton, runButton, inputScroll.keys, inputArea.keys)
     def insertAtCaret(s: String) = {
       val curPos = inputArea.caret.dot
       inputArea.text = inputArea.text.substring(0, curPos) + s + inputArea.text.substring(curPos)
@@ -63,7 +73,7 @@ object Main extends SimpleSwingApplication {
     def println(s: String) = {
       homeScn.text += s + "\n"
     }
-    def runCode = {
+    def runCode() = {
       val toRun = inputArea.text
       if (toRun != "") {
         println(toRun)
@@ -83,16 +93,6 @@ object Main extends SimpleSwingApplication {
           }
           case NoSuccess(msg, _) => println(msg)
         }
-      }
-    }
-    reactions += {
-      case ButtonClicked(component) => {
-        if (component == lambdaButton) insertAtCaret("λ")
-        if (component == harpoonButton) insertAtCaret("↼")
-        if (component == runButton) runCode
-      }
-      case KeyPressed(_, Key.Enter, m, _) => {
-        if (m == Key.Control || m == Key.Shift) runCode
       }
     }
   }
