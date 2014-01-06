@@ -350,6 +350,11 @@ case class SBWrapper(x: Expression) extends SBExpression {
   def eval(ci: RunningInstance): Type = x.eval(ci)
   def toBytecode = x.toBytecode
 }
+case class Ans(aa: Boolean) extends SBExpression {
+  def eval(ci: RunningInstance): Type = if (aa) ci.answer else ci.ans
+  def toBytecode = Array(Bytes(Array[Byte](-0x17, if (aa) 0x55 else 0x54))) // I could have done 0x54 + aa if not for
+  // those bloody boolean types
+}
 class XprInt extends JavaTokenParsers with PackratParsers {
   var ops: TreeMap[Int, PackratParser[(Expression, Expression) => Expression]] =
     new TreeMap[Int, PackratParser[(Expression, Expression) => Expression]]()
@@ -427,6 +432,8 @@ class XprInt extends JavaTokenParsers with PackratParsers {
     case (left ~ o) =>
       Delete(left)
   }
+  lazy val ans: PackratParser[SBExpression] = "Ans" ^^^ Ans(false)
+  lazy val answer: PackratParser[SBExpression] = "Answer" ^^^ Ans(true)
   //lazy val assignOp: PackratParser[Expression]
   lazy val compound: PackratParser[SBExpression] = lambda | lIndexing | indexing | array | linked | hashtag | call
   lazy val ternary: PackratParser[Expression] = sbexpression ~ "?" ~ expression ~ ":" ~ expression ^^ {
@@ -434,7 +441,7 @@ class XprInt extends JavaTokenParsers with PackratParsers {
   }
   def expression: PackratParser[Expression] = control | ternary | getOpEq | operator(ops.firstKey) | assign | delete | sbexpression
   def sbwrapper: PackratParser[SBExpression] = "(" ~> expression <~ ")" ^^ { x => SBWrapper(x) }
-  def sbexpression: PackratParser[SBExpression] = sbwrapper | literal | compound | (getLOpOp ||| getOpOpL) | variable
+  def sbexpression: PackratParser[SBExpression] = sbwrapper | ans | answer | literal | compound | (getLOpOp ||| getOpOpL) | variable
   def getOpEq: PackratParser[Expression] = {
     if (oeOps.isEmpty) failure("no such operator")
     else lvalue ~ (oeOps.tail.foldLeft(literal(oeOps.head))((p, op) => p | op)) ~ "=" ~ expression ^^ {
