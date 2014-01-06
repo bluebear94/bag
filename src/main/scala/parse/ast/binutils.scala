@@ -47,7 +47,7 @@ object BFuncs {
         case Offset(n) => na = na ++ MakeByteArrays.intToByteArray(n)
         case BLabel(s) => table(s) = na.length
         case BGoto(s) => {
-          na = na ++ Array[Byte](-0x15, 0x34, 0, 0, 0, 0)
+          na = na ++ Array[Byte](-0x17, 0x34, 0, 0, 0, 0)
           requests(na.length - 4) = s
         }
       }

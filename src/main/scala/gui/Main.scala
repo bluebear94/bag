@@ -81,7 +81,7 @@ object Main extends SimpleSwingApplication {
       if (toRun != "") {
         println(toRun)
         inputArea.text = ""
-        import p._
+        /*import p._
         val ast = p.expression(new p.PackratReader(new CharSequenceReader(toRun))) match {
           case Success(t, _) => {
             val tp = Global.top
@@ -95,7 +95,12 @@ object Main extends SimpleSwingApplication {
             //}
           }
           case NoSuccess(msg, _) => println(msg)
-        }
+        }*/
+        val bc = WholeParser.parse(toRun, p)
+        val tp = Global.top
+        tp.bytecode = bc
+        tp.run
+        println(tp.ans + "\n")
       }
     }
   }
