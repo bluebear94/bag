@@ -14,5 +14,9 @@ class Loader {
     Global.liblist("std").loadCmd("HLuna")
     Global.liblist("std").loadCmd("OEq")
     Global.liblist("std").loadCmd("ONeq")
+    Global.liblist("std").loadCmd("OLt")
+    Global.liblist("std").loadCmd("OLe")
+    Global.liblist("std").loadCmd("OGt")
+    Global.liblist("std").loadCmd("OGe")
   }
 }
