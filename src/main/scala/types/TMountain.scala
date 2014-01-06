@@ -18,8 +18,8 @@ case class TMountain(n2: BigInteger) extends TNumerical {
     val tt: Int = that.getType()
     (tt) match {
       case 1 => that.asInstanceOf[TMountain].getVal().equals(n)
-      case 2 => n.equals(that.asInstanceOf[THill].getVal())
-      case 4 => n.equals(that.asInstanceOf[TFish].getVal())
+      case 2 => n.longValue == that.asInstanceOf[THill].getVal
+      case 4 => n.doubleValue == that.asInstanceOf[TFish].getVal
       case _ => false
     }
   }

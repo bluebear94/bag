@@ -18,6 +18,10 @@ object Main extends SimpleSwingApplication {
   def println(s: String) = {
     homeScn.text += s + "\n"
   }
+  val IDLE = 0
+  val BUSY = 1
+  val ASKING = 2
+  var status = IDLE
   val homeScn = new TextArea(20, 80) { // the middle panel, holding previous operations
     font = mono
     editable = false
@@ -81,25 +85,12 @@ object Main extends SimpleSwingApplication {
       if (toRun != "") {
         println(toRun)
         inputArea.text = ""
-        /*import p._
-        val ast = p.expression(new p.PackratReader(new CharSequenceReader(toRun))) match {
-          case Success(t, _) => {
-            val tp = Global.top
-            tp.bytecode = BFuncs.flatten(t.toBytecode) ++ Array[Byte](-0x17, 0x53)
-            //try {
-            tp.run
-            println(tp.ans + "\n")
-            //}
-            //catch {
-            //  case e: Exception => println(e.getMessage)
-            //}
-          }
-          case NoSuccess(msg, _) => println(msg)
-        }*/
+        status = BUSY
         val bc = WholeParser.parse(toRun, p)
         val tp = Global.top
         tp.bytecode = bc
         tp.run
+        status = IDLE
         println(tp.ans + "\n")
       }
     }

@@ -1,6 +1,6 @@
 package types
 
-import util.BigIntOps
+import util._
 import java.math.BigInteger
 
 case class TFish(x: Double) extends TNumerical {
@@ -12,7 +12,7 @@ case class TFish(x: Double) extends TNumerical {
   }
   override def toString(): String = {
     var raw: String = x.toString()
-    if (raw.startsWith("0")) raw = raw.substring(1)
+    if (raw.startsWith("0") && x != 0.0) raw = raw.substring(1)
     if (raw.endsWith("0")) raw = raw.substring(0, raw.length() - 1)
     raw
   }
@@ -47,11 +47,7 @@ case class TFish(x: Double) extends TNumerical {
   def >/< = TFish(x)
   def toBytecode: Array[Byte] = {
     val n = java.lang.Double.doubleToRawLongBits(x)
-    var a = new Array[Byte](8)
-    for (i <- 0 until 7) {
-      a(8 - i) = (n & (0xFFL << 8 * i) >> 8 * i).toByte
-    }
-    a
+    MakeByteArrays.longToByteArray(n)
   }
   override def toBoolean = x != 0.0
 }

@@ -1,13 +1,13 @@
 _ A sample program, commented for your leisure.
 _ Underscores mark comments.
 askls = λ _ Assigns a function value to askls. Function values are marked by λ and Endλ.
-Repeat isdone && 3 == $:dim(ans _ Closing parentheses, etc. are optional.
+Repeat isdone && 3 == $:dim(Ans _ Closing parentheses, etc. are optional.
  typed = $:hask( _ Note that standard commands use $: before their names. The $:hask command requests a string.
- isdone = $:isls(ans _ $:isls checks if a string represents a list.
- If ans _ If it is... (Note the last-answer variable.)
+ isdone = $:isls(Ans _ $:isls checks if a string represents a list.
+ If Ans _ If it is... (Note the last-answer variable.)
    alist = $:expr(typed _ Then we get that list value.
 EndRept _ And loop until we get a three-element list.
 Endλ
 u = askls(
-v = askls( _ Ask for the values.
-$:hluna({u[1]*v[2] - u[2]*v[1], u[2]*v[0] - u[0]*v[2], u[0]*v[1] - u[1]*v[0 _ And show them.
+askls( _ Ask for the values.
+$:hluna({u[1]*Ans[2] - u[2]*Ans[1], u[2]*Ans[0] - u[0]*Ans[2], u[0]*Ans[1] - u[1]*Ans[0 _ And show them.

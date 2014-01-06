@@ -19,8 +19,8 @@ object WholeParser {
         }
         case NoSuccess(msg, _) => throw new RuntimeException(msg)
       }
-      if (!isNL(rest.first) && rest.first != CharSequenceReader.EofCh)
-        throw new RuntimeException("Lines must be delimited")
+      //if (!isNL(rest.first) && rest.first != CharSequenceReader.EofCh)
+      //  throw new RuntimeException("Lines must be delimited")
       while (isNL(rest.first)) rest = new p.PackratReader(rest.rest)
     }
     bytes

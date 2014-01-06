@@ -14,7 +14,7 @@ object VariableReader {
       case 2 => {
         var cumVal = 0L
         for (b <- 0 until 8) {
-          cumVal = (cumVal << 8) + bc(b)
+          cumVal = (cumVal << 8) + tus(bc(b))
         }
         new THill(cumVal)
       }
@@ -24,7 +24,7 @@ object VariableReader {
       case 4 => {
         var cumVal = 0L
         for (b <- 0 until 8) {
-          cumVal = (cumVal << 8) + bc(b)
+          cumVal = (cumVal << 8) + tus(bc(b))
         }
         new TFish(Double.longBitsToDouble(cumVal))
       }

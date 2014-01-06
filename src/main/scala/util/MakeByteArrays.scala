@@ -8,4 +8,11 @@ object MakeByteArrays {
     }
     l
   }
+  def longToByteArray(bsl: Long): Array[Byte] = {
+    val l = new Array[Byte](8)
+    for (i <- 0 until 8) {
+      l(7 - i) = ((bsl & (0xFFL << (i << 3))) >> (i << 3)).toByte
+    }
+    l
+  }
 }

@@ -1,6 +1,6 @@
 package types
 
-import util.BigIntOps
+import util._
 import java.math.BigInteger
 
 case class THill(n2: Long) extends TNumerical {
@@ -51,11 +51,7 @@ case class THill(n2: Long) extends TNumerical {
   def snv(nn: Long) = n = nn
   def >/< = THill(n)
   def toBytecode: Array[Byte] = {
-    var a = new Array[Byte](8)
-    for (i <- 0 until 7) {
-      a(7 - i) = ((n & (0xFFL << 8 * i)) >> 8 * i).toByte
-    }
-    a
+    MakeByteArrays.longToByteArray(n)
   }
   override def toBoolean = n != 0
 }
