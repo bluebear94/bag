@@ -20,6 +20,6 @@ class TBinFunc(bytecode: Array[Byte], source: String, ci: RunningInstance) exten
       case _ => false
     }
   }
-  override def toString(): String = "λ\n" + source + "\nEndλ"
+  //override def toString(): String = "λ\n" + source + "\nEndλ"
   def >/< = new TBinFunc(bytecode.clone, new String(source), ci)
 }
