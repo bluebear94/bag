@@ -57,16 +57,17 @@ object Main extends SimpleSwingApplication {
       layout(homeScroll) = Center
       layout(inputAndButtons) = South
       focusable = true
-      requestFocusInWindow
-      listenTo(lambdaButton, harpoonButton, runButton, keys)
+      requestFocus
+      listenTo(keys, drawScn.keys, homeScroll.keys, inputArea.keys, buttons.keys, lambdaButton, harpoonButton, runButton)
       reactions += {
+        case KeyPressed(_, Key.Enter, m, _) => {
+          if ((m & 0xC0) != 0)
+            runCode()
+        }
         case ButtonClicked(component) => {
           if (component == lambdaButton) insertAtCaret("λ")
           if (component == harpoonButton) insertAtCaret("↼")
           if (component == runButton) runCode()
-        }
-        case KeyPressed(_, Key.Enter, m, _) => {
-          if (m == Key.Control || m == Key.Shift) runCode()
         }
       }
     }
