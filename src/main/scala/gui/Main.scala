@@ -86,12 +86,20 @@ object Main extends SimpleSwingApplication {
         println(toRun)
         inputArea.text = ""
         status = BUSY
-        val bc = WholeParser.parse(toRun, p)
-        val tp = Global.top
-        tp.bytecode = bc
-        tp.run
+        try {
+          val bc = WholeParser.parse(toRun, p)
+          val tp = Global.top
+          tp.bytecode = bc
+          tp.run
+          println(tp.ans + "\n")
+        } catch {
+          case e: RuntimeException => {
+            println(e.getMessage)
+            System.out.println(e.getMessage)
+            System.out.println(e.getStackTrace)
+          }
+        }
         status = IDLE
-        println(tp.ans + "\n")
       }
     }
   }

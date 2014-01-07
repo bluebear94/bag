@@ -34,7 +34,7 @@ object Global {
   var current: File = root
   val TWO = new BigInteger("2")
   val vM = 0
-  val vm = 3
-  val vr = 7
+  val vm = 4
+  val vr = 0
   val version = vM + "." + vm + "." + vr
 }

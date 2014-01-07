@@ -96,8 +96,3 @@ The `For` .. `EndFor` loop will execute a block of code for each value of a vari
     EndFor
 
 The `While` .. `EndWhile` loop executes the body while its head expression evaluates to true, while the `Repeat` .. `EndRept` loop defers the check to after the body executes.
-
-Documentation of Commands
--------------------------
-
-Coming soon.

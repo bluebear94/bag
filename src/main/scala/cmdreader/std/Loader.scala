@@ -20,5 +20,9 @@ class Loader {
     Global.liblist("std").loadCmd("OGe")
     Global.liblist("std").loadCmd("Car")
     Global.liblist("std").loadCmd("Cdr")
+    Global.liblist("std").loadCmd("Cons")
+    Global.liblist("std").loadCmd("ECar")
+    Global.liblist("std").loadCmd("ECdr")
+    Global.liblist("std").loadCmd("ECons")
   }
 }
