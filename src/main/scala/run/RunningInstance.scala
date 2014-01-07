@@ -38,7 +38,11 @@ class RunningInstance(fname: String, c: RunningInstance, args: Array[Type]) {
       if (name.indexOf(":") == 1) {
         new TCmdFunc(name.substring(1))
       } else {
-        new TVoid // TODO over here
+        val p = PathNameConverter.aToOs(name.substring(1), false)
+        VariableReader.readFile(p match {
+          case (pn, true) => Global.current + "/" + pn
+          case (pn, false) => Global.root + "/" + pn
+        })
       }
     } else {
       if (environment.isDefinedAt(name)) {

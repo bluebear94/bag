@@ -44,3 +44,6 @@ local.properties
 # PDT-specific
 .buildpath
 /bin
+
+# Amethyst vars
+amw/
