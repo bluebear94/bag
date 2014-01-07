@@ -115,8 +115,9 @@ case class FCall(f: SBExpression, args: Array[Expression]) extends SBExpression 
 object ML {
   def multiline(lines: List[Expression]) = {
     val lbc = lines.map(_.toBytecode)
-    lbc.foldLeft[Array[Bin]](Array(Bytes(Array[Byte]())))((a: Array[Bin], b: Array[Bin]) =>
-      BFuncs.app(b, BFuncs.app(Array(Bytes(Array[Byte](-0x17, 0x53))), a)))
+    lbc.foldRight[Array[Bin]](Array(Bytes(Array[Byte]())))((a: Array[Bin], b: Array[Bin]) =>
+      BFuncs.app(a, BFuncs.app(Array(Bytes(Array[Byte](-0x17, 0x53))), b))) ++
+      Array(Bytes(Array[Byte](-0x1F, 0x00, 0x00, 0x00, 0x00, 0x00)))
   }
 }
 case class Lambda(lines: List[Expression]) extends SBExpression {
@@ -215,8 +216,10 @@ case class Ternary(p: Expression, t: Expression, f: Expression) extends Expressi
     val trueBody = t.toBytecode
     val falseBody = f.toBytecode
     BFuncs.app(predicate, BFuncs.app(
-      Array(Bytes(Array[Byte](-0x17, 0x33)), Offset(6 + BFuncs.alen(falseBody))),
-      BFuncs.app(falseBody, trueBody)))
+      Array(Bytes(Array[Byte](-0x17, 0x33)), Offset(12 + BFuncs.alen(falseBody))),
+      BFuncs.app(falseBody, BFuncs.app(
+        Array(Bytes(Array[Byte](-0x17, 0x34)), Offset(6 + BFuncs.alen(trueBody))),
+        trueBody))))
   }
 }
 case class If(p: Expression, t: Expression) extends Expression {
@@ -230,7 +233,7 @@ case class If(p: Expression, t: Expression) extends Expression {
     val predicate = p.toBytecode
     val trueBody = t.toBytecode
     BFuncs.app(predicate, BFuncs.app(
-      Array(Bytes(Array[Byte](-0x17, 0x23)), Offset(6 + BFuncs.alen(trueBody))),
+      Array(Bytes(Array[Byte](-0x17, 0x32)), Offset(6 + BFuncs.alen(trueBody))),
       trueBody))
   }
 }
@@ -245,7 +248,7 @@ case class IfThen(p: Expression, t: List[Expression]) extends Expression {
     val predicate = p.toBytecode
     val trueBody = ML.multiline(t)
     BFuncs.app(predicate, BFuncs.app(
-      Array(Bytes(Array[Byte](-0x17, 0x23)), Offset(6 + BFuncs.alen(trueBody))),
+      Array(Bytes(Array[Byte](-0x17, 0x32)), Offset(6 + BFuncs.alen(trueBody))),
       trueBody))
   }
 }
@@ -381,7 +384,7 @@ class XprInt extends JavaTokenParsers with PackratParsers {
   }
   lazy val fish: PackratParser[SBExpression] = floatingPointNumber ^^ { s => new Literal(new TFish(s.toDouble)) }
   lazy val literal: PackratParser[SBExpression] = void | fish ||| mountain | hill | string
-  val lineDelimiter: PackratParser[String] = ";" | "\n"
+  val lineDelimiter: PackratParser[String] = ";" | ""
   lazy val commaDelimited: PackratParser[List[Expression]] = repsep(expression, ",")
   lazy val lineDelimited: PackratParser[List[Expression]] = repsep(expression, lineDelimiter)
   lazy val array: PackratParser[SBExpression] = "{" ~> commaDelimited <~ "}" ^^ { l => AList(true, l.toArray[Expression]) }
@@ -428,7 +431,7 @@ class XprInt extends JavaTokenParsers with PackratParsers {
     case (left ~ o ~ right) =>
       Assign(left, right)
   }
-  lazy val delete: PackratParser[Expression] = lvalue ~ "=" ^^  {
+  lazy val delete: PackratParser[Expression] = lvalue ~ "=" ^^ {
     case (left ~ o) =>
       Delete(left)
   }

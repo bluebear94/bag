@@ -29,7 +29,7 @@ object BFuncs {
     b.foldLeft(0)((l, n) => l + enlen(n))
   }
   def app(a0: Array[Bin], a1: Array[Bin]) = {
-    val l = a0.length
+    val l = alen(a0)
     val b1 = a1.map(_ match {
       case Offset(n) => Offset(n + l)
       case r => r

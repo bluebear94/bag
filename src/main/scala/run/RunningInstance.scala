@@ -209,12 +209,18 @@ class RunningInstance(fname: String, c: RunningInstance, args: Array[Type]) {
           stack = stack.tail
         }
         case 0xE953 => {
-          ans = stack.head
+          ans = stack match {
+            case Nil => new TVoid
+            case f :: r => f
+          }
           ans match {
             case v: TVoid => ()
             case _ => answer = ans
           }
-          stack = stack.tail
+          stack = stack match {
+            case Nil => Nil
+            case f :: r => r
+          }
         }
         case 0xE954 => stack = ans :: stack
         case 0xE955 => stack = answer :: stack
@@ -231,7 +237,7 @@ class RunningInstance(fname: String, c: RunningInstance, args: Array[Type]) {
             stack = VariableReader.readData(bytecode.slice(needle, needle + size), valtype) :: stack
             needle += size
           } else {
-            throw new RuntimeException("Invalid command: " + cmd)
+            throw new RuntimeException("Invalid command: " + cmd + "@" + (needle - 2).toHexString)
           }
         }
 

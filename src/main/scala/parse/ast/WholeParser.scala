@@ -8,14 +8,14 @@ object WholeParser {
     def isNL(c: Char) = c == ';' || c == '\n'
     val preprocessedCode = Preprocessor.preprocess(code)
     import p._
-    var bytes = Array[Byte]()
+    var bytes = Array[Bin]()
     var rest = new p.PackratReader(new CharSequenceReader(preprocessedCode))
     while (rest.first != CharSequenceReader.EofCh) {
       val line = p.expression(rest)
       line match {
         case Success(res, nx) => {
           rest = new p.PackratReader(nx)
-          bytes = bytes ++ BFuncs.flatten(res.toBytecode) ++ Array[Byte](-0x17, 0x53)
+          bytes = BFuncs.app(bytes, res.toBytecode ++ Array(Bytes(Array[Byte](-0x17, 0x53))))
         }
         case NoSuccess(msg, _) => throw new RuntimeException(msg)
       }
@@ -23,6 +23,6 @@ object WholeParser {
       //  throw new RuntimeException("Lines must be delimited")
       while (isNL(rest.first)) rest = new p.PackratReader(rest.rest)
     }
-    bytes
+    BFuncs.flatten(bytes)
   }
 }
