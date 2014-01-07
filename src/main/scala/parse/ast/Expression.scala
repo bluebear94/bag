@@ -91,8 +91,8 @@ case class DoubleOp(left: LValue, op: String, post: Boolean) extends SBExpressio
       case None => throw new UnsupportedOperationException
     }
     if (post) {
-      BFuncs.app(Array(Bytes(Array[Byte](-0x17, 0x51))), BFuncs.app(
-        AssignOp(left, Literal(db), op).toBytecode, Array(Bytes(Array[Byte](-0x17, 0x51)))))
+      BFuncs.app(left.toBytecode, BFuncs.app(Array(Bytes(Array[Byte](-0x17, 0x51))), BFuncs.app(
+        AssignOp(left, Literal(db), op).toBytecode, Array(Bytes(Array[Byte](-0x17, 0x52))))))
     } else {
       AssignOp(left, Literal(db), op).toBytecode
     }
@@ -439,7 +439,7 @@ class XprInt extends JavaTokenParsers with PackratParsers {
   lazy val ternary: PackratParser[Expression] = sbexpression ~ "?" ~ expression ~ ":" ~ expression ^^ {
     case p ~ "?" ~ t ~ ":" ~ f => Ternary(p, t, f)
   }
-  def expression: PackratParser[Expression] = control | ternary | getOpEq | operator(ops.firstKey) | assign | delete | sbexpression
+  def expression: PackratParser[Expression] = control | ternary | assign | getOpEq | operator(ops.firstKey) | delete | sbexpression
   def sbwrapper: PackratParser[SBExpression] = "(" ~> expression <~ ")" ^^ { x => SBWrapper(x) }
   def sbexpression: PackratParser[SBExpression] = sbwrapper | ans | answer | literal | compound | (getLOpOp ||| getOpOpL) | variable
   def getOpEq: PackratParser[Expression] = {
