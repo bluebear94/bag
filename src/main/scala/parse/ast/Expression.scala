@@ -137,8 +137,9 @@ case class AList(isArray: Boolean, args: Array[Expression]) extends SBExpression
       new LLinked(args.map(_.eval(ci)).to[mutable.ListBuffer])
   }
   def toBytecode = {
-    args.map(_.toBytecode).foldLeft(Array[Bin]())(_ ++ _) ++
-      Array(Bytes(Array[Byte](-0x17, if (isArray) 0x40 else 0x45)))
+    args.reverse.map(_.toBytecode).foldLeft(Array[Bin]())(_ ++ _) ++
+      Array(Bytes(Array[Byte](-0x17, if (isArray) 0x40 else 0x45) ++
+          MakeByteArrays.intToByteArray(args.length)))
   }
 }
 case class Index(l: Expression, i: Expression) extends SBExpression {

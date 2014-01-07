@@ -4,8 +4,8 @@ import cmdreader.Global
 
 class Loader {
   def load = {
-    Global.liblist("std").loadCmd("OSubt")
     Global.liblist("std").loadCmd("OAdd")
+    Global.liblist("std").loadCmd("OSubt")
     Global.liblist("std").loadCmd("OAvg")
     Global.liblist("std").loadCmd("OMult")
     Global.liblist("std").loadCmd("ODiv")
@@ -18,5 +18,7 @@ class Loader {
     Global.liblist("std").loadCmd("OLe")
     Global.liblist("std").loadCmd("OGt")
     Global.liblist("std").loadCmd("OGe")
+    Global.liblist("std").loadCmd("Car")
+    Global.liblist("std").loadCmd("Cdr")
   }
 }

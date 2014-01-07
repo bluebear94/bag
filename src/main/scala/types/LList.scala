@@ -15,7 +15,7 @@ abstract class LList extends Type {
     l().mkString(", ")
   }
   def toBoolean(): Boolean = {
-    l().isEmpty
+    !l().isEmpty
   }
   def toBytecode: Array[Byte] = {
     val s = l.map((t: Type) => {

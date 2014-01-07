@@ -11,7 +11,7 @@ case class TString(s2: String) extends Type {
     3
   }
   def toBoolean(): Boolean = {
-    s == ""
+    s != ""
   }
   override def toString(): String = {
     s
