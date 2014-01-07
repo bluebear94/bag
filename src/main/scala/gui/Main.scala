@@ -3,7 +3,7 @@ package gui
 import scala.swing._
 import scala.swing.event._
 import scala.swing.BorderPanel.Position._
-import java.awt.{ Graphics2D, Color, Dimension }
+import java.awt.{ Graphics2D, Color, Dimension, Font }
 import java.awt.image.BufferedImage
 import cmdreader.Global
 import parse.ast._
@@ -26,7 +26,8 @@ object Main extends SimpleSwingApplication {
     font = mono
     editable = false
     charWrap = true
-    text = "Welcome to Amethyst " + Global.version + ".\n\n"
+    text = "Welcome to Amethyst " + Global.version + ".\n\n" +
+      (if (mono.getFamily != "DejaVu Sans Mono") "Please install the DejaVu fonts.\n" else "")
   }
   def top = new MainFrame {
     Global.loadLib("std")
@@ -51,7 +52,10 @@ object Main extends SimpleSwingApplication {
     val harpoonButton = new Button {
       text = "↼"
     }
-    val buttons = new FlowPanel(lambdaButton, harpoonButton, runButton)
+    val superMinusButton = new Button {
+      text = "⁻"
+    }
+    val buttons = new FlowPanel(lambdaButton, harpoonButton, superMinusButton, runButton)
     val inputAndButtons = new BorderPanel {
       layout(inputScroll) = Center
       layout(buttons) = South
@@ -62,7 +66,7 @@ object Main extends SimpleSwingApplication {
       layout(inputAndButtons) = South
       focusable = true
       requestFocus
-      listenTo(keys, drawScn.keys, homeScroll.keys, inputArea.keys, buttons.keys, lambdaButton, harpoonButton, runButton)
+      listenTo(keys, drawScn.keys, homeScroll.keys, inputArea.keys, buttons.keys, lambdaButton, harpoonButton, runButton, superMinusButton)
       reactions += {
         case KeyPressed(_, Key.Enter, m, _) => {
           if ((m & 0xC0) != 0)
@@ -71,6 +75,7 @@ object Main extends SimpleSwingApplication {
         case ButtonClicked(component) => {
           if (component == lambdaButton) insertAtCaret("λ")
           if (component == harpoonButton) insertAtCaret("↼")
+          if (component == superMinusButton) insertAtCaret("⁻")
           if (component == runButton) runCode()
         }
       }
@@ -96,7 +101,7 @@ object Main extends SimpleSwingApplication {
           case e: RuntimeException => {
             println(e.getMessage)
             System.out.println(e.getMessage)
-            System.out.println(e.getStackTrace)
+            e.printStackTrace
           }
         }
         status = IDLE

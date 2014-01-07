@@ -35,7 +35,7 @@ class RunningInstance(fname: String, c: RunningInstance, args: Array[Type]) {
   def getVar(name: String): Type = {
     if (name.startsWith("$")) {
       // TODO A global variable or a command.
-      if (name.indexOf(":") == 1) {
+      if (name.indexOf(":") != -1) {
         new TCmdFunc(name.substring(1))
       } else {
         val p = PathNameConverter.aToOs(name.substring(1), false)

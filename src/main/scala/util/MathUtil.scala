@@ -207,4 +207,46 @@ object MathUtil {
       }
     }
   }
+  def notP(x: Type): Type = {
+    BTI.bti(!x.toBoolean)
+  }
+  def notnotP(x: Type): Type = {
+    BTI.bti(x.toBoolean)
+  }
+  def not(x: Type) = {
+    x match {
+      case t: LList => mool(notP(_), t)
+      case _ => notP(x)
+    }
+  }
+  def notnot(x: Type) = {
+    x match {
+      case t: LList => mool(notnotP(_), t)
+      case _ => notnotP(x)
+    }
+  }
+  def andNSC(x: Type, y: Type): Type = {
+    x match {
+      case xt: LList => y match {
+        case yt: LList => motl(andNSC(_, _), xt, yt)
+        case _ => mool(andNSC(_, _), xt, y)
+      }
+      case _ => y match {
+        case yt: LList => mool(andNSC(_, _), yt, x)
+        case _ => BTI.bti(x.toBoolean && y.toBoolean)
+      }
+    }
+  }
+  def orNSC(x: Type, y: Type): Type = {
+    x match {
+      case xt: LList => y match {
+        case yt: LList => motl(orNSC(_, _), xt, yt)
+        case _ => mool(orNSC(_, _), xt, y)
+      }
+      case _ => y match {
+        case yt: LList => mool(orNSC(_, _), yt, x)
+        case _ => BTI.bti(x.toBoolean || y.toBoolean)
+      }
+    }
+  }
 }

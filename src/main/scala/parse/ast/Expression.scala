@@ -12,6 +12,7 @@ import scala.collection.mutable
 import util._
 import scala.util.matching.Regex
 import java.util.TreeMap // darn, no mutable TreeMap yet
+import scala.collection.mutable.HashMap
 
 trait Expression {
   def eval(ci: RunningInstance): Type
@@ -365,6 +366,7 @@ class XprInt extends JavaTokenParsers with PackratParsers {
   val oeOps: mutable.ListBuffer[String] = new mutable.ListBuffer[String]()
   val ooOps: mutable.ListBuffer[String] = new mutable.ListBuffer[String]()
   var opEq: PackratParser[Expression] = failure("No such assignment operator.")
+  val uOps: HashMap[String, String] = new HashMap[String, String]()
   // Regex for valid identifiers.
   //[$[[^!@#$%^&*()_-=+~{}[]\|:;'",.<>/?][^@#$%^&*()_-=+~{}[]\|:;'",.<>/?]*:]?]?
   def id: Regex = """[^\x5C\s\Q^!@#$%^&*_-+~{}().[]=|:;'",<>/?\E][^\x5C\s\Q^@#$%^&*_-+~{}()[]=|:;'",<>/?\E]*|!""".r // EEK
@@ -443,7 +445,7 @@ class XprInt extends JavaTokenParsers with PackratParsers {
   lazy val ternary: PackratParser[Expression] = sbexpression ~ "?" ~ expression ~ ":" ~ expression ^^ {
     case p ~ "?" ~ t ~ ":" ~ f => Ternary(p, t, f)
   }
-  def expression: PackratParser[Expression] = control | ternary | assign | getOpEq | operator(ops.firstKey) | delete | sbexpression
+  def expression: PackratParser[Expression] = getUnary | control | ternary | assign | getOpEq | operator(ops.firstKey) | delete | sbexpression
   def sbwrapper: PackratParser[SBExpression] = "(" ~> expression <~ ")" ^^ { x => SBWrapper(x) }
   def sbexpression: PackratParser[SBExpression] = sbwrapper | ans | answer | literal | compound | (getLOpOp ||| getOpOpL) | variable
   def getOpEq: PackratParser[Expression] = {
@@ -465,6 +467,14 @@ class XprInt extends JavaTokenParsers with PackratParsers {
     else {
       lvalue ~ (ooOps.tail.foldLeft(literal(ooOps.head))((p, op) => p | op)) ^^ {
         case l ~ op => DoubleOp(l, op.substring(op.length / 2), true)
+      }
+    }
+  }
+  def getUnary: PackratParser[Expression] = {
+    if (uOps.isEmpty) failure("no such operator")
+    else {
+      (uOps.keys.tail.foldLeft(literal(uOps.keys.head))((p, op) => p | op)) ~ sbexpression ^^ {
+        case op ~ e => FCall(Variable(uOps(op)), Array(e))
       }
     }
   }
@@ -515,6 +525,12 @@ class XprInt extends JavaTokenParsers with PackratParsers {
             }
             case None => ()
           }
+        }
+        else { // unary op
+          val opn = (if (isStdLib) "" else "$" + ln + ":") + cmd.getOpAlias
+          val cn = "$" + ln + ":" + cmd.getName
+          uOps(opn) = cn
+          println(s"Loading unary operator $opn")
         }
       }
     }
