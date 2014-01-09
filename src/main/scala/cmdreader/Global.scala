@@ -35,6 +35,6 @@ object Global {
   val TWO = new BigInteger("2")
   val vM = 0
   val vm = 4
-  val vr = 1
+  val vr = 2
   val version = vM + "." + vm + "." + vr
 }

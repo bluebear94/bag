@@ -3,6 +3,11 @@ amethyst
 
 $:hluna("A programming language by bluebear94
 
+Note
+----
+
+Decisions about the language are still made. As long as the major version number is 0, a particular version may not be backward-compatible with another.
+
 Philosophy
 ----------
 

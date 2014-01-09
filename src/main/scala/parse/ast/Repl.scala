@@ -21,7 +21,7 @@ object Repl {
     while (input != ":q") {
       input = s.nextLine
       if (input != ":q") {
-        val tree = pp(new CharSequenceReader(input))
+        val tree = pp(new p.PackratReader(new CharSequenceReader(input)))
         println(tree)
         tree match {
           case Success(t, _) => {

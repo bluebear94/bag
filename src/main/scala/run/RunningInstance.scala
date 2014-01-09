@@ -215,7 +215,10 @@ class RunningInstance(fname: String, c: RunningInstance, args: Array[Type]) {
         case 0xE953 => {
           ans = stack match {
             case Nil => new TVoid
-            case f :: r => f
+            case f :: r => f match {
+              case e: TError => ans
+              case _ => f
+            }
           }
           ans match {
             case v: TVoid => ()
@@ -248,7 +251,7 @@ class RunningInstance(fname: String, c: RunningInstance, args: Array[Type]) {
       }
       if (needle >= bytecode.length - 1) isDone = true
       if (!stack.isEmpty && stack.head.isInstanceOf[TError]) {
-        throw new RuntimeException("Runtime " + stack.head)
+        throw new RuntimeException("Runtime " + stack.head + ": " + (needle - 2).toHexString + "@" + fname)
       }
     }
   }

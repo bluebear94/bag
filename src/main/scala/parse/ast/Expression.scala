@@ -369,7 +369,7 @@ class XprInt extends JavaTokenParsers with PackratParsers {
   val uOps: HashMap[String, String] = new HashMap[String, String]()
   // Regex for valid identifiers.
   //[$[[^!@#$%^&*()_-=+~{}[]\|:;'",.<>/?][^@#$%^&*()_-=+~{}[]\|:;'",.<>/?]*:]?]?
-  def id: Regex = """[^\x5C\s\Q^!@#$%^&*_-+~{}().[]=|:;'",<>/?\E][^\x5C\s\Q^@#$%^&*_-+~{}()[]=|:;'",<>/?\E]*|!""".r // EEK
+  def id: Regex = """[^\x5C\s\Q^!@#$%^&*_-+~{}().[]=|:;'",<>/?\E][^\x5C\s\Q^@#$%^&*_-+~{}()[]=|:;'",<>/?\E]*""".r // EEK
   // note: ! is allowed, just not at the beginning (otherwise it has to be the only character)
   lazy val void: PackratParser[SBExpression] = "Void" ^^^ { new Literal(new TVoid()) }
   lazy val variable: PackratParser[LValue] = ((("\\$".r ~ (id | "") ~ ":") ^^ {
@@ -445,9 +445,9 @@ class XprInt extends JavaTokenParsers with PackratParsers {
   lazy val ternary: PackratParser[Expression] = sbexpression ~ "?" ~ expression ~ ":" ~ expression ^^ {
     case p ~ "?" ~ t ~ ":" ~ f => Ternary(p, t, f)
   }
-  def expression: PackratParser[Expression] = getUnary | control | ternary | assign | getOpEq | operator(ops.firstKey) | delete | sbexpression
+  def expression: PackratParser[Expression] = control | ternary | assign | getOpEq | operator(ops.firstKey) | delete | sbexpression
   def sbwrapper: PackratParser[SBExpression] = "(" ~> expression <~ ")" ^^ { x => SBWrapper(x) }
-  def sbexpression: PackratParser[SBExpression] = sbwrapper | ans | answer | literal | compound | (getLOpOp ||| getOpOpL) | variable
+  def sbexpression: PackratParser[SBExpression] = getUnary | sbwrapper | ans | answer | literal | compound | (getLOpOp ||| getOpOpL) | variable
   def getOpEq: PackratParser[Expression] = {
     if (oeOps.isEmpty) failure("no such operator")
     else lvalue ~ (oeOps.tail.foldLeft(literal(oeOps.head))((p, op) => p | op)) ~ "=" ~ expression ^^ {
@@ -470,7 +470,7 @@ class XprInt extends JavaTokenParsers with PackratParsers {
       }
     }
   }
-  def getUnary: PackratParser[Expression] = {
+  def getUnary: PackratParser[SBExpression] = {
     if (uOps.isEmpty) failure("no such operator")
     else {
       (uOps.keys.tail.foldLeft(literal(uOps.keys.head))((p, op) => p | op)) ~ sbexpression ^^ {
