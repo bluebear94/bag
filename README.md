@@ -20,7 +20,7 @@ I made some choices to fulfill the TI-Basic philosophy:
 * "Global variables" are actually persistent files.
 * No optimization is performed for you, especially not tail-call optimization. Do it yourself.
 * No objects or even structures. Use lists or maps.
-* There is a last-answer variable: one accounting for Void return values, and one not.
+* There is a last-answer variable: one accounting for Void return values, and one not. (Apparently, the TI-89 has an `ans()` function, but it's locked in program mode. How scandalous!)
 * There is no passing by reference; only value.
 
 However, I deviated from typical calculator programming languages in order to reduce the annoyance of using it:
@@ -53,34 +53,60 @@ Getting Started
 
 In order to run a piece of code, simply type it in the bottom panel and press the <kbd>Run</kbd> button (or, alternatively, <kbd>Ctrl</kbd> + <kbd>Enter</kbd>).
 
+The current types are:
+
+* Void
+* Mountain (arbitrary-precision integers)
+* Hill (64-bit integers)
+* String (UTF-8 encoded)
+* Fish (64-bit IEEE floating-point numbers)
+* Array
+* Linked List
+* Function
+
 The current operators are:
 
 * \+
 * \-
-* @ (average)
+* @ (arithmetic mean of two numbers, rounded down)
 * \*
 * /
 * \\ (int division)
 * %
+* ^ (exponentiation)
 * ==
 * \!=
 * <
 * <=
 * >
 * >=
-* &&
-* ||
-* ? and :
+* && (logical and SC)
+* || (logical or SC)
+* &' (logical and NSC)
+* |' (logical or NSC)
+* ^^ (logical xor)
+* ? and : (ternary operator; `a ? b : c` returns `b` if `a` is true, and `c` otherwise)
 
-Precedence can, of course, be specified by parentheses, and `&&` and `||` are short-circuit operators (and they are not guaranteed to return either 0 or 1).
+Precedence can, of course, be specified by parentheses, and `&&` and `||` are short-circuit operators (and they are not guaranteed to return either 0 or 1), while `&'`, `|'`, and `^^` do not short-circuit and return either 0 or 1.
 
-Variables can be assigned using the `=` operator (with no right side, it just deletes the variable). Global variables are denoted by `$`, and they persist through multiple sessions. Some operators also provide an assignment equivalent, as well as doubled versions that can appear before *or* after an lvalue.
+Variables can be assigned using the `=` operator (with the right side empty, it just deletes the variable). Global variables are denoted by `$`, and they persist through multiple sessions. Some operators also provide an assignment equivalent, as well as doubled versions that can appear before *or* after an lvalue.
+
+    a = 3 _ Assigns 3 to a
+    b = 4 _ Assigns 4 to b
+    b = _ Hasta la vista, b
+    a = 5 _ Assigns 5 to a
+    a += 1 _ a is now 6
+    $:hluna(++a) _ shows 7
+    $:hluna(a) _ shows 7
+    $:hluna(a**) _ shows 7
+    $:hluna(a) _ shows 14
+    a[3] _ returns ↼1
 
 Functions use lambdas, and the body is delimited with the `λ` and `Endλ` keywords. The last line defines the return value of the function. The number of arguments can be retrieved with `#0`, and each argument can be retrieved with an octothrope preceding a one-indexed value. Therefore, a function to square a number would be defined as:
 
     square = λ; #1 * #1; Endλ
 
-Lists come in two flavors: *arrays* delimited by *braces*, and *linked lists* delimited by *square brackets*. They can be indexed using brackets as well; e. g. `{3, 5, 7}[1]` returns the second element of a list. They support batch operations as well (`&&` and `||` do not work; newer versions will support `&'` and `|'` which lack short-circuiting but work on lists). Indexing *does* work on strings and even *integers* as well.
+Lists come in two flavors: *arrays* delimited by *braces*, and *linked lists* delimited by *square brackets*. They differ in the computational complexity of a given operation. They can be indexed using brackets as well; e. g. `{3, 5, 7}[1]` returns the second element of a list. They support batch operations as well (`&&` and `||` do not work; instead, use `&'` and `|'` which lack short-circuiting but work on lists). Indexing *does* work on strings and even *integers* as well.
 
 Each expression modifies the last-answer variable `Ans`, and `Answer` as well for non-void values.
 
@@ -100,7 +126,7 @@ The `For` .. `EndFor` loop will execute a block of code for each value of a vari
     (statements)
     EndFor
 
-The `While` .. `EndWhile` loop executes the body while its head expression evaluates to true, while the `Repeat` .. `EndRept` loop defers the check to after the body executes.
+The `While` .. `EndWhile` loop executes the body while its head expression evaluates to true, while the `Repeat` .. `EndRept` loop defers the check to after the body executes. They are analogous to `while (...) {...}` and `do ... while(!...);` constructs in C-based languages.
 
 Documentation of Commands
 -------------------------
