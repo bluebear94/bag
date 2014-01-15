@@ -32,9 +32,10 @@ object Global {
   }
   var root: File = new File("amw/")
   var current: File = root
+  var currentAlias = "root"
   val TWO = new BigInteger("2")
   val vM = 0
-  val vm = 4
-  val vr = 2
+  val vm = 5
+  val vr = 0
   val version = vM + "." + vm + "." + vr
 }

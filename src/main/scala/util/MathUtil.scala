@@ -3,8 +3,35 @@ import types._
 import scala.collection.mutable._
 import java.math.BigInteger
 
-
 object MathUtil {
+  def ttp(x: BigInteger, y: BigInteger): BigInteger = {
+    require(y.compareTo(BigInteger.ZERO) >= 0)
+    if (y.equals(BigInteger.ZERO)) BigInteger.ONE
+    else {
+      val isRightmostSet = y.testBit(0)
+      val lr = ttp(x, y.shiftRight(1))
+      if (isRightmostSet) x.multiply(lr.multiply(lr))
+      else lr.multiply(lr)
+    }
+  }
+  def tt(x: BigInteger, y: BigInteger): Type = {
+    if (y.compareTo(BigInteger.ZERO) >= 0) new TMountain(ttp(x, y))
+    else new TFish(1.0 / ttp(x, y.negate).doubleValue)
+  }
+  def ttp(x: Long, y: Long): Long = {
+    require(y >= 0L)
+    if (y == 0) 1L
+    else {
+      val isRightMostSet = (y & 1) == 1
+      val lr = ttp(x, y >> 1)
+      if (isRightMostSet) x * lr * lr
+      else lr * lr
+    }
+  }
+  def tt(x: Long, y: Long): Type = {
+    if (y >= 0) new THill(ttp(x, y))
+    else new TFish(1.0 / ttp(x, -y))
+  }
   // Set of math utilities.
   def motb(f: (Type, Type) => Type, l0: Buffer[Type], l1: Buffer[Type]): Buffer[Type] = {
     def fpair(p: (Type, Type)): Type = f(p._1, p._2)
@@ -45,16 +72,12 @@ object MathUtil {
       val bi = x.asInstanceOf[TMountain].getVal()
       if (yt == 1) {
         new TMountain(bi.add(y.asInstanceOf[TMountain].getVal()))
-      }
-      else if (yt == 2) {
+      } else if (yt == 2) {
         new TMountain(bi.add(new BigInteger(y.asInstanceOf[THill].getVal().toString())))
-      }
-      else if (yt == 4) {
+      } else if (yt == 4) {
         new TFish(bi.floatValue() + y.asInstanceOf[TFish].getVal())
-      }
-      else new TError(1)
-    }
-    else if (xt == 2) {
+      } else new TError(1)
+    } else if (xt == 2) {
       if (yt == 1) add(y, x)
       else {
         val lg = x.asInstanceOf[THill].getVal()
@@ -62,15 +85,13 @@ object MathUtil {
         else if (yt == 4) new TFish(lg + y.asInstanceOf[TFish].getVal())
         else new TError(1)
       }
-    }
-    else if (xt == 4) {
+    } else if (xt == 4) {
       if (yt == 1 || yt == 2) add(y, x)
       else if (yt == 4) new TFish(
-          x.asInstanceOf[TFish].getVal() + 
+        x.asInstanceOf[TFish].getVal() +
           y.asInstanceOf[TFish].getVal())
       else new TError(1)
-    }
-    else new TError(1)
+    } else new TError(1)
   }
   def negate(x: Type): Type = {
     val xt = x.getType()
@@ -92,16 +113,12 @@ object MathUtil {
       val bi = x.asInstanceOf[TMountain].getVal()
       if (yt == 1) {
         new TMountain(bi.multiply(y.asInstanceOf[TMountain].getVal()))
-      }
-      else if (yt == 2) {
+      } else if (yt == 2) {
         new TMountain(bi.multiply(new BigInteger(y.asInstanceOf[THill].getVal().toString())))
-      }
-      else if (yt == 4) {
+      } else if (yt == 4) {
         new TFish(bi.floatValue() * y.asInstanceOf[TFish].getVal())
-      }
-      else new TError(1)
-    }
-    else if (xt == 2) {
+      } else new TError(1)
+    } else if (xt == 2) {
       if (yt == 1) multiply(y, x)
       else {
         val lg = x.asInstanceOf[THill].getVal()
@@ -109,15 +126,13 @@ object MathUtil {
         else if (yt == 4) new TFish(lg * y.asInstanceOf[TFish].getVal())
         else new TError(1)
       }
-    }
-    else if (xt == 4) {
+    } else if (xt == 4) {
       if (yt == 1 || yt == 2) multiply(y, x)
       else if (yt == 4) new TFish(
-          x.asInstanceOf[TFish].getVal() * 
+        x.asInstanceOf[TFish].getVal() *
           y.asInstanceOf[TFish].getVal())
       else new TError(1)
-    }
-    else new TError(1)
+    } else new TError(1)
   }
   def recip(x: Type): Type = {
     val xt = x.getType()
@@ -129,6 +144,36 @@ object MathUtil {
   }
   def divide(x: Type, y: Type): Type = {
     multiply(x, recip(y))
+  }
+  def tt(x: Type, y: Type): Type = {
+    val xt = x.getType; val yt = y.getType
+    if ((xt == 5 || xt == 6) && (yt == 5 || yt == 6)) motl(tt, x.asInstanceOf[LList], y.asInstanceOf[LList])
+    else if ((xt == 5 || xt == 6)) mool(tt, x.asInstanceOf[LList], y)
+    else if ((yt == 5 || yt == 6)) mool(tt, y.asInstanceOf[LList], x)
+    else if (xt == 1) {
+      val bi = x.asInstanceOf[TMountain].getVal()
+      if (yt == 1) {
+        tt(bi, (y.asInstanceOf[TMountain].getVal()))
+      } else if (yt == 2) {
+        tt(bi, BigInteger.valueOf(y.asInstanceOf[THill].getVal))
+      } else if (yt == 4) {
+        new TFish(Math.pow(bi.floatValue(), y.asInstanceOf[TFish].getVal()))
+      } else new TError(1)
+    } else if (xt == 2) {
+      if (yt == 1) tt(y, x)
+      else {
+        val lg = x.asInstanceOf[THill].getVal()
+        if (yt == 2) tt(lg, y.asInstanceOf[THill].getVal)
+        else if (yt == 4) new TFish(Math.pow(lg, y.asInstanceOf[TFish].getVal()))
+        else new TError(1)
+      }
+    } else if (xt == 4) {
+      if (yt == 1 || yt == 2) tt(y, x)
+      else if (yt == 4) new TFish(Math.pow(
+        x.asInstanceOf[TFish].getVal(),
+          y.asInstanceOf[TFish].getVal()))
+      else new TError(1)
+    } else new TError(1)
   }
   def applyUnaryMath(f: (Double) => Double, x: Type): Type = {
     val xt = x.getType()
@@ -147,21 +192,17 @@ object MathUtil {
       val bi = x.asInstanceOf[TMountain].getVal()
       if (yt == 1) {
         new TMountain(bi.divide(y.asInstanceOf[TMountain].getVal()))
-      }
-      else if (yt == 2) {
+      } else if (yt == 2) {
         new TMountain(bi.divide(new BigInteger(y.asInstanceOf[THill].getVal().toString())))
-      }
-      else new TError(1)
-    }
-    else if (xt == 2) {
+      } else new TError(1)
+    } else if (xt == 2) {
       if (yt == 1) idivide(y, x)
       else {
         val lg = x.asInstanceOf[THill].getVal()
         if (yt == 2) new THill(lg / y.asInstanceOf[THill].getVal())
         else new TError(1)
       }
-    }
-    else new TError(1)
+    } else new TError(1)
   }
   def mod(x: Type, y: Type): Type = {
     val xt = x.getType; val yt = y.getType
@@ -172,34 +213,29 @@ object MathUtil {
       val bi = x.asInstanceOf[TMountain].getVal()
       if (yt == 1) {
         new TMountain(bi.mod(y.asInstanceOf[TMountain].getVal()))
-      }
-      else if (yt == 2) {
+      } else if (yt == 2) {
         new TMountain(bi.mod(new BigInteger(y.asInstanceOf[THill].getVal().toString())))
-      }
-      else new TError(1)
-    }
-    else if (xt == 2) {
+      } else new TError(1)
+    } else if (xt == 2) {
       if (yt == 1) mod(y, x)
       else {
         val lg = x.asInstanceOf[THill].getVal()
         if (yt == 2) new THill(lg % y.asInstanceOf[THill].getVal())
         else new TError(1)
       }
-    }
-    else new TError(1)
+    } else new TError(1)
   }
   def rel(x: Type, y: Type, f: (Type, Type) => Boolean): Type = {
     val xt = x.getType; val yt = y.getType
     def g(a: Type, b: Type): Type = {
-      BTI.bti(f(a,b))
+      BTI.bti(f(a, b))
     }
     if (xt == 5 || xt == 6) {
       if (yt == 5 || yt == 6)
-        motl(g, x.asInstanceOf[LList], y.asInstanceOf[LList]) 
+        motl(g, x.asInstanceOf[LList], y.asInstanceOf[LList])
       else
         mool(g, x.asInstanceOf[LList], y.asInstanceOf[LList])
-    }
-    else {
+    } else {
       if (yt == 5 || yt == 6)
         mool(g, y.asInstanceOf[LList], x.asInstanceOf[LList])
       else {

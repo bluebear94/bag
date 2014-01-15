@@ -26,5 +26,6 @@ class Loader {
     Global.liblist("std").loadCmd("ECons")
     Global.liblist("std").loadCmd("UONegate")
     Global.liblist("std").loadCmd("UONot")
+    Global.liblist("std").loadCmd("OTt")
   }
 }
