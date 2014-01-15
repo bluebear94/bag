@@ -369,7 +369,7 @@ class XprInt extends JavaTokenParsers with PackratParsers {
   val uOps: HashMap[String, String] = new HashMap[String, String]()
   // Regex for valid identifiers.
   //[$[[^!@#$%^&*()_-=+~{}[]\|:;'",.<>/?][^@#$%^&*()_-=+~{}[]\|:;'",.<>/?]*:]?]?
-  def id: Regex = """[^\x5C\s\Q^!@#$%^&*_-+~{}().[]=|:;'",<>/?\E][^\x5C\s\Q^@#$%^&*_-+~{}()[]=|:;'",<>/?\E]*""".r // EEK
+  def id: Regex = """[^\x5C\s\Q\d^!@#$%^&*_-+~{}().[]=|:;'",<>/?\E][^\x5C\s\Q^@#$%^&*_-+~{}()[]=|:;'",<>/?\E]*""".r // EEK
   // note: ! is allowed, just not at the beginning (otherwise it has to be the only character)
   lazy val void: PackratParser[SBExpression] = "Void" ^^^ { new Literal(new TVoid()) }
   lazy val variable: PackratParser[LValue] = ((("\\$".r ~ (id | "") ~ ":") ^^ {
@@ -387,7 +387,7 @@ class XprInt extends JavaTokenParsers with PackratParsers {
   }
   lazy val fish: PackratParser[SBExpression] = floatingPointNumber ^^ { s => new Literal(new TFish(s.toDouble)) }
   lazy val literal: PackratParser[SBExpression] = void | fish ||| mountain | hill | string
-  val lineDelimiter: PackratParser[String] = ";" | ""
+  val lineDelimiter: PackratParser[String] = ";" ^^^ ";"
   lazy val commaDelimited: PackratParser[List[Expression]] = repsep(expression, ",")
   lazy val lineDelimited: PackratParser[List[Expression]] = repsep(expression, lineDelimiter)
   lazy val array: PackratParser[SBExpression] = "{" ~> commaDelimited <~ "}" ^^ { l => AList(true, l.toArray[Expression]) }
@@ -441,13 +441,13 @@ class XprInt extends JavaTokenParsers with PackratParsers {
   lazy val ans: PackratParser[SBExpression] = "Ans" ^^^ Ans(false)
   lazy val answer: PackratParser[SBExpression] = "Answer" ^^^ Ans(true)
   //lazy val assignOp: PackratParser[Expression]
-  lazy val compound: PackratParser[SBExpression] = lambda | lIndexing | indexing | array | linked | hashtag | call
+  lazy val compound: PackratParser[SBExpression] = lambda | indexing | lIndexing | array | linked | hashtag | call
   lazy val ternary: PackratParser[Expression] = sbexpression ~ "?" ~ expression ~ ":" ~ expression ^^ {
     case p ~ "?" ~ t ~ ":" ~ f => Ternary(p, t, f)
   }
   def expression: PackratParser[Expression] = control | ternary | assign | getOpEq | operator(ops.firstKey) | delete | sbexpression
   def sbwrapper: PackratParser[SBExpression] = "(" ~> expression <~ ")" ^^ { x => SBWrapper(x) }
-  def sbexpression: PackratParser[SBExpression] = getUnary | sbwrapper | ans | answer | literal | compound | (getLOpOp ||| getOpOpL) | variable
+  def sbexpression: PackratParser[SBExpression] = getUnary | sbwrapper | compound | literal | (getLOpOp ||| getOpOpL) | variable | ans | answer
   def getOpEq: PackratParser[Expression] = {
     if (oeOps.isEmpty) failure("no such operator")
     else lvalue ~ (oeOps.tail.foldLeft(literal(oeOps.head))((p, op) => p | op)) ~ "=" ~ expression ^^ {

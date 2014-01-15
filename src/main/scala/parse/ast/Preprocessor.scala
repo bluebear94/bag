@@ -49,6 +49,6 @@ object Preprocessor {
       case (_, _) => Math.min(si, ni)
     }
     if (i == -1) preprocessLn(code)
-    else preprocessLn(code.substring(0, i)) + code.charAt(i) + preprocess(code.substring(i + 1))
+    else preprocessLn(code.substring(0, i)) + ";" + preprocess(code.substring(i + 1))
   }
 }

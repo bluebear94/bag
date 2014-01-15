@@ -18,6 +18,7 @@ object Main extends SimpleSwingApplication {
   val p = new XprInt
   def println(s: String) = {
     homeScn.text += s + "\n"
+    homeScn.caret.dot = homeScn.text.length
   }
   val IDLE = 0
   val BUSY = 1
@@ -39,6 +40,7 @@ object Main extends SimpleSwingApplication {
     text = "Welcome to Amethyst " + Global.version + ".\n\n" +
       (if (mono.getFamily != "DejaVu Sans Mono") "Please install the DejaVu fonts.\n" else "")
     tooltip = "The homescreen. Holds previous operations and console output."
+    lineWrap = true
   }
   val drawScn = new BufferedCanvas { // the top panel, for drawing
     preferredSize = new Dimension(640, 480)
@@ -104,15 +106,19 @@ object Main extends SimpleSwingApplication {
   val inputArea = new TextArea(5, 80) { // the bottom panel which holds the user's input
     font = mono
     tooltip = "Enter your code here!"
-    charWrap = true
+    lineWrap = true
   }
   def top = new MainFrame {
     Global.loadLib("std")
     p.loadOps
     title = "Amethyst " + Global.version
 
-    val inputScroll = new ScrollPane(inputArea)
-    val homeScroll = new ScrollPane(homeScn)
+    val inputScroll = new ScrollPane(inputArea) {
+      horizontalScrollBarPolicy = ScrollPane.BarPolicy.Never
+    }
+    val homeScroll = new ScrollPane(homeScn) {
+      horizontalScrollBarPolicy = ScrollPane.BarPolicy.Never
+    }
     val runButton = new Button {
       text = "Run (Ctrl + Enter)"
     }

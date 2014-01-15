@@ -27,5 +27,8 @@ class Loader {
     Global.liblist("std").loadCmd("UONegate")
     Global.liblist("std").loadCmd("UONot")
     Global.liblist("std").loadCmd("OTt")
+    Global.liblist("std").loadCmd("OAnd")
+    Global.liblist("std").loadCmd("OOr")
+    Global.liblist("std").loadCmd("OXor")
   }
 }
