@@ -282,10 +282,11 @@ case class While(p: Expression, b: List[Expression]) extends Expression {
   def toBytecode = {
     val predicate = p.toBytecode
     val body = ML.multiline(b)
+    val pl = BFuncs.alen(predicate)
     val bl = BFuncs.alen(body)
     BFuncs.app(predicate, BFuncs.app(
       Array(Bytes(Array[Byte](-0x17, 0x32)), Offset(12 + bl)), BFuncs.app(
-        body, Array(Bytes(Array[Byte](-0x17, 0x34)), Offset(-bl - 6 - BFuncs.alen(predicate))))))
+        body, Array(Bytes(Array[Byte](-0x17, 0x34)), Offset(-bl - 6 - pl)))))
   }
 }
 case class Repeat(p: Expression, b: List[Expression]) extends Expression {
@@ -369,7 +370,7 @@ class XprInt extends JavaTokenParsers with PackratParsers {
   val uOps: HashMap[String, String] = new HashMap[String, String]()
   // Regex for valid identifiers.
   //[$[[^!@#$%^&*()_-=+~{}[]\|:;'",.<>/?][^@#$%^&*()_-=+~{}[]\|:;'",.<>/?]*:]?]?
-  def id: Regex = """[^\x5C\s\Q\d^!@#$%^&*_-+~{}().[]=|:;'",<>/?\E][^\x5C\s\Q^@#$%^&*_-+~{}()[]=|:;'",<>/?\E]*""".r // EEK
+  def id: Regex = """[^\x5C\s\d\Q^!@#$%^&*_-+~{}().[]=|:;'",<>/?\E][^\x5C\s\Q^@#$%^&*_-+~{}()[]=|:;'",<>/?\E]*""".r // EEK
   // note: ! is allowed, just not at the beginning (otherwise it has to be the only character)
   lazy val void: PackratParser[SBExpression] = "Void" ^^^ { new Literal(new TVoid()) }
   lazy val variable: PackratParser[LValue] = ((("\\$".r ~ (id | "") ~ ":") ^^ {

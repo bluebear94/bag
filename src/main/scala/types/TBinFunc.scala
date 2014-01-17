@@ -2,6 +2,7 @@ package types
 
 import run.RunningInstance
 import cmdreader.Global
+import parse.ast.BFuncs
 
 class TBinFunc(bytecode: Array[Byte], source: String, ci: RunningInstance) extends TFunction {
   def apply(args: Array[Type]): Type = {
@@ -13,13 +14,13 @@ class TBinFunc(bytecode: Array[Byte], source: String, ci: RunningInstance) exten
     Global.top = Global.top.calling
     res
   }
-  def getBytecode(): Array[Byte] = bytecode
+  override def toBytecode(): Array[Byte] = bytecode
   override def equals(that: Any): Boolean = {
     that match {
-      case other: TBinFunc => other.getBytecode() == bytecode
+      case other: TBinFunc => other.toBytecode() == bytecode
       case _ => false
     }
   }
-  //override def toString(): String = "λ\n" + source + "\nEndλ"
+  override def toString(): String = BFuncs.bytecodeToString(bytecode)
   def >/< = new TBinFunc(bytecode.clone, new String(source), ci)
 }

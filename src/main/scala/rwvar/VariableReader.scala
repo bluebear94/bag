@@ -33,7 +33,7 @@ object VariableReader {
       case 7 => {
         new TBinFunc(bc, "", Global.top)
       }
-      case _ => new TError(999)
+      case _ => new TError(4)
     }
   }
   def readFile(fn: String) = {

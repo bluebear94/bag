@@ -30,5 +30,6 @@ class Loader {
     Global.liblist("std").loadCmd("OAnd")
     Global.liblist("std").loadCmd("OOr")
     Global.liblist("std").loadCmd("OXor")
+    Global.liblist("std").loadCmd("Disassembly")
   }
 }
