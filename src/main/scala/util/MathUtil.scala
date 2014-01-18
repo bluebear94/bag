@@ -373,4 +373,32 @@ object MathUtil {
       case (_, _) => new TError(1)
     }
   }
+  def abs(x: Type): Type = {
+    x match {
+      case xm: TMountain => new TMountain(xm.getVal.abs)
+      case xh: THill => new THill(Math.abs(xh.getVal))
+      case xf: TFish => new TFish(Math.abs(xf.getVal))
+      case xl: LList => mool(abs(_), xl)
+      case _ => new TError(1)
+    }
+  }
+  def floor(x: Type): Type = {
+    x match {
+      case xm: TMountain => new TMountain(xm.getVal)
+      case xh: THill => new THill(Math.abs(xh.getVal))
+      case xf: TFish => new TMountain(new BigDecimal(xf.getVal).toBigInteger)
+      case xl: LList => mool(floor(_), xl)
+      case _ => new TError(1)
+    }
+  }
+  def fpart(x: Double) = x - x.floor
+  def fpart(x: Type): Type = {
+    x match {
+      case xm: TMountain => new TMountain(BigInteger.ZERO)
+      case xh: THill => new THill(0L)
+      case xf: TFish => new TFish(fpart(xf.getVal))
+      case xl: LList => mool(abs(_), xl)
+      case _ => new TError(1)
+    }
+  }
 }

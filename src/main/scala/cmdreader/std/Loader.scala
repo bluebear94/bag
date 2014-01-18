@@ -34,5 +34,11 @@ class Loader {
     Global.liblist("std").loadCmd("OAndB")
     Global.liblist("std").loadCmd("OOrB")
     Global.liblist("std").loadCmd("OXorB")
+    Global.liblist("std").loadCmd("Now")
+    Global.liblist("std").loadCmd("Sub")
+    Global.liblist("std").loadCmd("Rrbzo")
+    Global.liblist("std").loadCmd("Abs")
+    Global.liblist("std").loadCmd("Floor")
+    Global.liblist("std").loadCmd("FPart")
   }
 }

@@ -5,6 +5,7 @@ import java.io._
 import java.lang._
 import run.RunningInstance
 import java.math.BigInteger
+import scala.util.Random
 
 object Global {
   var liblist: HashMap[String, CmdList] = new HashMap[String, CmdList]()
@@ -36,6 +37,7 @@ object Global {
   val TWO = new BigInteger("2")
   val vM = 0
   val vm = 5
-  val vr = 5
+  val vr = 6
   val version = vM + "." + vm + "." + vr
+  val r: Random = new Random
 }
