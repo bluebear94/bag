@@ -44,6 +44,7 @@ case class TFish(x: Double) extends TNumerical {
     }
   }
   def intValue(): Int = x.toInt
+  def doubleValue(): Double = x
   def >/< = TFish(x)
   def toBytecode: Array[Byte] = {
     val n = java.lang.Double.doubleToRawLongBits(x)

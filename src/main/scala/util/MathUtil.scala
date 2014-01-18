@@ -1,7 +1,7 @@
 package util
 import types._
 import scala.collection.mutable._
-import java.math.BigInteger
+import java.math._
 
 object MathUtil {
   def ttp(x: BigInteger, y: BigInteger): BigInteger = {
@@ -283,6 +283,94 @@ object MathUtil {
         case yt: LList => mool(orNSC(_, _), yt, x)
         case _ => BTI.bti(x.toBoolean || y.toBoolean)
       }
+    }
+  }
+  def shl(x: Type, y: Type): Type = {
+    (x, y) match {
+      case (xl: LList, yl: LList) => motl(shl(_, _), xl, yl)
+      case (xl: LList, _) => mool(shl(_, _), xl, y)
+      case (_, yl: LList) => shl(y, x)
+      case (xm: TMountain, ym: TNumerical) => {
+        new TMountain(xm.getVal.shiftLeft(ym.intValue))
+      }
+      case (xm: THill, ym: TNumerical) => {
+        new THill(xm.getVal << ym.intValue)
+      }
+      case (xm: TFish, ym: TNumerical) => {
+        new TFish(xm.getVal * Math.pow(2, ym.intValue))
+      }
+      case (_, _) => new TError(1)
+    }
+  }
+  def shr(x: Type, y: Type): Type = {
+    (x, y) match {
+      case (xl: LList, yl: LList) => motl(shr(_, _), xl, yl)
+      case (xl: LList, _) => mool(shr(_, _), xl, y)
+      case (_, yl: LList) => shr(y, x)
+      case (xm: TMountain, ym: TNumerical) => {
+        new TMountain(xm.getVal.shiftRight(ym.intValue))
+      }
+      case (xm: THill, ym: TNumerical) => {
+        new THill(xm.getVal >> ym.intValue)
+      }
+      case (xm: TFish, ym: TNumerical) => {
+        new TFish(xm.getVal * Math.pow(2, -ym.intValue))
+      }
+      case (_, _) => new TError(1)
+    }
+  }
+  def bitAnd(x: Type, y: Type): Type = {
+    (x, y) match {
+      case (xl: LList, yl: LList) => motl(bitAnd(_, _), xl, yl)
+      case (xl: LList, _) => mool(bitAnd(_, _), xl, y)
+      case (_, yl: LList) => bitAnd(y, x)
+      case (xm: TMountain, ym: TMountain) => new TMountain(xm.getVal and ym.getVal)
+      case (xm: TMountain, ym: THill) => new TMountain(xm.getVal and BigInteger.valueOf(ym.getVal))
+      case (xm: TMountain, ym: TFish) => new TMountain(xm.getVal and new BigDecimal(ym.getVal).toBigInteger)
+      case (xm: THill, ym: TMountain) => bitAnd(y, x)
+      case (xm: THill, ym: THill) => new THill(xm.getVal & ym.getVal)
+      case (xm: THill, ym: TFish) => new TMountain(BigInteger.valueOf(xm.getVal) and new BigDecimal(ym.getVal).toBigInteger)
+      case (xm: TFish, ym: TMountain) => bitAnd(y, x)
+      case (xm: TFish, ym: THill) => bitAnd(y, x)
+      case (xm: TFish, ym: TFish) => new TMountain(new BigDecimal(xm.getVal).toBigInteger and
+          new BigDecimal(ym.getVal).toBigInteger)
+      case (_, _) => new TError(1)
+    }
+  }
+  def bitOr(x: Type, y: Type): Type = {
+    (x, y) match {
+      case (xl: LList, yl: LList) => motl(bitOr(_, _), xl, yl)
+      case (xl: LList, _) => mool(bitOr(_, _), xl, y)
+      case (_, yl: LList) => bitOr(y, x)
+      case (xm: TMountain, ym: TMountain) => new TMountain(xm.getVal or ym.getVal)
+      case (xm: TMountain, ym: THill) => new TMountain(xm.getVal or BigInteger.valueOf(ym.getVal))
+      case (xm: TMountain, ym: TFish) => new TMountain(xm.getVal or new BigDecimal(ym.getVal).toBigInteger)
+      case (xm: THill, ym: TMountain) => bitOr(y, x)
+      case (xm: THill, ym: THill) => new THill(xm.getVal | ym.getVal)
+      case (xm: THill, ym: TFish) => new TMountain(BigInteger.valueOf(xm.getVal) or new BigDecimal(ym.getVal).toBigInteger)
+      case (xm: TFish, ym: TMountain) => bitOr(y, x)
+      case (xm: TFish, ym: THill) => bitOr(y, x)
+      case (xm: TFish, ym: TFish) => new TMountain(new BigDecimal(xm.getVal).toBigInteger or
+          new BigDecimal(ym.getVal).toBigInteger)
+      case (_, _) => new TError(1)
+    }
+  }
+  def bitXor(x: Type, y: Type): Type = {
+    (x, y) match {
+      case (xl: LList, yl: LList) => motl(bitXor(_, _), xl, yl)
+      case (xl: LList, _) => mool(bitXor(_, _), xl, y)
+      case (_, yl: LList) => bitXor(y, x)
+      case (xm: TMountain, ym: TMountain) => new TMountain(xm.getVal xor ym.getVal)
+      case (xm: TMountain, ym: THill) => new TMountain(xm.getVal xor BigInteger.valueOf(ym.getVal))
+      case (xm: TMountain, ym: TFish) => new TMountain(xm.getVal xor new BigDecimal(ym.getVal).toBigInteger)
+      case (xm: THill, ym: TMountain) => bitXor(y, x)
+      case (xm: THill, ym: THill) => new THill(xm.getVal ^ ym.getVal)
+      case (xm: THill, ym: TFish) => new TMountain(BigInteger.valueOf(xm.getVal) xor new BigDecimal(ym.getVal).toBigInteger)
+      case (xm: TFish, ym: TMountain) => bitXor(y, x)
+      case (xm: TFish, ym: THill) => bitXor(y, x)
+      case (xm: TFish, ym: TFish) => new TMountain(new BigDecimal(xm.getVal).toBigInteger xor
+          new BigDecimal(ym.getVal).toBigInteger)
+      case (_, _) => new TError(1)
     }
   }
 }
