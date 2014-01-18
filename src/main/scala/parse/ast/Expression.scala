@@ -53,8 +53,8 @@ case class Assign(left: LValue, right: Expression) extends Expression {
     left.eval(ci)
   }
   def toBytecode = {
-    BFuncs.app(left.toSymBytecode, BFuncs.app(
-      right.toBytecode, Array(Bytes(Array[Byte](-0x17, 0x50)))))
+    BFuncs.app(left.toSymBytecode,
+      Array(Bytes(BFuncs.flatten(right.toBytecode) ++ Array[Byte](-0x17, 0x50))))
   }
 }
 case class Delete(left: LValue) extends Expression {
@@ -127,7 +127,7 @@ case class Lambda(lines: List[Expression]) extends SBExpression {
   }
   def toBytecode = {
     val lbc = ML.multiline(lines)
-    BFuncs.app(Array(Bytes(Array[Byte](-0x1F, 0x07) ++ MakeByteArrays.intToByteArray(BFuncs.alen(lbc)))), lbc)
+    Array(Bytes(Array[Byte](-0x1F, 0x07) ++ MakeByteArrays.intToByteArray(BFuncs.alen(lbc)))) ++ lbc
   }
 }
 case class AList(isArray: Boolean, args: Array[Expression]) extends SBExpression {
