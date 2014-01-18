@@ -20,7 +20,7 @@ abstract class LList extends Type {
   def toBytecode: Array[Byte] = {
     val s = l.map((t: Type) => {
       val bc = t.toBytecode
-      MakeByteArrays.intToByteArray(bc.length) ++ bc
+      MakeByteArrays.intToByteArray(bc.length) ++ Array[Byte](t.getType.toByte) ++ bc
     }).foldLeft(Array[Byte]())(_ ++ _)
     val bsl = l.length
     MakeByteArrays.intToByteArray(bsl) ++ s

@@ -50,7 +50,8 @@ Variable format (file):
 [5, 6]:
 8 - 11: # elems
 rept [
-size,
+size of body,
+type,
 body
 ]
 [7]:
