@@ -1,0 +1,14 @@
+$:subt
+
+#0: any positive integer
+#1: value from which to subtract
+#2...: values to be subtracted
+Operator: -
+  LTR
+  has -=
+  has -- (1)
+
+Subtracts zero or more values from another.
+
+If one or more values are lists, then applies the operation element by element.
+Dimensions must match; otherwise an Error #2 will be thrown.

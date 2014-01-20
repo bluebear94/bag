@@ -15,7 +15,7 @@ class OTt extends CommandOperator {
     )(MathUtil.tt(_, _))
   }
   def getPrecedence() = PStandard.EXPONENT
-  def isReversed() = false
+  def isReversed() = true
   def hasAssignmentEquiv() = true
   def getDoubleBase() = Some(new TMountain(new BigInteger("2")))
 }

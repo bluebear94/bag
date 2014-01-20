@@ -1,6 +1,7 @@
 package types
 
-class TError(errno: Int) extends Type {
+class TError(errno: Int, msg: String) extends Type {
+  def this(errno: Int) = this(errno, "")
   def getErrno(): Int = errno
   def getType(): Int = -1
   def toBoolean(): Boolean = false
@@ -11,8 +12,8 @@ class TError(errno: Int) extends Type {
     }
   }
   override def toString(): String = {
-    "Error #" + errno
+    "Error #" + errno + ": " + msg
   }
-  def >/< = new TError(errno)
+  def >/< = new TError(errno, msg)
   def toBytecode: Array[Byte] = Array[Byte]()
 }

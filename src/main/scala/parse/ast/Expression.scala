@@ -140,7 +140,7 @@ case class AList(isArray: Boolean, args: Array[Expression]) extends SBExpression
   def toBytecode = {
     args.reverse.map(_.toBytecode).foldLeft(Array[Bin]())(_ ++ _) ++
       Array(Bytes(Array[Byte](-0x17, if (isArray) 0x40 else 0x45) ++
-          MakeByteArrays.intToByteArray(args.length)))
+        MakeByteArrays.intToByteArray(args.length)))
   }
 }
 case class Index(l: Expression, i: Expression) extends SBExpression {
@@ -362,8 +362,8 @@ case class Ans(aa: Boolean) extends SBExpression {
   // those bloody boolean types
 }
 class XprInt extends JavaTokenParsers with PackratParsers {
-  var ops: TreeMap[Int, PackratParser[(Expression, Expression) => Expression]] =
-    new TreeMap[Int, PackratParser[(Expression, Expression) => Expression]]()
+  var ops: TreeMap[Int, (PackratParser[(Expression, Expression) => Expression], Boolean)] =
+    new TreeMap[Int, (PackratParser[(Expression, Expression) => Expression], Boolean)]()
   val oeOps: mutable.ListBuffer[String] = new mutable.ListBuffer[String]()
   val ooOps: mutable.ListBuffer[String] = new mutable.ListBuffer[String]()
   var opEq: PackratParser[Expression] = failure("No such assignment operator.")
@@ -479,11 +479,11 @@ class XprInt extends JavaTokenParsers with PackratParsers {
       }
     }
   }
-  def loadWithPrec(prec: Int, parser: PackratParser[(Expression, Expression) => Expression]) = {
+  def loadWithPrec(prec: Int, parser: (PackratParser[(Expression, Expression) => Expression], Boolean)) = {
     if (ops.containsKey(prec)) {
       // update parser
       val oldp = ops.get(prec)
-      ops.put(prec, oldp | parser)
+      ops.put(prec, (oldp._1 | parser._1, oldp._2 || parser._2))
     } else {
       // create a new entry in the map
       ops.put(prec, parser)
@@ -506,10 +506,11 @@ class XprInt extends JavaTokenParsers with PackratParsers {
           val opn = (if (isStdLib) "" else "$" + ln + ":") + cmd.getOpAlias
           val hasOE = cmd.hasAssignmentEquiv
           print(s"Loading operator $opn\n")
-          val cp: PackratParser[(Expression, Expression) => Expression] = opn ^^^ { (a: Expression, b: Expression) =>
-            if (dir) Operator(opn, b, a)
-            else Operator(opn, a, b)
-          }
+          val cp: (PackratParser[(Expression, Expression) => Expression], Boolean) =
+            (opn ^^^ { (a: Expression, b: Expression) =>
+              if (dir) Operator(opn, b, a)
+              else Operator(opn, a, b)
+            }, dir)
           loadWithPrec(prec, cp)
           // now update the opEq parser, if appropriate
           if (hasOE) {
@@ -526,8 +527,7 @@ class XprInt extends JavaTokenParsers with PackratParsers {
             }
             case None => ()
           }
-        }
-        else { // unary op
+        } else { // unary op
           val opn = (if (isStdLib) "" else "$" + ln + ":") + cmd.getOpAlias
           val cn = "$" + ln + ":" + cmd.getName
           uOps(opn) = cn
@@ -540,13 +540,20 @@ class XprInt extends JavaTokenParsers with PackratParsers {
       { (a: Expression, b: Expression) => Ternary(a, b, Literal(TMountain(BigInteger.ZERO))) }
     val orParser: PackratParser[(Expression, Expression) => Expression] = "||" ^^^
       { (a: Expression, b: Expression) => Ternary(a, Literal(TMountain(BigInteger.ONE)), b) }
-    loadWithPrec(PStandard.CONJUNCTION, andParser)
-    loadWithPrec(PStandard.DISJUNCTION, orParser)
+    loadWithPrec(PStandard.CONJUNCTION, (andParser, false))
+    loadWithPrec(PStandard.DISJUNCTION, (orParser, false))
+  }
+  def chainr1[T, U](first: => Parser[T], p: => Parser[U], q: => Parser[(T, U) => T]): Parser[T] = rep(p ~ q) ~ first ^^ {
+    case xs ~ x => xs.foldRight(x: T) { case (b ~ f, a) => f(a, b) } // x's type annotation is needed to deal with changed type inference due to SI-5189
+  }
+  def chain(p: PackratParser[Expression], r: (PackratParser[(Expression, Expression) => Expression], Boolean)) = {
+    if (r._2) chainr1(p, p, r._1)
+    else chainl1(p, r._1)
   }
   def operator(level: Int): PackratParser[Expression] = {
     if (level > ops.lastKey) sbexpression
-    else if (level == ops.lastKey) sbexpression * ops.get(level)
-    else operator(ops.higherKey(level)) * ops.get(level)
+    else if (level == ops.lastKey) chain(sbexpression, ops.get(level))
+    else chain(operator(ops.higherKey(level)), ops.get(level))
   }
 }
 

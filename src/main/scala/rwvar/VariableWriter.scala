@@ -1,7 +1,7 @@
 package rwvar
 
 import types.Type
-import util.MakeByteArrays
+import util._
 import java.io._
 import cmdreader.Global
 
@@ -13,7 +13,7 @@ object VariableWriter {
   }
   def writeValToVarfile(v: Type, fn: String) {
     val nf = new File(fn)
-    nf.createNewFile
+    nf.mkdirs
     val out = new FileOutputStream(nf)
     out.write(getCA(v))
     out.close

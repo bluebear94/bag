@@ -1,0 +1,13 @@
+$:avg
+
+#0: 2
+#1, #2: values to be averaged
+Operator: @
+  LTR
+  has @=
+  has @@ (0)
+
+Takes the average of two values.
+
+If one or more values are lists, then applies the operation element by element.
+Dimensions must match; otherwise an Error #2 will be thrown.

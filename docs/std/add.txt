@@ -1,0 +1,14 @@
+$:add
+
+#0: any nonnegative integer
+#1...: values to be added
+Operator: +
+  LTR
+  has +=
+  has ++ (1)
+
+Adds zero or more values.
+
+If one or more values are lists, then applies the operation element by element.
+Dimensions must match; otherwise an Error #2 will be thrown.
+If all arguments are strings, then concatenates them.
