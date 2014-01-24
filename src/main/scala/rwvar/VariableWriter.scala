@@ -13,7 +13,8 @@ object VariableWriter {
   }
   def writeValToVarfile(v: Type, fn: String) {
     val nf = new File(fn)
-    nf.mkdirs
+    nf.getParentFile.mkdirs
+    nf.createNewFile
     val out = new FileOutputStream(nf)
     out.write(getCA(v))
     out.close

@@ -251,7 +251,9 @@ class RunningInstance(fname: String, c: RunningInstance, args: Array[Type]) {
       }
       if (needle >= bytecode.length - 1) isDone = true
       if (!stack.isEmpty && stack.head.isInstanceOf[TError]) {
-        throw new RuntimeException("Runtime " + stack.head + ": " + (needle - 2).toHexString + "@" + fname)
+        val e = stack.head
+        stack = stack.tail
+        throw new RuntimeException("Runtime " + e + ": " + (needle - 2).toHexString + "@" + fname)
       }
     }
   }

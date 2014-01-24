@@ -448,7 +448,7 @@ class XprInt extends JavaTokenParsers with PackratParsers {
   }
   def expression: PackratParser[Expression] = control | ternary | assign | getOpEq | operator(ops.firstKey) | delete | sbexpression
   def sbwrapper: PackratParser[SBExpression] = "(" ~> expression <~ ")" ^^ { x => SBWrapper(x) }
-  def sbexpression: PackratParser[SBExpression] = getUnary | sbwrapper | compound | literal | (getLOpOp ||| getOpOpL) | variable | ans | answer
+  def sbexpression: PackratParser[SBExpression] = getUnary | compound | literal | (getLOpOp ||| getOpOpL) | variable | answer | ans | sbwrapper
   def getOpEq: PackratParser[Expression] = {
     if (oeOps.isEmpty) failure("no such operator")
     else lvalue ~ (oeOps.tail.foldLeft(literal(oeOps.head))((p, op) => p | op)) ~ "=" ~ expression ^^ {
@@ -483,7 +483,7 @@ class XprInt extends JavaTokenParsers with PackratParsers {
     if (ops.containsKey(prec)) {
       // update parser
       val oldp = ops.get(prec)
-      ops.put(prec, (oldp._1 | parser._1, oldp._2 || parser._2))
+      ops.put(prec, (oldp._1 ||| parser._1, oldp._2 || parser._2))
     } else {
       // create a new entry in the map
       ops.put(prec, parser)

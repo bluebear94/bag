@@ -40,5 +40,7 @@ class Loader {
     Global.liblist("std").loadCmd("Abs")
     Global.liblist("std").loadCmd("Floor")
     Global.liblist("std").loadCmd("FPart")
+    Global.liblist("std").loadCmd("OShl")
+    Global.liblist("std").loadCmd("OShr")
   }
 }
