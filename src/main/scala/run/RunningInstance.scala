@@ -13,7 +13,7 @@ import java.io.File
 class RunningInstance(fname: String, c: RunningInstance, args: Array[Type]) {
   // initial stuffs
   var bytecode: Array[Byte] = Array[Byte]()
-  if (!fname.startsWith("code:")) {
+  /*if (!fname.startsWith("code:")) {
     val f: FileInputStream = new FileInputStream(fname)
     val bc = ArrayBuffer[Byte]()
     var b: Int = 0
@@ -24,7 +24,7 @@ class RunningInstance(fname: String, c: RunningInstance, args: Array[Type]) {
       }
     }
     bytecode = bc.toArray
-  }
+  }*/
   val needle: Int = 0
   val calling = c
   var environment = new HashMap[String, Type]()
@@ -241,7 +241,7 @@ class RunningInstance(fname: String, c: RunningInstance, args: Array[Type]) {
             val valtype = cmd & 0xFF
             val size = readInt(needle)
             needle += 4
-            stack = VariableReader.readData(bytecode.slice(needle, needle + size), valtype) :: stack
+            stack = VariableReader.readData(bytecode.slice(needle, needle + size), valtype, "[ANON]") :: stack
             needle += size
           } else {
             throw new RuntimeException("Invalid command: " + cmd + "@" + (needle - 2).toHexString)
@@ -253,7 +253,8 @@ class RunningInstance(fname: String, c: RunningInstance, args: Array[Type]) {
       if (!stack.isEmpty && stack.head.isInstanceOf[TError]) {
         val e = stack.head
         stack = stack.tail
-        throw new RuntimeException("Runtime " + e + ": " + (needle - 2).toHexString + "@" + fname)
+        throw new RuntimeException("Runtime " + e + ": " + (needle - 2).toHexString + "@" + fname + ": " +
+            cmd.toHexString)
       }
     }
   }

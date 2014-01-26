@@ -173,7 +173,7 @@ case class LIndex(l: LValue, i: Expression) extends LValue {
   def toSymBytecode = {
     BFuncs.app(l.toSymBytecode,
       i.toBytecode) ++
-      Array(Bytes(Array[Byte](-0x17, 0x39)))
+      Array(Bytes(Array[Byte](-0x17, 0x49)))
   }
 }
 // How am I going to parse operations while respecting the order of

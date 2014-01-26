@@ -10,7 +10,7 @@ import scala.collection.mutable._
 
 object VariableReader {
   def tus(n: Byte) = if (n >= 0) n else 0x100 + n
-  def readData(bc: Array[Byte], typeid: Int): Type = {
+  def readData(bc: Array[Byte], typeid: Int, fn: String): Type = {
     typeid match {
       case 0 => new TVoid
       case 1 => new TMountain(new BigInteger(bc))
@@ -40,13 +40,13 @@ object VariableReader {
             (tus(bc(needle + 2)) << 8) + tus(bc(needle + 3))
           val t = bc(needle + 4)
           val e = bc.slice(needle + 5, needle + 5 + s)
-          ce.append(readData(e, t))
+          ce.append(readData(e, t, fn))
           needle += 5 + s
         }
         if (typeid == 5) new LArray(ce.to[ArrayBuffer]) else new LLinked(ce.to[ListBuffer])
       }
       case 7 => {
-        new TBinFunc(bc, "", Global.top)
+        new TBinFunc(bc, "", Global.top, fn)
       }
       case _ => new TError(4)
     }
@@ -66,7 +66,7 @@ object VariableReader {
       if (a(0) != 0x02 || a(1) != 0x04 || a(2) != -0x69) new TError(4)
       else {
         val t = a(3)
-        readData(a.drop(8), t)
+        readData(a.drop(8), t, fn)
       }
     } catch {
       case e: FileNotFoundException => new TVoid

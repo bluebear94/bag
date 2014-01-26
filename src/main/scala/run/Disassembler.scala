@@ -108,7 +108,7 @@ object Disassembler {
             val size = readInt(needle)
             needle += 4
             string += "push " + Array("void", "mt", "hl", "str", "fsh", "arr", "ll", "func").apply(valtype) + " " +
-              VariableReader.readData(bytecode.slice(needle, needle + size), valtype)
+              VariableReader.readData(bytecode.slice(needle, needle + size), valtype, "")
             needle += size
           } else {
             throw new RuntimeException("Invalid command: " + cmd + "@" + (needle - 2).toHexString)
