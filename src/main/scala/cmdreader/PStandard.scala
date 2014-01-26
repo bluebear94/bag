@@ -17,4 +17,5 @@ object PStandard {
   val DISJUNCTION = 50
   val DOUBLE_OP = 1600
   val SHIFT = 175
+  val MAP = 2000
 }

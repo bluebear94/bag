@@ -183,6 +183,44 @@ object MathUtil {
     else if (xt == 5 || xt == 6) mool(applyUnaryMath(f, _), x.asInstanceOf[LList])
     else new TError(1)
   }
+  def exp(x: Type): Type = applyUnaryMath(Math.exp(_), x)
+  def ln(x: Type): Type = applyUnaryMath(Math.log(_), x)
+  def sin(x: Type): Type = applyUnaryMath(Math.sin(_), x)
+  def cos(x: Type): Type = applyUnaryMath(Math.cos(_), x)
+  def tan(x: Type): Type = applyUnaryMath(Math.tan(_), x)
+  def csc(x: Type): Type = applyUnaryMath(1.0 / Math.sin(_), x)
+  def sec(x: Type): Type = applyUnaryMath(1.0 / Math.cos(_), x)
+  def cot(x: Type): Type = applyUnaryMath(1.0 / Math.tan(_), x)
+  def asin(x: Type): Type = applyUnaryMath(Math.asin(_), x)
+  def acos(x: Type): Type = applyUnaryMath(Math.acos(_), x)
+  def atan(x: Type): Type = applyUnaryMath(Math.atan(_), x)
+  def acsc(x: Type): Type = applyUnaryMath(y => Math.asin(1.0 / y), x)
+  def asec(x: Type): Type = applyUnaryMath(y => Math.acos(1.0 / y), x)
+  def acot(x: Type): Type = applyUnaryMath(Math.PI / 2 - Math.atan(_), x)
+  def sinh(x: Type): Type = applyUnaryMath(Math.sinh(_), x)
+  def cosh(x: Type): Type = applyUnaryMath(Math.cosh(_), x)
+  def tanh(x: Type): Type = applyUnaryMath(Math.tanh(_), x)
+  def csch(x: Type): Type = applyUnaryMath(1.0 / Math.sinh(_), x)
+  def sech(x: Type): Type = applyUnaryMath(1.0 / Math.cosh(_), x)
+  def coth(x: Type): Type = applyUnaryMath(1.0 / Math.tanh(_), x)
+  def asinh(x: Double) = Math.log(Math.hypot(1.0, x) + x)
+  def acosh(x: Double) = Math.log(Math.sqrt(Math.pow(x, 2) - 1.0) + x)
+  def atanh(x: Double) = 0.5 * (Math.log(x + 1) - Math.log(1 - x))
+  def asinh(x: Type): Type = applyUnaryMath(asinh(_), x)
+  def acosh(x: Type): Type = applyUnaryMath(acosh(_), x)
+  def atanh(x: Type): Type = applyUnaryMath(atanh(_), x)
+  def acsch(x: Type): Type = applyUnaryMath(y => asinh(1.0 / y), x)
+  def asech(x: Type): Type = applyUnaryMath(y => acosh(1.0 / y), x)
+  def acoth(x: Type): Type = applyUnaryMath(y => 0.5 * Math.log((y + 1)/(y - 1)), x)
+  def atan(x: Type, y: Type): Type = {
+    (x, y) match {
+      case (xl: LList, yl: LList) => motl(atan(_, _), xl, yl)
+      case (xl: LList, _) => mool(atan(_, _), xl, y)
+      case (_, yl: LList) => mool((a, b) => atan(b, a), yl, x)
+      case (x: TNumerical, y: TNumerical) => TFish(Math.atan2(y.doubleValue, x.doubleValue))
+      case _ => new TError(1)
+    }
+  }
   def idivide(x: Type, y: Type): Type = {
     val xt = x.getType; val yt = y.getType
     if ((xt == 5 || xt == 6) && (yt == 5 || yt == 6)) motl(idivide, x.asInstanceOf[LList], y.asInstanceOf[LList])
@@ -289,7 +327,7 @@ object MathUtil {
     (x, y) match {
       case (xl: LList, yl: LList) => motl(shl(_, _), xl, yl)
       case (xl: LList, _) => mool(shl(_, _), xl, y)
-      case (_, yl: LList) => shl(y, x)
+      case (_, yl: LList) => mool((a, b) => shl(b, a), yl, x)
       case (xm: TMountain, ym: TNumerical) => {
         new TMountain(xm.getVal.shiftLeft(ym.intValue))
       }
@@ -306,7 +344,7 @@ object MathUtil {
     (x, y) match {
       case (xl: LList, yl: LList) => motl(shr(_, _), xl, yl)
       case (xl: LList, _) => mool(shr(_, _), xl, y)
-      case (_, yl: LList) => shr(y, x)
+      case (_, yl: LList) => mool((a, b) => shr(b, a), yl, x)
       case (xm: TMountain, ym: TNumerical) => {
         new TMountain(xm.getVal.shiftRight(ym.intValue))
       }

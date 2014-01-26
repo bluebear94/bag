@@ -42,5 +42,12 @@ class Loader {
     Global.liblist("std").loadCmd("FPart")
     Global.liblist("std").loadCmd("OShl")
     Global.liblist("std").loadCmd("OShr")
+    Global.liblist("std").loadCmd("OMap")
+    Global.liblist("std").loadCmd("Exp")
+    Global.liblist("std").loadCmd("Ln")
+    Global.liblist("std").loadCmd("Pi")
+    List("Sin", "Cos", "Tan").map({
+      s => List(s, s + "h", "A" + s, "A" + s + "h").map(Global.liblist("std").loadCmd(_))
+    })
   }
 }
