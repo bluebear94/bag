@@ -1,7 +1,9 @@
 amethyst
 ========
 
+_ Name will change soon
 $:hluna("A programming language by bluebear94
+_ the troll
 
 Note
 ----
@@ -86,6 +88,7 @@ The current operators are:
 * |' (logical or NSC)
 * ^^ (logical xor)
 * ? and : (ternary operator; `a ? b : c` returns `b` if `a` is true, and `c` otherwise)
+* \+> (map a collection using a function; e. g. `{2, 4, 6, 8} +> $:hluna` displays the four numbers on separate lines
 
 Precedence can, of course, be specified by parentheses, and `&&` and `||` are short-circuit operators (and they are not guaranteed to return either 0 or 1), while `&'`, `|'`, and `^^` do not short-circuit and return either 0 or 1.
 
@@ -106,7 +109,7 @@ Functions use lambdas, and the body is delimited with the `λ` and `Endλ` keywo
 
     square = λ; #1 * #1; Endλ
 
-Lists come in two flavors: *arrays* delimited by *braces*, and *linked lists* delimited by *square brackets*. They differ in the computational complexity of a given operation. They can be indexed using brackets as well; e. g. `{3, 5, 7}[1]` returns the second element of a list. They support batch operations as well (`&&` and `||` do not work; instead, use `&'` and `|'` which lack short-circuiting but work on lists). Indexing *does* work on strings and even *integers* as well.
+Lists come in two flavors: *arrays* delimited by *braces*, and *linked lists* delimited by *square brackets*. They differ in the computational complexity of a given operation. They can be indexed using brackets as well; e. g. `{3, 5, 7}[1]` returns the second element of a list. They support batch operations as well (`&&` and `||` dooo not work; instead, use `&'` and `|'` which lack short-circuiting but work on lists). Indexing *does* work on strings and even *integers* as well.
 
 Each expression modifies the last-answer variable `Ans`, and `Answer` as well for non-void values.
 
