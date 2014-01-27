@@ -52,6 +52,7 @@ object Preprocessor {
     val code = if (c.last == '\n') c else c + "\n"
     var qm = false
     var out = ""
+    var curLine = ""
     var l = 0
     var s = 0
     if (debug) {
@@ -67,11 +68,11 @@ object Preprocessor {
         for (i: Int <- s until l) {
           print("-")
         }
-        println("> " + out.replaceAll("\n", ";"))
+        println("> " + (out + curLine).replaceAll("\n", ";"))
       }
       if (c == '\"') qm = !qm
       else if (c == '\n' || (!qm && c == ';')) {
-        out += code.substring(s, l)
+        out += preprocessLn(curLine + code.substring(s, l))
         s = l
       } else if (c == 'λ' && !qm) {
         var lvs = 1
@@ -100,7 +101,7 @@ object Preprocessor {
         val left = code.substring(s, l + 1)
         val right = code.substring(index)
         val mid = code.substring(l + 1, index - 1)
-        out += left + preprocess(mid) + "λ"
+        curLine += left + preprocess(mid) + "λ"
         s = index
         l = s - 1
         if (debug) {
