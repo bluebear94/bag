@@ -49,5 +49,6 @@ class Loader {
     List("Sin", "Cos", "Tan").map({
       s => List(s, s + "h", "A" + s, "A" + s + "h").map(Global.liblist("std").loadCmd(_))
     })
+    Global.liblist("std").loadCmd("Expr")
   }
 }

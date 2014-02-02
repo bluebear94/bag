@@ -108,7 +108,7 @@ case class FCall(f: SBExpression, args: Array[Expression]) extends SBExpression 
     }
   }
   def toBytecode = {
-    BFuncs.app(args.map(_.toBytecode).foldLeft(Array[Bin]())(_ ++ _),
+    BFuncs.app(args.map(_.toBytecode).foldLeft(Array[Bin]())(BFuncs.app(_,_)),
       f.toBytecode) ++
       Array(Bytes(Array[Byte](-0x20, 0x00) ++ MakeByteArrays.intToByteArray(args.length)))
   }
