@@ -13,7 +13,7 @@ class Cons extends Command {
     try {
       l match {
         case a: LArray => new LArray((t +: a.l).to[ArrayBuffer])
-        case a: LLinked => new LLinked((t +: a.l).tail.to[ListBuffer])
+        case a: LLinked => new LLinked((t +: a.l).to[ListBuffer])
         case s: TString => {
           new TString(new String(Array[Char](
             t match {

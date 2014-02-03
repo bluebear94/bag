@@ -50,5 +50,8 @@ class Loader {
       s => List(s, s + "h", "A" + s, "A" + s + "h").map(Global.liblist("std").loadCmd(_))
     })
     Global.liblist("std").loadCmd("Expr")
+    Global.liblist("std").loadCmd("FoldL")
+    Global.liblist("std").loadCmd("FoldR")
+    Global.liblist("std").loadCmd("OFilter")
   }
 }

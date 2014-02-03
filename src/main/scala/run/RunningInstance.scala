@@ -10,7 +10,7 @@ import parse.ast._
 import java.io.File
 
 // If fname starts with "code:", then it is an instance of code.
-class RunningInstance(fname: String, c: RunningInstance, args: Array[Type]) {
+class RunningInstance(fn: String, c: RunningInstance, args: Array[Type]) {
   // initial stuffs
   var bytecode: Array[Byte] = Array[Byte]()
   /*if (!fname.startsWith("code:")) {
@@ -27,6 +27,7 @@ class RunningInstance(fname: String, c: RunningInstance, args: Array[Type]) {
   }*/
   val needle: Int = 0
   val calling = c
+  val fname = fn
   var environment = new HashMap[String, Type]()
   var stack = List[Type]()
   var symstack = List[LValue]()
@@ -124,6 +125,14 @@ class RunningInstance(fname: String, c: RunningInstance, args: Array[Type]) {
     (new String(bytecode.slice(strSt, strSt + length), "UTF-8"), strSt + length)
   }
   def tus(n: Byte) = if (n >= 0) n else 0x100 + n
+  def printStackTrace = {
+    println("Stacktrace: ")
+    var curNode = this
+    while (curNode != null) {
+      println((curNode.needle - 2).toHexString + "@" + curNode.fname)
+      curNode = curNode.calling
+    }
+  }
   def run = { // runs the bytecode
     var needle = 0
     var isDone = false
@@ -244,6 +253,7 @@ class RunningInstance(fname: String, c: RunningInstance, args: Array[Type]) {
             stack = VariableReader.readData(bytecode.slice(needle, needle + size), valtype, "[ANON]") :: stack
             needle += size
           } else {
+            printStackTrace
             throw new RuntimeException("Invalid command: " + cmd + "@" + (needle - 2).toHexString)
           }
         }
@@ -253,8 +263,9 @@ class RunningInstance(fname: String, c: RunningInstance, args: Array[Type]) {
       if (!stack.isEmpty && stack.head.isInstanceOf[TError]) {
         val e = stack.head
         stack = stack.tail
+        printStackTrace
         throw new RuntimeException("Runtime " + e + ": " + (needle - 2).toHexString + "@" + fname + ": " +
-            cmd.toHexString)
+          cmd.toHexString)
       }
     }
   }

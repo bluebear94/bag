@@ -13,7 +13,7 @@ class ECons extends Command {
     try {
       l match {
         case a: LArray => new LArray((a.l :+ t).to[ArrayBuffer])
-        case a: LLinked => new LLinked((a.l :+ t).tail.to[ListBuffer])
+        case a: LLinked => new LLinked((a.l :+ t).to[ListBuffer])
         case s: TString => {
           new TString(s.getVal + new String(Array[Char](
             t match {
