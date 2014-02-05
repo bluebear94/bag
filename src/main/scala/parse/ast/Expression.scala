@@ -108,7 +108,7 @@ case class FCall(f: SBExpression, args: Array[Expression]) extends SBExpression 
     }
   }
   def toBytecode = {
-    BFuncs.app(args.map(_.toBytecode).foldLeft(Array[Bin]())(BFuncs.app(_,_)),
+    BFuncs.app(args.map(_.toBytecode).foldLeft(Array[Bin]())(BFuncs.app(_, _)),
       f.toBytecode) ++
       Array(Bytes(Array[Byte](-0x20, 0x00) ++ MakeByteArrays.intToByteArray(args.length)))
   }
@@ -314,7 +314,8 @@ case class For(v: LValue, st: Expression, end: Expression, inc: Expression, b: L
     new TVoid
   }
   def toBytecode = {
-    BFuncs.app(Assign(v, st).toBytecode, While(Operator("<=", v, end), b :+ AssignOp(v, inc, "+")).toBytecode)
+    BFuncs.app(Assign(v, st).toBytecode,
+      While(Operator("<=", v, end), b :+ AssignOp(v, inc, "+")).toBytecode)
   }
 }
 case class Hashtag(x: Expression) extends LValue {

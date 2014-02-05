@@ -16,7 +16,7 @@ case class TMountain(n2: BigInt) extends TNumerical {
     1
   }
   override def toString(): String = {
-    n.toString()
+    n.toString
   }
   def equalsT(that: Type): Boolean = {
     val tt: Int = that.getType()
