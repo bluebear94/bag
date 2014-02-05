@@ -1,0 +1,13 @@
+$:mult
+
+#0: any nonnegative integer
+#1...: values to be multiplied
+Operator: *
+  LTR
+  has *=
+  has ** (2)
+
+Multiplies zero or more values.
+
+If one or more values are lists, then applies the operation element by element.
+Dimensions must match; otherwise an Error #2 will be thrown.

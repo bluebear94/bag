@@ -1,0 +1,16 @@
+$:idiv
+
+#0: any positive integer
+#1: value from which to divide
+#2...: values to be divided
+Operator: \
+  LTR
+  has \=
+  has \\ (2)
+
+Performs integer division one value by zero or more.
+
+If one or more values are lists, then applies the operation element by element.
+Dimensions must match; otherwise an Error #2 will be thrown.
+Behavior is undefined when trying to divide by zero.
+Note that floating point numbers, even those representing integers, are not permitted.

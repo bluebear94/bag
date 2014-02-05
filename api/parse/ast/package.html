@@ -1,0 +1,602 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html>
+        <head>
+          <title>ast - parse.ast</title>
+          <meta name="description" content="ast - parse.ast" />
+          <meta name="keywords" content="ast parse.ast" />
+          <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+          
+      <link href="../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript">
+         if(top === self) {
+            var url = '../../index.html';
+            var hash = 'parse.ast.package';
+            var anchor = window.location.hash;
+            var anchor_opt = '';
+            if (anchor.length >= 1)
+              anchor_opt = '@' + anchor.substring(1);
+            window.location.href = url + '#' + hash + anchor_opt;
+         }
+   	  </script>
+    
+        </head>
+        <body class="value">
+      <div id="definition">
+        <img src="../../lib/package_big.png" />
+        <p id="owner"><a href="../package.html" class="extype" name="parse">parse</a></p>
+        <h1>ast</h1>
+      </div>
+
+      <h4 id="signature" class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <span class="name">ast</span>
+      </span>
+      </h4>
+      
+          <div id="comment" class="fullcommenttop"></div>
+        
+
+      <div id="mbrsel">
+        <div id="textfilter"><span class="pre"></span><span class="input"><input id="mbrsel-input" type="text" accesskey="/" /></span><span class="post"></span></div>
+        
+        
+        <div id="visbl">
+            <span class="filtertype">Visibility</span>
+            <ol><li class="public in"><span>Public</span></li><li class="all out"><span>All</span></li></ol>
+          </div>
+      </div>
+
+      <div id="template">
+        <div id="allMembers">
+        
+
+        <div id="types" class="types members">
+              <h3>Type Members</h3>
+              <ol><li name="parse.ast.AByte" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="AByteextendsBinwithProductwithSerializable"></a>
+      <a id="AByte:AByte"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="AByte.html"><span class="name">AByte</span></a><span class="params">(<span name="b">b: <span class="extype" name="scala.Byte">Byte</span></span>)</span><span class="result"> extends <a href="Bin.html" class="extype" name="parse.ast.Bin">Bin</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="parse.ast.AList" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="AListextendsSBExpressionwithProductwithSerializable"></a>
+      <a id="AList:AList"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="AList.html"><span class="name">AList</span></a><span class="params">(<span name="isArray">isArray: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="args">args: <span class="extype" name="scala.Array">Array</span>[<a href="Expression.html" class="extype" name="parse.ast.Expression">Expression</a>]</span>)</span><span class="result"> extends <a href="SBExpression.html" class="extype" name="parse.ast.SBExpression">SBExpression</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="parse.ast.Ans" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="AnsextendsSBExpressionwithProductwithSerializable"></a>
+      <a id="Ans:Ans"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Ans.html"><span class="name">Ans</span></a><span class="params">(<span name="aa">aa: <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result"> extends <a href="SBExpression.html" class="extype" name="parse.ast.SBExpression">SBExpression</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="parse.ast.Assign" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="AssignextendsExpressionwithProductwithSerializable"></a>
+      <a id="Assign:Assign"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Assign.html"><span class="name">Assign</span></a><span class="params">(<span name="left">left: <a href="LValue.html" class="extype" name="parse.ast.LValue">LValue</a></span>, <span name="right">right: <a href="Expression.html" class="extype" name="parse.ast.Expression">Expression</a></span>)</span><span class="result"> extends <a href="Expression.html" class="extype" name="parse.ast.Expression">Expression</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="parse.ast.AssignOp" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="AssignOpextendsExpressionwithProductwithSerializable"></a>
+      <a id="AssignOp:AssignOp"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="AssignOp.html"><span class="name">AssignOp</span></a><span class="params">(<span name="left">left: <a href="LValue.html" class="extype" name="parse.ast.LValue">LValue</a></span>, <span name="right">right: <a href="Expression.html" class="extype" name="parse.ast.Expression">Expression</a></span>, <span name="op">op: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <a href="Expression.html" class="extype" name="parse.ast.Expression">Expression</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="parse.ast.BGoto" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="BGotoextendsBinwithProductwithSerializable"></a>
+      <a id="BGoto:BGoto"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="BGoto.html"><span class="name">BGoto</span></a><span class="params">(<span name="n">n: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <a href="Bin.html" class="extype" name="parse.ast.Bin">Bin</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="parse.ast.BLabel" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="BLabelextendsBinwithProductwithSerializable"></a>
+      <a id="BLabel:BLabel"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="BLabel.html"><span class="name">BLabel</span></a><span class="params">(<span name="n">n: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <a href="Bin.html" class="extype" name="parse.ast.Bin">Bin</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="parse.ast.Bin" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="BinextendsAnyRef"></a>
+      <a id="Bin:Bin"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="Bin.html"><span class="name">Bin</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="parse.ast.Bytes" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="BytesextendsBinwithProductwithSerializable"></a>
+      <a id="Bytes:Bytes"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Bytes.html"><span class="name">Bytes</span></a><span class="params">(<span name="bs">bs: <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.Byte">Byte</span>]</span>)</span><span class="result"> extends <a href="Bin.html" class="extype" name="parse.ast.Bin">Bin</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="parse.ast.Delete" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="DeleteextendsExpressionwithProductwithSerializable"></a>
+      <a id="Delete:Delete"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Delete.html"><span class="name">Delete</span></a><span class="params">(<span name="left">left: <a href="LValue.html" class="extype" name="parse.ast.LValue">LValue</a></span>)</span><span class="result"> extends <a href="Expression.html" class="extype" name="parse.ast.Expression">Expression</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="parse.ast.DoubleOp" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="DoubleOpextendsSBExpressionwithProductwithSerializable"></a>
+      <a id="DoubleOp:DoubleOp"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="DoubleOp.html"><span class="name">DoubleOp</span></a><span class="params">(<span name="left">left: <a href="LValue.html" class="extype" name="parse.ast.LValue">LValue</a></span>, <span name="op">op: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="post">post: <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result"> extends <a href="SBExpression.html" class="extype" name="parse.ast.SBExpression">SBExpression</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="parse.ast.Expression" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="ExpressionextendsAnyRef"></a>
+      <a id="Expression:Expression"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="Expression.html"><span class="name">Expression</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="parse.ast.FCall" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="FCallextendsSBExpressionwithProductwithSerializable"></a>
+      <a id="FCall:FCall"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="FCall.html"><span class="name">FCall</span></a><span class="params">(<span name="f">f: <a href="SBExpression.html" class="extype" name="parse.ast.SBExpression">SBExpression</a></span>, <span name="args">args: <span class="extype" name="scala.Array">Array</span>[<a href="Expression.html" class="extype" name="parse.ast.Expression">Expression</a>]</span>)</span><span class="result"> extends <a href="SBExpression.html" class="extype" name="parse.ast.SBExpression">SBExpression</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="parse.ast.For" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ForextendsExpressionwithProductwithSerializable"></a>
+      <a id="For:For"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="For.html"><span class="name">For</span></a><span class="params">(<span name="v">v: <a href="LValue.html" class="extype" name="parse.ast.LValue">LValue</a></span>, <span name="st">st: <a href="Expression.html" class="extype" name="parse.ast.Expression">Expression</a></span>, <span name="end">end: <a href="Expression.html" class="extype" name="parse.ast.Expression">Expression</a></span>, <span name="inc">inc: <a href="Expression.html" class="extype" name="parse.ast.Expression">Expression</a></span>, <span name="b">b: <span class="extype" name="scala.List">List</span>[<a href="Expression.html" class="extype" name="parse.ast.Expression">Expression</a>]</span>)</span><span class="result"> extends <a href="Expression.html" class="extype" name="parse.ast.Expression">Expression</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="parse.ast.Hashtag" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="HashtagextendsLValuewithProductwithSerializable"></a>
+      <a id="Hashtag:Hashtag"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Hashtag.html"><span class="name">Hashtag</span></a><span class="params">(<span name="x">x: <a href="Expression.html" class="extype" name="parse.ast.Expression">Expression</a></span>)</span><span class="result"> extends <a href="LValue.html" class="extype" name="parse.ast.LValue">LValue</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="parse.ast.If" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="IfextendsExpressionwithProductwithSerializable"></a>
+      <a id="If:If"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="If.html"><span class="name">If</span></a><span class="params">(<span name="p">p: <a href="Expression.html" class="extype" name="parse.ast.Expression">Expression</a></span>, <span name="t">t: <a href="Expression.html" class="extype" name="parse.ast.Expression">Expression</a></span>)</span><span class="result"> extends <a href="Expression.html" class="extype" name="parse.ast.Expression">Expression</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="parse.ast.IfThen" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="IfThenextendsExpressionwithProductwithSerializable"></a>
+      <a id="IfThen:IfThen"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="IfThen.html"><span class="name">IfThen</span></a><span class="params">(<span name="p">p: <a href="Expression.html" class="extype" name="parse.ast.Expression">Expression</a></span>, <span name="t">t: <span class="extype" name="scala.List">List</span>[<a href="Expression.html" class="extype" name="parse.ast.Expression">Expression</a>]</span>)</span><span class="result"> extends <a href="Expression.html" class="extype" name="parse.ast.Expression">Expression</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="parse.ast.IfThenElse" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="IfThenElseextendsExpressionwithProductwithSerializable"></a>
+      <a id="IfThenElse:IfThenElse"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="IfThenElse.html"><span class="name">IfThenElse</span></a><span class="params">(<span name="p">p: <a href="Expression.html" class="extype" name="parse.ast.Expression">Expression</a></span>, <span name="t">t: <span class="extype" name="scala.List">List</span>[<a href="Expression.html" class="extype" name="parse.ast.Expression">Expression</a>]</span>, <span name="f">f: <span class="extype" name="scala.List">List</span>[<a href="Expression.html" class="extype" name="parse.ast.Expression">Expression</a>]</span>)</span><span class="result"> extends <a href="Expression.html" class="extype" name="parse.ast.Expression">Expression</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="parse.ast.Index" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="IndexextendsSBExpressionwithProductwithSerializable"></a>
+      <a id="Index:Index"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Index.html"><span class="name">Index</span></a><span class="params">(<span name="l">l: <a href="Expression.html" class="extype" name="parse.ast.Expression">Expression</a></span>, <span name="i">i: <a href="Expression.html" class="extype" name="parse.ast.Expression">Expression</a></span>)</span><span class="result"> extends <a href="SBExpression.html" class="extype" name="parse.ast.SBExpression">SBExpression</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="parse.ast.LIndex" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="LIndexextendsLValuewithProductwithSerializable"></a>
+      <a id="LIndex:LIndex"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="LIndex.html"><span class="name">LIndex</span></a><span class="params">(<span name="l">l: <a href="LValue.html" class="extype" name="parse.ast.LValue">LValue</a></span>, <span name="i">i: <a href="Expression.html" class="extype" name="parse.ast.Expression">Expression</a></span>)</span><span class="result"> extends <a href="LValue.html" class="extype" name="parse.ast.LValue">LValue</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="parse.ast.LValue" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="LValueextendsSBExpression"></a>
+      <a id="LValue:LValue"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="LValue.html"><span class="name">LValue</span></a><span class="result"> extends <a href="SBExpression.html" class="extype" name="parse.ast.SBExpression">SBExpression</a></span>
+      </span>
+      </h4>
+      
+    </li><li name="parse.ast.Lambda" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="LambdaextendsSBExpressionwithProductwithSerializable"></a>
+      <a id="Lambda:Lambda"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Lambda.html"><span class="name">Lambda</span></a><span class="params">(<span name="lines">lines: <span class="extype" name="scala.List">List</span>[<a href="Expression.html" class="extype" name="parse.ast.Expression">Expression</a>]</span>)</span><span class="result"> extends <a href="SBExpression.html" class="extype" name="parse.ast.SBExpression">SBExpression</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="parse.ast.Literal" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="LiteralextendsSBExpressionwithProductwithSerializable"></a>
+      <a id="Literal:Literal"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Literal.html"><span class="name">Literal</span></a><span class="params">(<span name="t">t: <a href="../../types/Type.html" class="extype" name="types.Type">Type</a></span>)</span><span class="result"> extends <a href="SBExpression.html" class="extype" name="parse.ast.SBExpression">SBExpression</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="parse.ast.Offset" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="OffsetextendsBinwithProductwithSerializable"></a>
+      <a id="Offset:Offset"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Offset.html"><span class="name">Offset</span></a><span class="params">(<span name="n">n: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result"> extends <a href="Bin.html" class="extype" name="parse.ast.Bin">Bin</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="parse.ast.Operator" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="OperatorextendsExpressionwithProductwithSerializable"></a>
+      <a id="Operator:Operator"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Operator.html"><span class="name">Operator</span></a><span class="params">(<span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="l">l: <a href="Expression.html" class="extype" name="parse.ast.Expression">Expression</a></span>, <span name="r">r: <a href="Expression.html" class="extype" name="parse.ast.Expression">Expression</a></span>)</span><span class="result"> extends <a href="Expression.html" class="extype" name="parse.ast.Expression">Expression</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="parse.ast.Repeat" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="RepeatextendsExpressionwithProductwithSerializable"></a>
+      <a id="Repeat:Repeat"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Repeat.html"><span class="name">Repeat</span></a><span class="params">(<span name="p">p: <a href="Expression.html" class="extype" name="parse.ast.Expression">Expression</a></span>, <span name="b">b: <span class="extype" name="scala.List">List</span>[<a href="Expression.html" class="extype" name="parse.ast.Expression">Expression</a>]</span>)</span><span class="result"> extends <a href="Expression.html" class="extype" name="parse.ast.Expression">Expression</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="parse.ast.SBExpression" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="SBExpressionextendsExpression"></a>
+      <a id="SBExpression:SBExpression"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="SBExpression.html"><span class="name">SBExpression</span></a><span class="result"> extends <a href="Expression.html" class="extype" name="parse.ast.Expression">Expression</a></span>
+      </span>
+      </h4>
+      
+    </li><li name="parse.ast.SBWrapper" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="SBWrapperextendsSBExpressionwithProductwithSerializable"></a>
+      <a id="SBWrapper:SBWrapper"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="SBWrapper.html"><span class="name">SBWrapper</span></a><span class="params">(<span name="x">x: <a href="Expression.html" class="extype" name="parse.ast.Expression">Expression</a></span>)</span><span class="result"> extends <a href="SBExpression.html" class="extype" name="parse.ast.SBExpression">SBExpression</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="parse.ast.Ternary" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="TernaryextendsExpressionwithProductwithSerializable"></a>
+      <a id="Ternary:Ternary"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Ternary.html"><span class="name">Ternary</span></a><span class="params">(<span name="p">p: <a href="Expression.html" class="extype" name="parse.ast.Expression">Expression</a></span>, <span name="t">t: <a href="Expression.html" class="extype" name="parse.ast.Expression">Expression</a></span>, <span name="f">f: <a href="Expression.html" class="extype" name="parse.ast.Expression">Expression</a></span>)</span><span class="result"> extends <a href="Expression.html" class="extype" name="parse.ast.Expression">Expression</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="parse.ast.Variable" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="VariableextendsLValuewithProductwithSerializable"></a>
+      <a id="Variable:Variable"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Variable.html"><span class="name">Variable</span></a><span class="params">(<span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <a href="LValue.html" class="extype" name="parse.ast.LValue">LValue</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="parse.ast.While" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="WhileextendsExpressionwithProductwithSerializable"></a>
+      <a id="While:While"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="While.html"><span class="name">While</span></a><span class="params">(<span name="p">p: <a href="Expression.html" class="extype" name="parse.ast.Expression">Expression</a></span>, <span name="b">b: <span class="extype" name="scala.List">List</span>[<a href="Expression.html" class="extype" name="parse.ast.Expression">Expression</a>]</span>)</span><span class="result"> extends <a href="Expression.html" class="extype" name="parse.ast.Expression">Expression</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="parse.ast.XprInt" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="XprIntextendsJavaTokenParserswithPackratParsers"></a>
+      <a id="XprInt:XprInt"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="XprInt.html"><span class="name">XprInt</span></a><span class="result"> extends <span class="extype" name="scala.util.parsing.combinator.JavaTokenParsers">JavaTokenParsers</span> with <span class="extype" name="scala.util.parsing.combinator.PackratParsers">PackratParsers</span></span>
+      </span>
+      </h4>
+      
+    </li></ol>
+            </div>
+
+        
+
+        <div id="values" class="values members">
+              <h3>Value Members</h3>
+              <ol><li name="parse.ast.AByte" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="AByte"></a>
+      <a id="AByte:AByte"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="AByte$.html"><span class="name">AByte</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="parse.ast.BFuncs" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="BFuncs"></a>
+      <a id="BFuncs:BFuncs"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="BFuncs$.html"><span class="name">BFuncs</span></a>
+      </span>
+      </h4>
+      
+    </li><li name="parse.ast.Bytes" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Bytes"></a>
+      <a id="Bytes:Bytes"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Bytes$.html"><span class="name">Bytes</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="parse.ast.ML" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ML"></a>
+      <a id="ML:ML"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="ML$.html"><span class="name">ML</span></a>
+      </span>
+      </h4>
+      
+    </li><li name="parse.ast.Preprocessor" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Preprocessor"></a>
+      <a id="Preprocessor:Preprocessor"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Preprocessor$.html"><span class="name">Preprocessor</span></a>
+      </span>
+      </h4>
+      
+    </li><li name="parse.ast.Repl" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Repl"></a>
+      <a id="Repl:Repl"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Repl$.html"><span class="name">Repl</span></a>
+      </span>
+      </h4>
+      
+    </li><li name="parse.ast.WholeParser" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="WholeParser"></a>
+      <a id="WholeParser:WholeParser"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="WholeParser$.html"><span class="name">WholeParser</span></a>
+      </span>
+      </h4>
+      
+    </li></ol>
+            </div>
+
+        
+
+        
+        </div>
+
+        <div id="inheritedMembers">
+        
+        
+        </div>
+
+        <div id="groupedMembers">
+        <div class="group" name="Ungrouped">
+              <h3>Ungrouped</h3>
+              
+            </div>
+        </div>
+
+      </div>
+
+      <div id="tooltip"></div>
+
+      <div id="footer">  </div>
+      <script defer="defer" type="text/javascript" id="jquery-js" src="../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../lib/template.js"></script>
+    </body>
+      </html>
