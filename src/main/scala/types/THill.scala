@@ -3,6 +3,11 @@ package types
 import util._
 import java.math.BigInteger
 
+
+/**
+ * A class to define 64-bit integers.
+ * @author bluebear94
+ */
 case class THill(n2: Long) extends TNumerical {
   var n = n2
   def getVal(): Long = {
@@ -28,9 +33,7 @@ case class THill(n2: Long) extends TNumerical {
   override def gt(that: Type): Boolean = {
     val tt: Int = that.getType()
     (tt) match {
-      case 1 =>
-        BigIntOps.lt(that.asInstanceOf[TMountain].getVal(),
-            new BigInteger(toString()))
+      case 1 => that.asInstanceOf[TMountain].getVal() < n
       case 2 => n > that.asInstanceOf[THill].getVal()
       case 4 => n > that.asInstanceOf[TFish].getVal()
       case _ => throw new UnsupportedOperationException()
@@ -39,9 +42,7 @@ case class THill(n2: Long) extends TNumerical {
   override def lt(that: Type): Boolean = {
     val tt: Int = that.getType()
     (tt) match {
-      case 1 =>
-        BigIntOps.gt(that.asInstanceOf[TMountain].getVal(),
-            new BigInteger(toString()))
+      case 1 => that.asInstanceOf[TMountain].getVal() > n
       case 2 => n < that.asInstanceOf[THill].getVal()
       case 4 => n < that.asInstanceOf[TFish].getVal()
       case _ => throw new UnsupportedOperationException()

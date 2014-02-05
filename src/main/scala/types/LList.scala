@@ -3,14 +3,28 @@ package types
 import scala.collection.mutable._
 import util.MakeByteArrays
 
+/**
+ * A type to define lists of types.
+ */
 abstract class LList extends Type {
+  /**
+   * Returns the Buffer containing the list.
+   */
   def l(): Buffer[Type]
+  /**
+   * Sets an element.
+   * @param index the index at which to set a new element
+   * @param n the new element
+   */
   def lu(index: Int, n: Type)
   def app(n: Type)
   def equals(that: Type): Boolean = {
     that.isInstanceOf[LList] &&
     that.asInstanceOf[LList].l().equals(this)
   }
+  /**
+   * An internal function to list the elements of the list, separated by commas but without braces or brackets.
+   */
   def elems(): String = {
     l().mkString(", ")
   }

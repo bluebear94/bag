@@ -10,7 +10,7 @@ class OAvg extends CommandOperator {
   override def getOpAlias() = "@"
   override def isValidArg0(n: Int): Boolean = n == 2
   override def apply(args: Array[Type]): Type = {
-    MathUtil.idivide(MathUtil.add(args(0), args(1)), TMountain(Global.TWO))
+    MathUtil.idivide(MathUtil.add(args(0), args(1)), TMountain(2))
   }
   def getPrecedence() = PStandard.ADD_SUBT
   def isReversed() = false

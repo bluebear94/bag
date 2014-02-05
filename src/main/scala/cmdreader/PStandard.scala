@@ -1,6 +1,10 @@
 package cmdreader
 
-// Operator precedence for standard operators.
+/**
+ * Operator precedence constants.
+ * Any operator class should, if applicable, use these constants instead of hardcoded values.
+ * @author bluebear94
+ */
 
 object PStandard {
   val ADD_SUBT = 200

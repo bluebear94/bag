@@ -3,6 +3,10 @@ package types
 import util._
 import java.math.BigInteger
 
+/**
+ * A class to define floating-point values.
+ * @author bluebear94
+ */
 case class TFish(x: Double) extends TNumerical {
   def getVal(): Double = {
     x

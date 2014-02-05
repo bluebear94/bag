@@ -2,6 +2,10 @@ package types
 
 import util.MakeByteArrays
 
+/**
+ * A type to define UTF-8 strings.
+ * @author bluebear94
+ */
 case class TString(s2: String) extends Type {
   var s = s2
   def getVal(): String = {

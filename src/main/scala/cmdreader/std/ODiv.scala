@@ -14,5 +14,5 @@ class ODiv extends CommandOperator {
   def getPrecedence() = PStandard.MULT_DIV
   def isReversed() = false
   def hasAssignmentEquiv() = true
-  def getDoubleBase() = Some(new TMountain(Global.TWO))
+  def getDoubleBase() = Some(new TMountain(2))
 }

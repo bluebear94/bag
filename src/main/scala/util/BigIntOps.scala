@@ -3,6 +3,10 @@ package util
 import java.math.BigInteger
 import types.TMountain
 
+/**
+ * Object to facilitate comparisons with BigIntegers.
+ */
+@deprecated("Now unnecessary due to scala.math.BigInt being used for the arbitrary-precision integer implementation.", "0.5.13")
 object BigIntOps {
   def fits(x: BigInteger, y: BigInteger, p: (Int) => Boolean) = {
 	p(x.compareTo(y))

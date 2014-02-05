@@ -53,5 +53,6 @@ class Loader {
     Global.liblist("std").loadCmd("FoldL")
     Global.liblist("std").loadCmd("FoldR")
     Global.liblist("std").loadCmd("OFilter")
+    Global.liblist("std").loadCmd("HSort")
   }
 }
