@@ -1,5 +1,8 @@
 package types
 
+/**
+ * A void value.
+ */
 class TVoid extends Type {
 
   def canEqual(that: Any): Boolean = {

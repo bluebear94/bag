@@ -8,8 +8,18 @@ import java.io._
 import java.util.Arrays
 import scala.collection.mutable._
 
+/**
+ * Methods for reading variables.
+ * @author bluebear94
+ */
 object VariableReader {
   def tus(n: Byte) = if (n >= 0) n else 0x100 + n
+  /**
+   * Reads data from an array of bytes, given the type identifier and the filename.
+   * @param bc the bytecode, excluding the header and the length declaration
+   * @param typeid the type identifier of the data
+   * @param fn the file name, if any. Can be left blank but user might be confused.
+   */
   def readData(bc: Array[Byte], typeid: Int, fn: String): Type = {
     typeid match {
       case 0 => new TVoid
@@ -51,6 +61,10 @@ object VariableReader {
       case _ => new TError(4)
     }
   }
+  /**
+   * Reads a file.
+   * @param fn the file name
+   */
   def readFile(fn: String) = {
     val nf = new File(fn)
     try {

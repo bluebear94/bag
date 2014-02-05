@@ -9,6 +9,9 @@ import scala.collection.mutable._
 object Sorter {
   /**
    * Performs heapsort.
+   * @param a the <code>ArrayBuffer</code> to sort
+   * @param f the comparison function. For all <code>i &gt; j</code>, <code>f(a(i), a(j))</code> after sorting.
+   * @return the sorted <code>ArrayBuffer</code>
    */
   def heapsort[T](a: ArrayBuffer[T], f: (T, T) => Boolean): ArrayBuffer[T] = {
     var b = a.clone

@@ -1,5 +1,8 @@
 package types
 
+/**
+ * An abstract representation of a function.
+ */
 abstract class TFunction extends Type {
   def getType(): Int = {
     7

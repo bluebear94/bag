@@ -6,6 +6,7 @@ import cmdreader.Global
 import run.RunningInstance
 import scala.util.parsing.combinator._
 
+@deprecated("Use the GUI frontend instead.", "0.5.14")
 object Repl {
 
   def main(args: Array[String]): Unit = {

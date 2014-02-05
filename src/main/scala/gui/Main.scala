@@ -13,9 +13,23 @@ import scala.collection.mutable.ArrayBuffer
 
 // I'm a complete noob to this...
 
+/**
+ * The graphic user interface for the language.
+ * @author bluebear94
+ */
 object Main extends SimpleSwingApplication {
+  /**
+   * Standard monospace font.
+   */
   val mono = new Font("DejaVu Sans Mono", 0, 10)
+  /**
+   * A parser.
+   */
   val p = new XprInt
+  /**
+   * Prints a message to the homescreen.
+   * @param s the string to print
+   */
   def println(s: String) = {
     homeScn.text += s + "\n"
     homeScn.caret.dot = homeScn.text.length
@@ -23,12 +37,22 @@ object Main extends SimpleSwingApplication {
   val IDLE = 0
   val BUSY = 1
   val ASKING = 2
+  /**
+   * The status.
+   */
   var status = IDLE
+  /**
+   * Sets the status and repaints the status bar.
+   * @param s the new status
+   */
   def setSt(s: Int) = {
     status = s
     statusBar3.usb
     statusBar3.repaint
   }
+  /**
+   * Repaints the part of the status bar that shows the cd.
+   */
   def updDirs = {
     statusBar1.usb
     statusBar1.repaint
@@ -73,14 +97,23 @@ object Main extends SimpleSwingApplication {
       text = Array[String]("IDLE", "BUSY", "ASKING").apply(status)
     }
   }
+  /**
+   * Inserts a string at the text caret.
+   */
   def insertAtCaret(s: String) = {
     val curPos = inputArea.caret.dot
     inputArea.text = inputArea.text.substring(0, curPos) + s + inputArea.text.substring(curPos)
   }
+  /**
+   * Starts a new thread to run code.
+   */
   def runCodeConcurrently() = {
     val newThread = new ExecutionThread
     newThread.start
   }
+  /**
+   * Runs code.
+   */
   def runCode() = {
     val toRun = inputArea.text
     if (toRun != "") {
@@ -160,13 +193,26 @@ object Main extends SimpleSwingApplication {
   }
 }
 
+/**
+ * An extension of a Scala Swing panel that holds a buffered image.
+ */
 class BufferedCanvas extends Panel { // sigh, I have to make one myself
+  /**
+   * The image.
+   */
   var image = new BufferedImage(preferredSize.getWidth.toInt, preferredSize.getHeight.toInt, BufferedImage.TYPE_INT_ARGB)
+  /**
+   * The Graphics2D object associated with the image
+   */
   val bg: Graphics2D = image.createGraphics
   override def paintComponent(g: Graphics2D) = {
     super.paintComponent(g)
     g.drawImage(image, 0, 0, null)
   }
+  /**
+   * Performs an action with the Graphics2D object.
+   * @param grf a function that takes a Graphics2D and performs actions with it
+   */
   def draw(grf: (Graphics2D) => Unit) = {
     grf(bg)
     repaint
@@ -174,7 +220,9 @@ class BufferedCanvas extends Panel { // sigh, I have to make one myself
 }
 
 // argh, finally have to implement multithreading
-
+/**
+ * A thread object to run code.
+ */
 class ExecutionThread extends Thread {
   override def run = Main.runCode
 }

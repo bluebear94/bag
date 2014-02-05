@@ -361,6 +361,10 @@ case class Ans(aa: Boolean) extends SBExpression {
   def toBytecode = Array(Bytes(Array[Byte](-0x17, if (aa) 0x55 else 0x54))) // I could have done 0x54 + aa if not for
   // those bloody boolean types
 }
+/**
+ * A parser for the Amethyst language.
+ * @author bluebear94, toddobryan
+ */
 class XprInt extends JavaTokenParsers with PackratParsers {
   var ops: TreeMap[Int, (PackratParser[(Expression, Expression) => Expression], Boolean)] =
     new TreeMap[Int, (PackratParser[(Expression, Expression) => Expression], Boolean)]()
@@ -489,6 +493,9 @@ class XprInt extends JavaTokenParsers with PackratParsers {
       ops.put(prec, parser)
     }
   }
+  /**
+   * Loads all the operators.
+   */
   def loadOps = { // Long-ass method to use necessary information about operators to build parsers for them
     val ll = Global.liblist.keySet.toList
     print(s"Loading operators from libraries: $ll\n")

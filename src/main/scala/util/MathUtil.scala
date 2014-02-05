@@ -211,6 +211,12 @@ object MathUtil {
       else new TError(1)
     } else new TError(1)
   }
+  /**
+   * Applies a double-to-double function on an Amethyst value. Will be applied entry-by-entry on lists.
+   * @param f a real-valued function to apply
+   * @param x a type on which to apply this function
+   * @return the result of applying f to x
+   */
   def applyUnaryMath(f: (Double) => Double, x: Type): Type = {
     val xt = x.getType()
     if (xt == 1) new TFish(f(x.asInstanceOf[TMountain].getVal().doubleValue()))
@@ -299,6 +305,13 @@ object MathUtil {
       }
     } else new TError(1)
   }
+  /**
+   * Applies a relational operator on two types.
+   * @param x the first type
+   * @param y the second type
+   * @param f the relation function
+   * @return the result of applying f to x and y, applying entry-by-entry if necessary
+   */
   def rel(x: Type, y: Type, f: (Type, Type) => Boolean): Type = {
     val xt = x.getType; val yt = y.getType
     def g(a: Type, b: Type): Type = {
@@ -308,10 +321,10 @@ object MathUtil {
       if (yt == 5 || yt == 6)
         motl(g, x.asInstanceOf[LList], y.asInstanceOf[LList])
       else
-        mool(g, x.asInstanceOf[LList], y.asInstanceOf[LList])
+        mool(g, x.asInstanceOf[LList], y)
     } else {
       if (yt == 5 || yt == 6)
-        mool(g, y.asInstanceOf[LList], x.asInstanceOf[LList])
+        mool((a, b) => g(b, a), y.asInstanceOf[LList], x)
       else {
         g(x, y)
       }

@@ -89,6 +89,8 @@ The current operators are:
 * ^^ (logical xor)
 * ? and : (ternary operator; `a ? b : c` returns `b` if `a` is true, and `c` otherwise)
 * \+> (map a collection using a function; e. g. `{2, 4, 6, 8} +> $:hluna` displays the four numbers on separate lines
+* |> (filtering)
+* /^ (heapsort)
 
 Precedence can, of course, be specified by parentheses, and `&&` and `||` are short-circuit operators (and they are not guaranteed to return either 0 or 1), while `&'`, `|'`, and `^^` do not short-circuit and return either 0 or 1.
 

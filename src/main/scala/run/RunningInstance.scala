@@ -10,8 +10,18 @@ import parse.ast._
 import java.io.File
 
 // If fname starts with "code:", then it is an instance of code.
+/**
+ * A class to define a running instance of a program.
+ * @author bluebear94
+ * @param fn the file name
+ * @param c the next running instance on the stack
+ * @param args the arguments
+ */
 class RunningInstance(fn: String, c: RunningInstance, args: Array[Type]) {
   // initial stuffs
+  /**
+   * The bytecode of the program.
+   */
   var bytecode: Array[Byte] = Array[Byte]()
   /*if (!fname.startsWith("code:")) {
     val f: FileInputStream = new FileInputStream(fname)
@@ -28,11 +38,31 @@ class RunningInstance(fn: String, c: RunningInstance, args: Array[Type]) {
   val needle: Int = 0
   val calling = c
   val fname = fn
+  /**
+   * A list of variables and their values.
+   */
   var environment = new HashMap[String, Type]()
+  /**
+   * The computation stack, with the first element on top.
+   */
   var stack = List[Type]()
+  /**
+   * The symbolic stack (holds lvalues), with the first element on top.
+   */
   var symstack = List[LValue]()
+  /**
+   * The last-answer variable.
+   */
   var ans: Type = new TVoid
+  /**
+   * The last-answer variable, but doesn't update to a void value.
+   */
   var answer: Type = new TVoid
+  /**
+   * Gets the value of the variable.
+   * @param name the variable name
+   * @return the value stored in the variable
+   */
   def getVar(name: String): Type = {
     if (name.startsWith("$")) {
       // TODO A global variable or a command.
@@ -57,6 +87,11 @@ class RunningInstance(fn: String, c: RunningInstance, args: Array[Type]) {
       }
     }
   }
+  /**
+   * Sets the value of the variable.
+   * @param name the variable name
+   * @param t the value to store
+   */
   def setVar(name: String, t: Type): Unit = {
     if (name.startsWith("$")) {
       // TODO A global variable or a command.
@@ -71,6 +106,10 @@ class RunningInstance(fn: String, c: RunningInstance, args: Array[Type]) {
       environment(name) = t
     }
   }
+  /**
+   * Deletes a variable.
+   * @param name the variable name
+   */
   def delVar(name: String): Unit = {
     if (name.startsWith("$")) {
       // TODO A global variable or a command.
@@ -85,6 +124,11 @@ class RunningInstance(fn: String, c: RunningInstance, args: Array[Type]) {
       environment.remove(name)
     }
   }
+  /**
+   * Gets the i<sup>th</sup> argument, one-indexed.
+   * @param i the argument index to recall
+   * @return the i<sup>th</sup> argument, or if <code>i == 0</code>, the number of arguments
+   */
   def argn(i: Int): Type = {
     i match {
       case 0 => new THill(args.length)
@@ -94,37 +138,81 @@ class RunningInstance(fn: String, c: RunningInstance, args: Array[Type]) {
       }
     }
   }
+  /**
+   * Stores a value into an argument.
+   * @param i the argument index to recall
+   * @param t the value to store
+   */
   def setargn(i: Int, t: Type): Type = {
     if (i > 0) {
       args(i - 1) = t
       new TVoid
     } else new TError(6)
   }
+  /**
+   * Gets the value of the variable.
+   * @param name the variable name
+   * @param r how deep into the call stack to recall (0 is this entry)
+   * @return the value stored in the variable
+   */
   def getVar(name: String, r: Int): Type = {
     if (r == 0) getVar(name)
     else calling.getVar(name, r - 1)
   }
+  /**
+   * Sets the value of the variable.
+   * @param name the variable name
+   * @param t the value to store
+   * @param r how deep into the call stack to recall (0 is this entry)
+   */
   def setVar(name: String, t: Type, r: Int): Unit = {
     if (r == 0) setVar(name, t)
     else calling.setVar(name, t, r - 1)
   }
+  /**
+   * Gets the i<sup>th</sup> argument, one-indexed.
+   * @param i the argument index to recall
+   * @param r how deep into the call stack to recall (0 is this entry)
+   * @return the i<sup>th</sup> argument, or if <code>i == 0</code>, the number of arguments
+   */
   def argn(i: Int, r: Int): Type = {
     if (r == 0) argn(i)
     else calling.argn(i, r - 1)
   }
+  /**
+   * Stores a value into an argument.
+   * @param i the argument index to recall
+   * @param t the value to store
+   * @param r how deep into the call stack to recall (0 is this entry)
+   */
   def setargn(i: Int, t: Type, r: Int): Type = {
     if (r == 0) setargn(i, t)
     else calling.setargn(i, t, r - 1)
   }
+  /**
+   * Reads an integer value at an index on the bytecode.
+   * @param n the index
+   * @return the integer value represented by the four bytes at that location
+   * @throws ArrayIndexOutOfBoundsException when <code>n &gt; bytecode.length - 4</code>
+   */
   def readInt(n: Int) = {
     (tus(bytecode(n)) << 24) + (tus(bytecode(n + 1)) << 16) + (tus(bytecode(n + 2)) << 8) + tus(bytecode(n + 3))
   }
+  /**
+   * Reads a UTF-8 string at an index on the bytecode.
+   * @param n the index
+   * @return the string value represented by the bytes at that location
+   * @throws ArrayIndexOutOfBoundsException when needed
+   */
   def readString(n: Int) = {
     val length = readInt(n)
     val strSt = n + 4
     (new String(bytecode.slice(strSt, strSt + length), "UTF-8"), strSt + length)
   }
   def tus(n: Byte) = if (n >= 0) n else 0x100 + n
+  /**
+   * Prints a stacktrace; i. e. a line for this program and the stacktrace for the calling program, if any.
+   */
   def printStackTrace = {
     println("Stacktrace: ")
     var curNode = this
@@ -133,6 +221,10 @@ class RunningInstance(fn: String, c: RunningInstance, args: Array[Type]) {
       curNode = curNode.calling
     }
   }
+  /**
+   * Runs the bytecode in this instance.
+   * @throws RuntimeException when encountering an invalid command, or encountering an error value on the stack.
+   */
   def run = { // runs the bytecode
     var needle = 0
     var isDone = false
