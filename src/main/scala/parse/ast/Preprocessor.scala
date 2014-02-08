@@ -1,8 +1,13 @@
 package parse.ast
 
+/**
+ * Utilities for applying changes to Amethyst code for it to be parsed.
+ * @author bluebear94
+ */
 object Preprocessor {
   def preprocessLn(line: String) = {
     var quoteMode = false
+    var bs = false
     var st = ""
     def pop(c: Char) = {
       val l = st.length - 1
@@ -14,12 +19,14 @@ object Preprocessor {
     while (i < line.length && cont) {
       val c = line.charAt(i)
       c match {
-        case '\"' => quoteMode = !quoteMode
-        case '(' | '[' | '{' | '«' => st += c
-        case ')' => pop('(')
-        case ']' => pop('[')
-        case '}' => pop('{')
-        case '»' => pop('«')
+        case '\"' => if (!bs) {
+          quoteMode = !quoteMode
+        }
+        case '(' | '[' | '{' | '«' => if (!quoteMode) st += c
+        case ')' => if (!quoteMode) pop('(')
+        case ']' => if (!quoteMode) pop('[')
+        case '}' => if (!quoteMode) pop('{')
+        case '»' => if (!quoteMode) pop('«')
         case '_' => if (!quoteMode) {
           i -= 1
           cont = false
@@ -27,6 +34,7 @@ object Preprocessor {
         case _ => ()
       }
       i += 1
+      bs = c == '\\'
     }
     var sub = line.substring(0, i) + (if (quoteMode) "\"" else "")
     for (c <- st.reverse) {

@@ -3,7 +3,7 @@ package parse.ast
 import types._
 import run.RunningInstance
 import scala.util.parsing.combinator._
-import java.math.BigInteger
+import scala.math.BigInt
 import types._
 import org.scalatest._
 import scala.util.parsing.input.CharSequenceReader
@@ -383,8 +383,8 @@ class XprInt extends JavaTokenParsers with PackratParsers {
   } | "\\$".r | "".r) ~ id)
     .filter(w => !Keywords.keywords.contains(w._2)) ^^
     { s => Variable(s._1 + s._2) }
-  lazy val mountain: PackratParser[SBExpression] = wholeNumber ^^ { s => new Literal(new TMountain(new BigInteger(s))) }
-  lazy val hill: PackratParser[SBExpression] = """↼[-]?\d+""".r ^^ { s => new Literal(new THill(s.substring(1).toLong)) }
+  lazy val mountain: PackratParser[SBExpression] = wholeNumber ^^ { s => new Literal(new TMountain(BigInt(s))) }
+  lazy val hill: PackratParser[SBExpression] = """↼[-]?\d+""".r ^^ { s => new Literal(new THill(BigInt(s.substring(1)).toLong)) }
   lazy val string: PackratParser[SBExpression] = stringLiteral ^^ { s =>
     UnescapeString.unescape(s.substring(1, s.length - 1)) match {
       case Some(ues) => Literal(new TString(ues))
@@ -545,9 +545,9 @@ class XprInt extends JavaTokenParsers with PackratParsers {
     }
     // now add the logical and and or parsers (short-circuit)
     val andParser: PackratParser[(Expression, Expression) => Expression] = "&&" ^^^
-      { (a: Expression, b: Expression) => Ternary(a, b, Literal(TMountain(BigInteger.ZERO))) }
+      { (a: Expression, b: Expression) => Ternary(a, b, Literal(TMountain(0))) }
     val orParser: PackratParser[(Expression, Expression) => Expression] = "||" ^^^
-      { (a: Expression, b: Expression) => Ternary(a, Literal(TMountain(BigInteger.ONE)), b) }
+      { (a: Expression, b: Expression) => Ternary(a, Literal(TMountain(1)), b) }
     loadWithPrec(PStandard.CONJUNCTION, (andParser, false))
     loadWithPrec(PStandard.DISJUNCTION, (orParser, false))
   }
