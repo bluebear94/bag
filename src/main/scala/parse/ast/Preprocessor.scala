@@ -28,7 +28,7 @@ object Preprocessor {
       }
       i += 1
     }
-    var sub = line.substring(0, i)
+    var sub = line.substring(0, i) + (if (quoteMode) "\"" else "")
     for (c <- st.reverse) {
       c match {
         case '(' => sub += ')'
@@ -112,6 +112,6 @@ object Preprocessor {
       l += 1
     }
     if (debug) println(out)
-    out // with your memory-wasting habits!
+    out.replaceAll("\n","\n;") // with your memory-wasting habits!
   }
 }

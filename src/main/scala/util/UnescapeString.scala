@@ -5,8 +5,8 @@ object UnescapeString {
   private def isHex(c: Char): Boolean = '0' <= c && c <= '9' || 'A' <= c && c <= 'F'  || 'a' <= c && c <= 'f'
   private def toHexValue(c: Char): Int = {
     if ('0' <= c && c <= '9') c - '0'
-    else if ('A' <= c && c <= 'F') c - 'A'
-    else if ('a' <= c && c <= 'f') c - 'a'
+    else if ('A' <= c && c <= 'F') c - 'A' + 10
+    else if ('a' <= c && c <= 'f') c - 'a' + 10
     else -1
   }
   private def concatOpt(a: String, b: Option[String]): Option[String] = {

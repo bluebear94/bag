@@ -56,5 +56,7 @@ class Loader {
     Global.liblist("std").loadCmd("HSort")
     Global.liblist("std").loadCmd("Str")
     Global.liblist("std").loadCmd("Len")
+    Global.liblist("std").loadCmd("QSort")
+    Global.liblist("std").loadCmd("MSort")
   }
 }
