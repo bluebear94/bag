@@ -104,8 +104,8 @@ object Sorter {
     var isDone = false
     var merges = 99
     while (merges != 1) {
-      var l = new ListBuffer[T]()
       var p = b
+      b = new ListBuffer[T]()
       merges = 0
       while (!p.isEmpty) {
         var q = p
@@ -129,11 +129,11 @@ object Sorter {
             }
           }
           if (useP) {
-            l += p.head
+            b += p.head
             p = p.tail
             psize -= 1
           } else {
-            l += q.head
+            b += q.head
             q = q.tail
             qsize -= 1
           }
@@ -142,7 +142,6 @@ object Sorter {
         merges += 1
       }
       k *= 2
-      b = l
     }
     b
   }
