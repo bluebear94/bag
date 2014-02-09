@@ -17,5 +17,5 @@ class OAdd extends CommandOperator {
   def getPrecedence() = PStandard.ADD_SUBT
   def isReversed() = false
   def hasAssignmentEquiv() = true
-  def getDoubleBase() = Some(new TMountain(BigInteger.ONE))
+  def getDoubleBase() = Some(new TMountain(1))
 }

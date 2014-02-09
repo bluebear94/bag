@@ -1,0 +1,123 @@
+#add
+desc "Adds zero or more values. Will return a value with the most generalized type. If all arguments are strings, then concatenates them."
+vector
+throws 1
+#subt
+desc "Subtracts zero or more values from the first argument. Will return a value with the most generalized type."
+vector
+throws 1
+#mult
+desc "Multiplies zero or more values. Will return a value with the most generalized type."
+vector
+throws 1
+#div
+desc "Divides zero or more values from the first argument. Will always return a floating-point value."
+vector
+throws 1
+#idiv
+desc "Integer divides zero or more values from the first argument. Note that this does not accept floating-point values."
+vector
+throws 1
+#mod
+desc "Finds the remainder of two integers. If more than two arguments are present, folds the operation from left to right."
+vector
+throws 1
+#hluna
+desc "Displays the argument to the homescreen in the GUI. It might also be useful to note that the value is also shown in the terminal with the prefix `[hluna]'."
+#negate
+desc "Returns the additive inverse of an argument."
+vector
+throws 1
+#avg
+desc "Takes the average of two numbers."
+vector
+throws 1
+#eq
+desc "Returns true if two values are equal; false otherwise."
+vector
+#neq
+desc "Returns true if two values are unequal; false otherwise."
+vector
+#gt
+desc "Returns true if the first value is greater than the second; false otherwise."
+vector
+#lt
+desc "Returns true if the first value is less than the second; false otherwise."
+vector
+#ge
+desc "Returns true if the first value is greater than or equal to the second; false otherwise."
+vector
+#le
+desc "Returns true if the first value is less than or equal to the second; false otherwise."
+vector
+#abs
+desc "Returns the absolute value of a number."
+vector
+throws 1
+#cons
+desc "Returns an element prepended to a list or string."
+throws 1
+#car
+desc "Returns the first element of a list or string."
+throws 1
+#cdr
+desc "Returns a list containing all but the first element of a list or string."
+throws 1
+#econs
+desc "Returns an element appended to a list or string."
+throws 1
+#ecar
+desc "Returns the last element of a list or string."
+throws 1
+#ecdr
+desc "Returns a list containing all but the last element of a list or string."
+throws 1
+#expr
+desc "Evaluates the amethyst expression passed as an argument."
+#len
+desc "Returns the length of a list, string, or number."
+throws 1
+#now
+desc "Returns the current time in milliseconds after Jan. 1, 1970."
+#sub
+desc "Returns the subcollection of the collection #1 from index #2 to #3 (or the end if #3 is undefined)."
+throws 1
+#str
+desc "Returns the string representation for any value. Useful for concatenating to strings."
+#rrbzo
+desc "Returns a random real between zero and one. Might return 0, but never returns 1."
+#floor
+desc "Returns the floor of the number."
+throws 1
+#fpart
+desc "Returns the fractional part of the number."
+throws 1
+#map
+desc "Maps one or more lists to a function (the last argument). All lists must have the same length."
+throws 1
+#foldl
+desc "Given a list (#1), a base value (#2), and a function (#3), applies #3 over #2 and each element of #1 (starting from the first)."
+throws 1
+#foldr
+desc "Given a list (#1), a base value (#2), and a function (#3), applies #3 over #2 and each element of #1 (starting from the last)."
+throws 1
+#filter
+desc "Returns a list with all of the elements of #1 which, when passed to #2, return true values."
+throws 1
+#dsa
+desc "Returns a disassembly of a function. Useful in debugging the compiler."
+throws 1
+#hsort
+desc "Returns a sorted array. This function also needs a comparison function. Heapsort, which always has an O(n log n) time complexity and an O(1) space complexity but is not stable and is generally slower than quicksort, is used for this function."
+throws 1
+#qsort
+desc "Returns a sorted array. This function also needs a comparison function. Quicksort, which may occasionally have an O(n^2) time complexity (although use of randomization guarantees O(n log n) complexity in virtually all cases) but is stable unlike heapsort, is used for this function."
+throws 1
+#msort
+desc "Returns a sorted linked list. This function also needs a comparison function. An implementation of mergesort for linked lists, which has an O(n log n) time complexity and O(1) space complexity, is used."
+throws 1
+#help
+desc "Help function."
+#ribzpt
+desc "Returns a random integer between a zero and a power of 2 (2^#1)."
+throws 1
