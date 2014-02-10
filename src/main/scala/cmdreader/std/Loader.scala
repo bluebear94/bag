@@ -61,5 +61,6 @@ class Loader {
     Global.liblist("std").loadCmd("Ribzpt")
     Global.liblist("std").loadCmd("OAug")
     Global.liblist("std").loadCmd("Help")
+    Global.liblist("std").loadCmd("HAsk")
   }
 }

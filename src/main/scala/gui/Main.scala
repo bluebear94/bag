@@ -11,6 +11,7 @@ import scala.util.parsing.input.CharSequenceReader
 import types.TVoid
 import scala.collection.mutable.ArrayBuffer
 
+
 // I'm a complete noob to this...
 
 /**
@@ -37,6 +38,8 @@ object Main extends SimpleSwingApplication {
   val IDLE = 0
   val BUSY = 1
   val ASKING = 2
+  var thread: ExecutionThread = null
+  var msg: Any = null
   /**
    * The status.
    */
@@ -104,12 +107,21 @@ object Main extends SimpleSwingApplication {
     val curPos = inputArea.caret.dot
     inputArea.text = inputArea.text.substring(0, curPos) + s + inputArea.text.substring(curPos)
   }
+  def enterEvent = {
+    status match {
+      case IDLE => runCodeConcurrently
+      case ASKING => {
+        msg = inputArea.text
+        inputArea.text = ""
+      }
+    }
+  }
   /**
    * Starts a new thread to run code.
    */
   def runCodeConcurrently() = {
-    val newThread = new ExecutionThread
-    newThread.start
+    thread = new ExecutionThread
+    thread.start
   }
   /**
    * Runs code.
@@ -178,13 +190,13 @@ object Main extends SimpleSwingApplication {
       reactions += {
         case KeyPressed(_, Key.Enter, m, _) => {
           if ((m & 0xC0) != 0)
-            runCodeConcurrently()
+            enterEvent
         }
         case ButtonClicked(component) => {
           if (component == lambdaButton) insertAtCaret("λ")
           if (component == harpoonButton) insertAtCaret("↼")
           if (component == superMinusButton) insertAtCaret("⁻")
-          if (component == runButton) runCodeConcurrently()
+          if (component == runButton) enterEvent
         }
       }
     }
