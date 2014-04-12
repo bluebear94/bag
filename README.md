@@ -1,8 +1,9 @@
-amethyst
+bag (formerly amethyst)
 ========
 
-_ Name will change soon
+
 $:hluna("A programming language by bluebear94
+
 _ the troll
 
 Note
@@ -23,7 +24,7 @@ I made some choices to fulfill the TI-Basic philosophy:
 * No optimization is performed for you, especially not tail-call optimization. Do it yourself.
 * No objects or even structures. Use lists or maps.
 * There is a last-answer variable: one accounting for Void return values, and one not. (Apparently, the TI-89 has an `ans()` function, but it's locked in program mode. How scandalous!)
-* There is no passing by reference; only value.
+* There is no passing by reference by default; only value. However, you can use `$:valcopy(0)` to pass by reference (e. g. when you're programming functionally).
 
 However, I deviated from typical calculator programming languages in order to reduce the annoyance of using it:
 
@@ -44,8 +45,8 @@ Amethyst is usable at this time, but is not in condition to release.
 
 * Install Git and SBT if you had not already done so.
 * Open up a terminal and `cd` into a directory.
-* Create a directory (`mkdir amethyst`) and `cd` into it.
-* Do `git clone https://github.com/bluebear94/amethyst` to get the project (update with `git pull origin master`)
+* Create a directory (`mkdir bag`) and `cd` into it.
+* Do `git clone https://github.com/bluebear94/bag.git` to get the project (update with `git pull origin master`)
 * Type `sbt`
 * As soon as SBT finishes loading, type `run`
 * Then wait for everything to compile and choose an option: `1` to start the developer console, and `2` to start the GUI program
@@ -94,12 +95,12 @@ The current operators are:
 
 Precedence can, of course, be specified by parentheses, and `&&` and `||` are short-circuit operators (and they are not guaranteed to return either 0 or 1), while `&'`, `|'`, and `^^` do not short-circuit and return either 0 or 1.
 
-Variables can be assigned using the `=` operator (with the right side empty, it just deletes the variable). Global variables are denoted by `$`, and they persist through multiple sessions. Some operators also provide an assignment equivalent, as well as doubled versions that can appear before *or* after an lvalue.
+Variables can be assigned using the `:=` operator, optionally with `Let` in order to create a new variable in the running program (with the right side empty, it just deletes the variable). Global variables are denoted by `$`, and they persist through multiple sessions. Some operators also provide an assignment equivalent, as well as doubled versions that can appear before *or* after an lvalue.
 
-    a = 3 _ Assigns 3 to a
-    b = 4 _ Assigns 4 to b
-    b = _ Hasta la vista, b
-    a = 5 _ Assigns 5 to a
+    Let a := 3 _ Assigns 3 to a
+    Let b := 4 _ Assigns 4 to b
+    b := _ Hasta la vista, b
+    a := 5 _ Assigns 5 to a
     a += 1 _ a is now 6
     $:hluna(++a) _ shows 7
     $:hluna(a) _ shows 7
@@ -136,4 +137,4 @@ The `While` .. `EndWhile` loop executes the body while its head expression evalu
 Documentation of Commands
 -------------------------
 
-Coming soon.
+Use `$:help()` in order to access the documentation system.
