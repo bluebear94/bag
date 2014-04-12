@@ -39,7 +39,7 @@ object Main extends SimpleSwingApplication {
   val BUSY = 1
   val ASKING = 2
   var thread: ExecutionThread = null
-  var msg: Any = null
+  var msg: String = null
   /**
    * The status.
    */
@@ -64,7 +64,7 @@ object Main extends SimpleSwingApplication {
     font = mono
     editable = false
     charWrap = true
-    text = "Welcome to Amethyst " + Global.version + ".\n\n" +
+    text = "Welcome to Bag " + Global.version + ".\nEnter `$:help()' to get help.\n\n" +
       (if (mono.getFamily != "DejaVu Sans Mono") "Please install the DejaVu fonts.\n" else "")
     tooltip = "The homescreen. Holds previous operations and console output."
     lineWrap = true
@@ -137,7 +137,7 @@ object Main extends SimpleSwingApplication {
         val tp = Global.top
         tp.bytecode = bc
         tp.run
-        println(tp.ans + "\n")
+        println((if (toRun == "3-1+.5-2") "There are no buses in Gensokyo!" else tp.ans) + "\n")
       } catch {
         case e: RuntimeException => {
           println(e.getMessage)
@@ -148,6 +148,14 @@ object Main extends SimpleSwingApplication {
       setSt(IDLE)
     }
   }
+  def ask = {
+    Main.msg = ""
+    Main.setSt(Main.ASKING)
+    while (Main.msg.isEmpty) Thread.sleep(10)
+    Main.setSt(Main.BUSY)
+    Main.println(msg)
+    msg
+  }
   val inputArea = new TextArea(5, 80) { // the bottom panel which holds the user's input
     font = mono
     tooltip = "Enter your code here!"
@@ -156,7 +164,7 @@ object Main extends SimpleSwingApplication {
   def top = new MainFrame {
     Global.loadLib("std")
     p.loadOps
-    title = "Amethyst " + Global.version
+    title = "Bag " + Global.version
 
     val inputScroll = new ScrollPane(inputArea) {
       horizontalScrollBarPolicy = ScrollPane.BarPolicy.Never

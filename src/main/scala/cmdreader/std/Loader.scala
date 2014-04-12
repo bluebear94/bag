@@ -62,5 +62,7 @@ class Loader {
     Global.liblist("std").loadCmd("OAug")
     Global.liblist("std").loadCmd("Help")
     Global.liblist("std").loadCmd("HAsk")
+    Global.liblist("std").loadCmd("Clone")
+    Global.liblist("std").loadCmd("ValCopy")
   }
 }

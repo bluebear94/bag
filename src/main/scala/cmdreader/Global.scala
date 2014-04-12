@@ -67,9 +67,10 @@ object Global {
   @deprecated("Due to use of scala.math.BigInt instead.", "0.5.13")
   val TWO = new BigInteger("2")
   val vM = 0
-  val vm = 5
-  val vr = 19
+  val vm = 6
+  val vr = 0
   val vrr = "-alpha"
   val version = "v" + vM + "." + vm + "." + vr + vrr
   val r: Random = new Random
+  var vigilant = true
 }

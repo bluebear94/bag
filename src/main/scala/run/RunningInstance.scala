@@ -150,6 +150,25 @@ class RunningInstance(fn: String, c: RunningInstance, args: Array[Type]) {
     } else new TError(6)
   }
   /**
+   * Same as setVar, but looks for the variable in the calling program.
+   */
+  def setVarP(name: String, t: Type): Unit = {
+    if (name.startsWith("$")) {
+      // TODO A global variable or a command.
+      if (name.indexOf(":") == -1) {
+        val p = PathNameConverter.aToOs(name.substring(1), false)
+        VariableWriter.writeValToVarfile(t, p match {
+          case (pn, true) => Global.current + "/" + pn
+          case (pn, false) => Global.root + "/" + pn
+        })
+      }
+    } else {
+      if (environment.isDefinedAt(name)) environment(name) = t
+      else if (calling != null) calling.setVarP(name, t)
+      else new TError(6)
+    } 
+  }
+  /**
    * Gets the value of the variable.
    * @param name the variable name
    * @param r how deep into the call stack to recall (0 is this entry)
@@ -188,6 +207,13 @@ class RunningInstance(fn: String, c: RunningInstance, args: Array[Type]) {
   def setargn(i: Int, t: Type, r: Int): Type = {
     if (r == 0) setargn(i, t)
     else calling.setargn(i, t, r - 1)
+  }
+  /**
+   * Same as setVar, but looks for the variable in the calling program.
+   */
+  def setVarP(name: String, t: Type, r: Int): Unit = {
+    if (r == 0) setVarP(name, t)
+    else calling.setVarP(name, t, r - 1)
   }
   /**
    * Reads an integer value at an index on the bytecode.
@@ -238,8 +264,9 @@ class RunningInstance(fn: String, c: RunningInstance, args: Array[Type]) {
           val argcount = readInt(needle)
           val (args, ns) = stack.splitAt(argcount)
           stack = ns
+          val realArgs = args.reverse.toArray
           val toPush = function match {
-            case f: TFunction => f(args.reverse.toArray)
+            case f: TFunction => f(if (Global.vigilant) realArgs.map(_.>/<) else realArgs)
             case _ => new TError(1)
           }
           stack = toPush :: stack
@@ -305,6 +332,12 @@ class RunningInstance(fn: String, c: RunningInstance, args: Array[Type]) {
           val toStore = stack.head
           val sym = symstack.head
           sym.assign(this, toStore)
+          symstack = symstack.tail
+        }
+        case 0xEA50 => {
+          val toStore = stack.head
+          val sym = symstack.head
+          sym.assignS(this, toStore)
           symstack = symstack.tail
         }
         case 0xE951 => {

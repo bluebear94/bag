@@ -1,5 +1,7 @@
 package types
 
+import cmdreader.Global
+
 /**
  * An abstract class to define instances of an Amethyst type.
  * @author bluebear94
@@ -38,6 +40,7 @@ abstract class Type {
    * Returns a clone of this type.
    */
   def >/<(): Type
+  def cid: Type = if (Global.vigilant) this.>/< else this
   /**
    * Returns the binary representation of this type.
    */

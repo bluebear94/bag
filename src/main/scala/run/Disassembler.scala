@@ -88,6 +88,9 @@ object Disassembler {
         case 0xE950 => {
           string += "assign"
         }
+        case 0xEA50 => {
+          string += "assignsh"
+        }
         case 0xE951 => {
           string += "dup"
         }

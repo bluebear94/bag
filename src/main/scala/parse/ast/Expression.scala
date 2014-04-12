@@ -24,6 +24,7 @@ trait Expression {
 trait SBExpression extends Expression
 trait LValue extends SBExpression {
   def assign(ci: RunningInstance, t: Type): Unit
+  def assignS(ci: RunningInstance, t: Type): Unit
   def nuke(ci: RunningInstance): Unit
   def toSymBytecode: Array[Bin]
 }
@@ -37,6 +38,7 @@ case class Literal(t: Type) extends SBExpression {
 case class Variable(name: String) extends LValue {
   def eval(ci: RunningInstance): Type = ci.getVar(name)
   def assign(ci: RunningInstance, t: Type) = ci.setVar(name, t)
+  def assignS(ci: RunningInstance, t: Type) = ci.setVarP(name, t)
   def nuke(ci: RunningInstance) = ci.delVar(name)
   def toBytecode = {
     val inB = name.getBytes
@@ -47,14 +49,15 @@ case class Variable(name: String) extends LValue {
     Array(Bytes(Array[Byte](-0x20, 0x05) ++ MakeByteArrays.intToByteArray(inB.length) ++ inB))
   }
 }
-case class Assign(left: LValue, right: Expression) extends Expression {
+case class Assign(left: LValue, right: Expression, shadow: Boolean = false) extends Expression {
   def eval(ci: RunningInstance): Type = {
-    left.assign(ci, right.eval(ci).>/<)
+    if (shadow) left.assignS(ci, right.eval(ci).cid)
+    else left.assign(ci, right.eval(ci).cid)
     left.eval(ci)
   }
   def toBytecode = {
     BFuncs.app(left.toSymBytecode,
-      Array(Bytes(BFuncs.flatten(right.toBytecode) ++ Array[Byte](-0x17, 0x50))))
+      Array(Bytes(BFuncs.flatten(right.toBytecode) ++ Array[Byte](if (shadow) -0x16 else -0x17, 0x50))))
   }
 }
 case class Delete(left: LValue) extends Expression {
@@ -67,23 +70,25 @@ case class Delete(left: LValue) extends Expression {
       Array(Bytes(Array[Byte](-0x17, 0x56))))
   }
 }
-case class AssignOp(left: LValue, right: Expression, op: String) extends Expression {
+case class AssignOp(left: LValue, right: Expression, op: String, shadow: Boolean = false) extends Expression {
   def eval(ci: RunningInstance): Type = {
-    left.assign(ci, Operator(op, left, right).eval(ci))
+    if (shadow) left.assignS(ci, Operator(op, left, right).eval(ci))
+    else left.assign(ci, Operator(op, left, right).eval(ci))
     left.eval(ci)
   }
   def toBytecode = {
     Assign(left, Operator(op, left, right)).toBytecode
   }
 }
-case class DoubleOp(left: LValue, op: String, post: Boolean) extends SBExpression {
+case class DoubleOp(left: LValue, op: String, post: Boolean, shadow: Boolean = false) extends SBExpression {
   def eval(ci: RunningInstance): Type = {
-    val oldV = left.eval(ci).>/<
+    val oldV = left.eval(ci).cid
     val db = Global.getCmd(op).getDoubleBase match {
       case Some(v) => v
       case None => throw new UnsupportedOperationException
     }
-    left.assign(ci, Operator(op, left, Literal(db)).eval(ci))
+    if (shadow) left.assignS(ci, Operator(op, left, Literal(db)).eval(ci))
+    else left.assign(ci, Operator(op, left, Literal(db)).eval(ci))
     if (post) oldV else left.eval(ci)
   }
   def toBytecode = {
@@ -161,6 +166,11 @@ case class LIndex(l: LValue, i: Expression) extends LValue {
     var t: Type = l.eval(ci)
     Indexing.setIndex(t, i.eval(ci), n)
     l.assign(ci, t)
+  }
+  def assignS(ci: RunningInstance, n: Type) = {
+    var t: Type = l.eval(ci)
+    Indexing.setIndex(t, i.eval(ci), n)
+    l.assignS(ci, t)
   }
   def nuke(ci: RunningInstance) = {
     Indexing.delIndex(l.eval(ci), i.eval(ci))
@@ -339,6 +349,16 @@ case class Hashtag(x: Expression) extends LValue {
       case _ => new TError(1)
     }
   }
+  def assignS(ci: RunningInstance, t: Type): Unit = {
+    val t2 = x.eval(ci)
+    t2 match {
+      case TMountain(n) => ci.setargn(n.intValue, t)
+      case THill(n) => ci.setargn(n.asInstanceOf[Int], t)
+      case TFish(n) => ci.setargn(n.asInstanceOf[Int], t)
+      case TString(n) => ci.setVarP(n, t)
+      case _ => new TError(1)
+    }
+  }
   def nuke(ci: RunningInstance) = {
     val t = x.eval(ci)
     t match {
@@ -435,12 +455,17 @@ class XprInt extends JavaTokenParsers with PackratParsers {
       }
   }
   lazy val control: PackratParser[Expression] = ifst | ifThen | ifThenElse | forst | whilst | repeat
-  def lvalue: PackratParser[LValue] = lIndexing | hashtag | variable
-  lazy val assign: PackratParser[Expression] = lvalue ~ "=" ~ expression ^^ {
-    case (left ~ o ~ right) =>
+  def lvalue: PackratParser[LValue] = lIndexing | hashtag | variable | sbwrapperl
+  lazy val assignNew: PackratParser[Expression] = "Let" ~ lvalue ~ ":=" ~ expression ^^ {
+    case (l ~ left ~ o ~ right) =>
       Assign(left, right)
   }
-  lazy val delete: PackratParser[Expression] = lvalue ~ "=" ^^ {
+  lazy val assignOld: PackratParser[Expression] = lvalue ~ ":=" ~ expression ^^ {
+    case (left ~ o ~ right) =>
+      Assign(left, right, true)
+  }
+  lazy val assign = assignNew | assignOld
+  lazy val delete: PackratParser[Expression] = lvalue ~ ":=" ^^ {
     case (left ~ o) =>
       Delete(left)
   }
@@ -451,9 +476,11 @@ class XprInt extends JavaTokenParsers with PackratParsers {
   lazy val ternary: PackratParser[Expression] = sbexpression ~ "?" ~ expression ~ ":" ~ expression ^^ {
     case p ~ "?" ~ t ~ ":" ~ f => Ternary(p, t, f)
   }
-  def expression: PackratParser[Expression] = control | ternary | assign | getOpEq | operator(ops.firstKey) | delete | sbexpression
+  def expression: PackratParser[Expression] = control | assign | ternary | getOpEq | operator(ops.firstKey) | delete | sbexpression
   def sbwrapper: PackratParser[SBExpression] = "(" ~> expression <~ ")" ^^ { x => SBWrapper(x) }
-  def sbexpression: PackratParser[SBExpression] = getUnary | compound | literal | (getLOpOp ||| getOpOpL) | variable | answer | ans | sbwrapper
+  def sbwrapperl: PackratParser[LValue] = "(" ~> lvalue <~ ")" ^^ { x => x }
+  def sbexpression: PackratParser[SBExpression] = getUnary | compound | literal | (getLOpOp ||| getOpOpL) | variable | answer | ans |
+    sbwrapperl | sbwrapper
   def getOpEq: PackratParser[Expression] = {
     if (oeOps.isEmpty) failure("no such operator")
     else lvalue ~ (oeOps.tail.foldLeft(literal(oeOps.head))((p, op) => p | op)) ~ "=" ~ expression ^^ {
