@@ -85,6 +85,11 @@ object Disassembler {
           string += s"mkl $argcount"
           needle += 4
         }
+        case 0xE965 => {
+          val argcount = readInt(needle)
+          string += s"mkm $argcount"
+          needle += 4
+        }
         case 0xE950 => {
           string += "assign"
         }

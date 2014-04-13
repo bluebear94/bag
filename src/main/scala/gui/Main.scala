@@ -184,7 +184,10 @@ object Main extends SimpleSwingApplication {
     val superMinusButton = new Button {
       text = "⁻"
     }
-    val buttons = new FlowPanel(lambdaButton, harpoonButton, superMinusButton, runButton)
+    val rightArrowButton = new Button {
+      text = "→"
+    }
+    val buttons = new FlowPanel(lambdaButton, harpoonButton, superMinusButton, rightArrowButton, runButton)
     val statusBar = new BoxPanel(Orientation.Vertical) {
       contents += statusBar1
       contents += statusBar2
@@ -194,7 +197,8 @@ object Main extends SimpleSwingApplication {
       contents ++= ArrayBuffer(drawScn, homeScroll, inputScroll, buttons, statusBar)
       focusable = true
       requestFocus
-      listenTo(keys, drawScn.keys, homeScroll.keys, inputArea.keys, buttons.keys, lambdaButton, harpoonButton, runButton, superMinusButton)
+      listenTo(keys, drawScn.keys, homeScroll.keys, inputArea.keys, buttons.keys, lambdaButton,
+          harpoonButton, runButton, superMinusButton, rightArrowButton)
       reactions += {
         case KeyPressed(_, Key.Enter, m, _) => {
           if ((m & 0xC0) != 0)
@@ -204,6 +208,7 @@ object Main extends SimpleSwingApplication {
           if (component == lambdaButton) insertAtCaret("λ")
           if (component == harpoonButton) insertAtCaret("↼")
           if (component == superMinusButton) insertAtCaret("⁻")
+          if (component == rightArrowButton) insertAtCaret("→")
           if (component == runButton) enterEvent
         }
       }

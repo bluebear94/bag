@@ -143,8 +143,19 @@ case class AList(isArray: Boolean, args: Array[Expression]) extends SBExpression
       new LLinked(args.map(_.eval(ci)).to[mutable.ListBuffer])
   }
   def toBytecode = {
-    args.reverse.map(_.toBytecode).foldLeft(Array[Bin]())(_ ++ _) ++
+    args.reverse.map(_.toBytecode).foldLeft(Array[Bin]())(BFuncs.app(_, _)) ++
       Array(Bytes(Array[Byte](-0x17, if (isArray) 0x40 else 0x45) ++
+        MakeByteArrays.intToByteArray(args.length)))
+  }
+}
+case class AMap(underlying: HashMap[Expression, Expression]) extends SBExpression {
+  def eval(ci: RunningInstance): Type = {
+    new LMap(underlying map {case (key, value) => (key.eval(ci), value.eval(ci))})
+  }
+  def toBytecode = {
+    val args = underlying.toList.map{case (a, b) => List(a, b)}.fold(Nil)(_ ++ _).map(_.toBytecode).reverse
+    args.foldLeft(Array[Bin]())(BFuncs.app(_, _)) ++
+      Array(Bytes(Array[Byte](-0x17, 0x65) ++
         MakeByteArrays.intToByteArray(args.length)))
   }
 }
@@ -418,6 +429,16 @@ class XprInt extends JavaTokenParsers with PackratParsers {
   lazy val lineDelimited: PackratParser[List[Expression]] = repsep(expression, lineDelimiter)
   lazy val array: PackratParser[SBExpression] = "{" ~> commaDelimited <~ "}" ^^ { l => AList(true, l.toArray[Expression]) }
   lazy val linked: PackratParser[SBExpression] = "[" ~> commaDelimited <~ "]" ^^ { l => AList(false, l.toArray[Expression]) }
+  lazy val keyValue: PackratParser[(Expression, Expression)] = expression ~ "→" ~ expression ^^ {
+    case e0 ~ a ~ e1 => (e0, e1)
+  }
+  lazy val map: PackratParser[SBExpression] = "Map(" ~> repsep(keyValue, ",") <~ ")" ^^ {
+    l => {
+      val res = new HashMap[Expression, Expression]
+      l.foreach(res += _)
+      AMap(res)
+    }
+  }
   lazy val hashtag: PackratParser[LValue] = "#" ~> sbexpression ^^ { x => Hashtag(x) }
   lazy val lambda: PackratParser[SBExpression] = ("λ" ~ lineDelimiter) ~> lineDelimited <~ (lineDelimiter ~ "Endλ") ^^ { l => Lambda(l) }
   lazy val call: PackratParser[SBExpression] = sbexpression ~ "(" ~ commaDelimited <~ ")" ^^ { sh => FCall(sh._1._1, sh._2.toArray[Expression]) }
@@ -472,7 +493,7 @@ class XprInt extends JavaTokenParsers with PackratParsers {
   lazy val ans: PackratParser[SBExpression] = "Ans" ^^^ Ans(false)
   lazy val answer: PackratParser[SBExpression] = "Answer" ^^^ Ans(true)
   //lazy val assignOp: PackratParser[Expression]
-  lazy val compound: PackratParser[SBExpression] = lambda | indexing | lIndexing | array | linked | hashtag | call
+  lazy val compound: PackratParser[SBExpression] = lambda | indexing | lIndexing | array | linked | map | hashtag | call
   lazy val ternary: PackratParser[Expression] = sbexpression ~ "?" ~ expression ~ ":" ~ expression ^^ {
     case p ~ "?" ~ t ~ ":" ~ f => Ternary(p, t, f)
   }

@@ -328,6 +328,27 @@ class RunningInstance(fn: String, c: RunningInstance, args: Array[Type]) {
           stack = toPush :: stack
           needle += 4
         }
+        case 0xE965 => {
+          val argcount = readInt(needle)
+          if ((argcount & 1) != 0) throw new RuntimeException("Cannot make a map out of an odd number of elements")
+          val (args, ns) = stack.splitAt(argcount)
+          stack = ns
+          def pairArgs[T](args: List[T], h: HashMap[T,T]): Unit = {
+            args match {
+              case a :: b :: c => {
+                h += ((a, b))
+                pairArgs(c, h)
+              }
+              case Nil => ()
+              case _ => throw new RuntimeException("Cannot make a map out of an odd number of elements")
+            }
+          }
+          val emptyHash = HashMap.empty[Type, Type]
+          pairArgs(args, emptyHash)
+          val toPush = new LMap(emptyHash)
+          stack = toPush :: stack
+          needle += 4
+        }
         case 0xE950 => {
           val toStore = stack.head
           val sym = symstack.head

@@ -11,7 +11,7 @@ class LMap(h: HashMap[Type, Type]) extends Type {
     (that.getType == 8) && h == that.asInstanceOf[LMap].gm 
   }
   override def toString(): String = {
-    "«" + h.toList.map(p => (p._1.toString + " → " + p._2.toString)).mkString(",") + "»"
+    "Map(" + h.toList.map(p => (p._1.toString + " → " + p._2.toString)).mkString(", ") + ")"
   }
   def lu(i: Type, n: Type) = {
     h(i) = n

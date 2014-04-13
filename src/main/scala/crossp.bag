@@ -1,7 +1,8 @@
 _ A sample program, commented for your leisure.
 _ Underscores mark comments.
 askls = λ _ Assigns a function value to askls. Function values are marked by λ and Endλ.
-Repeat isdone && 3 == $:dim(Ans _ Closing parentheses, etc. are optional.
+isdone = 0
+Repeat isdone && 3 == $:len(Ans _ Closing parentheses, etc. are optional.
  typed = $:hask( _ Note that standard commands use $: before their names. The $:hask command requests a string.
  isdone = $:isls(Ans _ $:isls checks if a string represents a list.
  If Ans _ If it is... (Note the last-answer variable.)
