@@ -35,6 +35,8 @@ throws 1
 #eq
 desc "Returns true if two values are equal; false otherwise."
 vector
+#seq
+desc "Returns true if two values are strictly equal; false otherwise."
 #neq
 desc "Returns true if two values are unequal; false otherwise."
 vector
@@ -125,3 +127,5 @@ throws 1
 desc "Returns a clone of this value. This is done by default on assignment; however, this command is useful when automatic value cloning is disabled."
 #valcopy
 desc "Returns the old AVC (automatic value copying) setting. If another argument is passed, then it determines the new setting. Recommended to be turned off if you're doing functional programming or know what you're doing."
+#gettype
+desc "Gets the type of the input."

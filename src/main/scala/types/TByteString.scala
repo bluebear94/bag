@@ -19,7 +19,8 @@ case class TByteString(aa: Array[Byte]) extends Type {
     that match {
       case t: TByteString => a.equals(t.a)
       case t: TString => a.equals(t.s.getBytes())
-      case t: LList => !(a.map(THill(_)).zip(t.l).map{case (x, y: TNumerical) => x.n == y.getVal}.contains(false))
+      case t: LList => !(a.toList.map((b: Byte) => THill(b.toLong)).zip(t.l).map{
+        case (x, y: TNumerical) => x.n == y.getVal}.contains(false))
       case _ => false
     }
   }
