@@ -45,4 +45,10 @@ abstract class LList extends Type {
       case _ => false
     }
   }
+  def equalsStrictly(that: Type) = {
+    that match {
+      case t: LList if (getType == that.getType) => l == t.l
+      case _ => false
+    }
+  }
 }

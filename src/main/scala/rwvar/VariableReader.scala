@@ -58,6 +58,34 @@ object VariableReader {
       case 7 => {
         new TBinFunc(bc, "", Global.top, fn)
       }
+      case 8 => {
+        val nElems = (tus(bc(0)) << 24) + (tus(bc(1)) << 16) + (tus(bc(2)) << 8) + tus(bc(3))
+        if ((nElems & 1) != 0) throw new RuntimeException("Cannot make a map out of an odd number of elements")
+        def pairArgs[T](args: List[T], h: HashMap[T, T]): Unit = {
+          args match {
+            case a :: b :: c => {
+              h += ((a, b))
+              pairArgs(c, h)
+            }
+            case Nil => ()
+            case _ => throw new RuntimeException("Cannot make a map out of an odd number of elements")
+          }
+        }
+        var needle = 4
+        var l: List[Type] = Nil
+        while (needle < bc.length) {
+          val size = (tus(bc(needle)) << 24) + (tus(bc(needle + 1)) << 16) + (tus(bc(needle + 2)) << 8) + tus(bc(needle + 3))
+          l = readData(bc.slice(needle + 5, needle + 5 + size), bc(needle + 4), fn) :: l
+          needle += 5 + size
+        }
+        val emptyHash = HashMap.empty[Type, Type]
+        pairArgs(l.reverse, emptyHash)
+        new LMap(emptyHash)
+      }
+      case 9 => {
+        val nElems = (tus(bc(0)) << 24) + (tus(bc(1)) << 16) + (tus(bc(2)) << 8) + tus(bc(3))
+        new TByteString(bc.slice(4, 4 + nElems))
+      }
       case _ => new TError(4)
     }
   }

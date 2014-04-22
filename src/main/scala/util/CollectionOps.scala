@@ -20,6 +20,9 @@ object CollectionOps {
       case t: LList => {
         t.l.toList
       }
+      case t: TByteString => {
+        t.a.toList.map(THill(_))
+      }
     }
   }
   def encodeFromList(l: List[Type], mode: Int): Type = {
@@ -56,6 +59,9 @@ object CollectionOps {
         new LArray(l.to[ArrayBuffer])
       case 6 =>
         new LLinked(l.to[ListBuffer])
+      case 9 => {
+        new TByteString(l.map(_.asInstanceOf[TNumerical].intValue.toByte).toArray)
+      }
     }
   }
   def ctv[T](f: (List[Type]) => T): (Type) => T = {

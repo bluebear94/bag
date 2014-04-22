@@ -8,7 +8,7 @@ class LMap(h: HashMap[Type, Type]) extends Type {
   def gm() = h
   def toBoolean(): Boolean = h.isEmpty
   def equals(that: Type) = {
-    (that.getType == 8) && h == that.asInstanceOf[LMap].gm 
+    (that.getType == 8) && h == that.asInstanceOf[LMap].gm
   }
   override def toString(): String = {
     "Map(" + h.toList.map(p => (p._1.toString + " → " + p._2.toString)).mkString(", ") + ")"
@@ -26,7 +26,8 @@ class LMap(h: HashMap[Type, Type]) extends Type {
       val u = p._2
       val bc = t.toBytecode
       val cc = u.toBytecode
-      MakeByteArrays.intToByteArray(bc.length) ++ bc ++ MakeByteArrays.intToByteArray(cc.length) ++ cc
+      MakeByteArrays.intToByteArray(bc.length) ++ Array[Byte](t.getType.toByte) ++ bc ++
+        MakeByteArrays.intToByteArray(cc.length) ++ Array[Byte](u.getType.toByte) ++ cc
     }).foldLeft(Array[Byte]())(_ ++ _)
     val bsl = h.toList.length
     MakeByteArrays.intToByteArray(bsl) ++ s
@@ -34,6 +35,12 @@ class LMap(h: HashMap[Type, Type]) extends Type {
   override def equals(that: Any) = {
     that match {
       case other: LMap => gm.equals(other.gm)
+      case _ => false
+    }
+  }
+  def equalsStrictly(that: Type) = {
+    that match {
+      case t: LMap => h == t.gm
       case _ => false
     }
   }

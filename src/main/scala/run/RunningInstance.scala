@@ -64,7 +64,10 @@ class RunningInstance(fn: String, c: RunningInstance, args: Array[Type]) {
    * @return the value stored in the variable
    */
   def getVar(name: String): Type = {
-    if (name.startsWith("$")) {
+    if (name == "this") {
+      new TBinFunc(bytecode, fn)
+    }
+    else if (name.startsWith("$")) {
       // TODO A global variable or a command.
       if (name.indexOf(":") != -1) {
         new TCmdFunc(name.substring(1))
@@ -93,7 +96,8 @@ class RunningInstance(fn: String, c: RunningInstance, args: Array[Type]) {
    * @param t the value to store
    */
   def setVar(name: String, t: Type): Unit = {
-    if (name.startsWith("$")) {
+    if (name == "this") throw new RuntimeException("Function `this' cannot be mutated")
+    else if (name.startsWith("$")) {
       // TODO A global variable or a command.
       if (name.indexOf(":") == -1) {
         val p = PathNameConverter.aToOs(name.substring(1), false)

@@ -5,7 +5,7 @@ import run.RunningInstance
 import scala.util.parsing.combinator._
 import scala.math.BigInt
 import types._
-import org.scalatest._
+//import org.scalatest._
 import scala.util.parsing.input.CharSequenceReader
 import cmdreader._
 import scala.collection.mutable
@@ -336,7 +336,7 @@ case class For(v: LValue, st: Expression, end: Expression, inc: Expression, b: L
   }
   def toBytecode = {
     BFuncs.app(Assign(v, st).toBytecode,
-      While(Operator("<=", v, end), b :+ AssignOp(v, inc, "+")).toBytecode)
+      While(Operator("<", v, end), b :+ AssignOp(v, inc, "+")).toBytecode)
   }
 }
 case class Hashtag(x: Expression) extends LValue {
@@ -423,7 +423,7 @@ class XprInt extends JavaTokenParsers with PackratParsers {
     }
   }
   lazy val fish: PackratParser[SBExpression] = floatingPointNumber ^^ { s => new Literal(new TFish(s.toDouble)) }
-  lazy val literal: PackratParser[SBExpression] = void | fish ||| mountain | hill | string
+  lazy val literal: PackratParser[SBExpression] = void | fish ||| mountain | hill | string | funcAsByte | byteString
   val lineDelimiter: PackratParser[String] = ";" ^^^ ";"
   lazy val commaDelimited: PackratParser[List[Expression]] = repsep(expression, ",")
   lazy val lineDelimited: PackratParser[List[Expression]] = repsep(expression, lineDelimiter)
@@ -492,6 +492,13 @@ class XprInt extends JavaTokenParsers with PackratParsers {
   }
   lazy val ans: PackratParser[SBExpression] = "Ans" ^^^ Ans(false)
   lazy val answer: PackratParser[SBExpression] = "Answer" ^^^ Ans(true)
+  val hexDigits = "[0-9A-Fa-f]*".r
+  lazy val funcAsByte: PackratParser[SBExpression] = "Func(" ~> hexDigits <~ ")" ^^ {
+    s: String => Literal(new TBinFunc(BFuncs.stringToBytes(s), ""))
+  }
+  lazy val byteString: PackratParser[SBExpression] = "Bytes(" ~> hexDigits <~ ")" ^^ {
+    s: String => Literal(new TByteString(BFuncs.stringToBytes(s)))
+  }
   //lazy val assignOp: PackratParser[Expression]
   lazy val compound: PackratParser[SBExpression] = lambda | indexing | lIndexing | array | linked | map | hashtag | call
   lazy val ternary: PackratParser[Expression] = sbexpression ~ "?" ~ expression ~ ":" ~ expression ^^ {

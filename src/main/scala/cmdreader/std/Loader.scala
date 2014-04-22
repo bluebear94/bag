@@ -64,5 +64,7 @@ class Loader {
     Global.liblist("std").loadCmd("HAsk")
     Global.liblist("std").loadCmd("Clone")
     Global.liblist("std").loadCmd("ValCopy")
+    Global.liblist("std").loadCmd("GetType")
+    Global.liblist("std").loadCmd("OSeq")
   }
 }

@@ -11,6 +11,9 @@ class TError(errno: Int, msg: String) extends Type {
       case _ => false
     }
   }
+  def equalsStrictly(that: Type) = {
+    throw new UnsupportedOperationException
+  }
   override def toString(): String = {
     "Error #" + errno + ": " + msg
   }

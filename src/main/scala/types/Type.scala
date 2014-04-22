@@ -35,6 +35,13 @@ abstract class Type {
   def lt(that: Type): Boolean = {
     throw new UnsupportedOperationException()
   }
+  def equalsStrictly(that: Any): Boolean = {
+    that match {
+      case t: Type => equalsStrictly(t)
+      case _ => false
+    }
+  }
+  def equalsStrictly(that: Type): Boolean
   override def toString(): String
   /**
    * Returns a clone of this type.

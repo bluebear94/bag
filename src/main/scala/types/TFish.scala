@@ -47,6 +47,12 @@ case class TFish(x: Double) extends TNumerical {
       case _ => throw new UnsupportedOperationException()
     }
   }
+  def equalsStrictly(that: Type) = {
+    that match {
+      case t: TFish => x == t.x
+      case _ => false
+    }
+  }
   def intValue(): Int = x.toInt
   def doubleValue(): Double = x
   def >/< = TFish(x)

@@ -48,6 +48,12 @@ case class THill(n2: Long) extends TNumerical {
       case _ => throw new UnsupportedOperationException()
     }
   }
+  def equalsStrictly(that: Type) = {
+    that match {
+      case t: THill => n == t.n
+      case _ => false
+    }
+  }
   def intValue(): Int = n.toInt
   def doubleValue(): Double = n.toDouble
   def snv(nn: Long) = n = nn

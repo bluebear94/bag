@@ -72,4 +72,11 @@ object BFuncs {
       new String(Array(ohd(p >> 4), ohd(p & 0x0F)))
     }).foldLeft("")(_ + " " + _)
   }
+  def stringToBytes(s: String) = {
+    var b = new Array[Byte](s.length / 2)
+    for (i <- 0 until s.length by 2) {
+      b(i / 2) = BigInt("0" + s.substring(i, i+2), 16).toByte
+    }
+    b
+  }
 }

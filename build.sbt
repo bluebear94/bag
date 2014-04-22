@@ -1,12 +1,13 @@
-name := "amethyst"
+name := "Bag"
 
-version := "0.1"
+version := "0.6.1"
 
-scalaVersion := "2.10.3"
+scalaVersion := "2.11.0"
 
 libraryDependencies ++= Seq(
-  "org.scalatest" %% "scalatest" % "2.0",
-  "org.scala-lang" % "scala-swing" % "2.10.3"
+  "org.scalatest" % "scalatest_2.10" % "2.1.3" % "test",
+  "org.scala-lang" % "scala-swing" % "2.11.0-M7",
+  "org.scala-lang.modules" %% "scala-parser-combinators" % "1.0.1"
 )
 
-name := "Bag"
+

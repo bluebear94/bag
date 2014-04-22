@@ -47,6 +47,12 @@ case class TMountain(n2: BigInt) extends TNumerical {
       case _ => throw new UnsupportedOperationException()
     }
   }
+  def equalsStrictly(that: Type) = {
+    that match {
+      case t: TMountain => n == t.n
+      case _ => false
+    }
+  }
   override def toBoolean = n != 0
   def intValue(): Int = n.intValue()
   def doubleValue(): Double = n.doubleValue()

@@ -24,6 +24,12 @@ case class TString(s2: String) extends Type {
     that.getType() == 3 &&
     that.asInstanceOf[TString].getVal() == s
   }
+  def equalsStrictly(that: Type) = {
+    that match {
+      case t: TString => s == t.s
+      case _ => false
+    }
+  }
   def si(i: Int, c: Char) = {
     if (i == 0) s = new String(Array(c)) + s.substring(1)
     else if (i == s.length - 1) s = s.substring(0, i) + new String(Array(c))
