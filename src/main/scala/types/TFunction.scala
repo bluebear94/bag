@@ -10,6 +10,7 @@ abstract class TFunction extends Type {
   def apply(args: Array[Type]): Type
   override def equals(that: Any): Boolean = false
   override def equalsStrictly(that: Any) = equals(that)
+  def equalsStrictly(that: Type) = equals(that)
   def toBoolean(): Boolean = true
   override def toString(): String = "a function"
     //TODO method stub

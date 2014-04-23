@@ -24,6 +24,12 @@ case class TByteString(aa: Array[Byte]) extends Type {
       case _ => false
     }
   }
+  def equalsStrictly(that: Type) = {
+    that match {
+      case t: TByteString => a.equals(t.a)
+      case _ => false
+    }
+  }
   override def toString(): String = s"Bytes(${BFuncs.bytecodeToString(a)})"
   /**
    * Returns a clone of this type.

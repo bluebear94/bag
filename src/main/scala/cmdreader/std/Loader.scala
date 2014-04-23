@@ -66,5 +66,6 @@ class Loader {
     Global.liblist("std").loadCmd("ValCopy")
     Global.liblist("std").loadCmd("GetType")
     Global.liblist("std").loadCmd("OSeq")
+    Global.liblist("std").loadCmd("Yield")
   }
 }

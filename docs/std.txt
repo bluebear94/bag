@@ -129,3 +129,5 @@ desc "Returns a clone of this value. This is done by default on assignment; howe
 desc "Returns the old AVC (automatic value copying) setting. If another argument is passed, then it determines the new setting. Recommended to be turned off if you're doing functional programming or know what you're doing."
 #gettype
 desc "Gets the type of the input."
+#yield
+desc "Produces a list from #1 up to, but not including, #2. If #3 is present, then produces a list of what the function yields. If #4 is specified and true, then produces a linked list; otherwise, produces an array."
