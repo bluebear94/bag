@@ -27,7 +27,7 @@ class ExpressionParsersTest extends FlatSpec with Matchers {
     }
   }
   private def assertFail[T](input: String)(implicit p: Parser[T]) {
-    evaluating(parsing(input)(p)) should produce[IllegalArgumentException]
+    an [IllegalArgumentException] should be thrownBy parsing(input)(p)
   }
   "XprInt" should "parse void literals" in {
     implicit val parserToTest = void

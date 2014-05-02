@@ -131,3 +131,9 @@ desc "Returns the old AVC (automatic value copying) setting. If another argument
 desc "Gets the type of the input."
 #yield
 desc "Produces a list from #1 up to, but not including, #2. If #3 is present, then produces a list of what the function yields. If #4 is specified and true, then produces a linked list; otherwise, produces an array."
+#stib
+desc "Converts a string (#1) to a number given a radix #2. If there is no decimal point, then the result will have type 1; otherwise, the result will have type 4 and may be slightly off."
+throws 1 6
+#istb
+desc "Converts a number (#1) to a string given a radix #2."
+throws 1 6
