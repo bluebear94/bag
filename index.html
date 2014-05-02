@@ -16,7 +16,7 @@
   <body>
     <div class="wrapper">
       <header>
-        <h1 class="header">Amethyst</h1>
+        <h1 class="header">Bag</h1>
         <p class="header">$:hluna(&quot;A programming language</p>
 
         <ul>
@@ -25,13 +25,18 @@
           <li><a class="buttons github" href="https://github.com/bluebear94/amethyst">View On GitHub</a></li>
         </ul>
 
+        <ul>
+          <li><a class="buttons right-index" href="index.html"><b>Top</b></a>
+          <li><a class="buttons right" href="faq.html">FAQs</a>
+          <li><a class="buttons right" href="api/index.html">API</a>
+        </ul>
+
         <p class="header">This project is maintained by <a class="header name" href="https://github.com/bluebear94">bluebear94</a></p>
 
 
       </header>
       <section>
-        <h3>
-<a name="amethyst-soon-to-be-renamed" class="anchor" href="#amethyst-soon-to-be-renamed"><span class="octicon octicon-link"></span></a>amethyst (<a href="https://docs.google.com/forms/d/1R-epMSA_GaeaEZilc_D6k8vo8TXJMvZDZlgQDMFsHFQ/viewform">soon to be renamed</a>)</h3>
+        <h3>bag</h3>
 
 <p>A programming language with both minimalism and utility in mind. It is inspired by TI-Basic.</p>
 
@@ -40,13 +45,13 @@
 
 <pre><code>_ Returns the nth Fibonacci number.
 _ For n = 0, produces an extraneous result of 1.
-$fib = λ
-  l = 0
-  u = 1
+Let $fib := λ
+  Let l := 0
+  Let u := 1
   For i, 2, #1
-    t = u
+    Let t := u
     u += l
-    l = t
+    l := t
   EndFor
   u
 Endλ
@@ -58,7 +63,7 @@ Endλ
 <p>Later versions may contain functions missing in earlier versions. The latest is <strong>0.5.12</strong>.</p>
 
 <h3>
-<a name="roadmap-to-06" class="anchor" href="#roadmap-to-06"><span class="octicon octicon-link"></span></a>Roadmap to 0.6</h3>
+<a name="roadmap-to-06" class="anchor" href="#roadmap-to-06"><span class="octicon octicon-link"></span></a>Roadmap to 0.7</h3>
 
 <ul>
 <li>[x] bitwise operators</li>
@@ -66,35 +71,12 @@ Endλ
 <li>[x] time functions</li>
 <li>[ ] collection functions</li>
 <li>[ ] random functions</li>
-</ul><p>In order to enhance friendliness to new programmers, the <code>=</code> token will now be interpreted as equality, and assignment will use a left arrow (which will be available for input on the GUI).</p>
+</ul>
 
 <h3>
-<a name="questions" class="anchor" href="#questions"><span class="octicon octicon-link"></span></a>Questions</h3>
+<a href="faq.html">Frequently Asked Questions</a></h3>
 
-<h4>
-<a name="will-named-parameters-be-supported-e-g-fxx2" class="anchor" href="#will-named-parameters-be-supported-e-g-fxx2"><span class="octicon octicon-link"></span></a>Will named parameters be supported; e. g. <code>f(x)=x^2</code>?</h4>
 
-<p>There are no plans to support named parameters at this moment.</p>
-
-<h4>
-<a name="why-do-you-plan-to-rename-amethyst" class="anchor" href="#why-do-you-plan-to-rename-amethyst"><span class="octicon octicon-link"></span></a>Why do you plan to rename Amethyst?</h4>
-
-<p>Already taken.</p>
-
-<h4>
-<a name="are-there-any-communities-i-can-join" class="anchor" href="#are-there-any-communities-i-can-join"><span class="octicon octicon-link"></span></a>Are there any communities I can join?</h4>
-
-<p>There will be as soon as we agree upon a new name.</p>
-
-<h4>
-<a name="how-do-i-install" class="anchor" href="#how-do-i-install"><span class="octicon octicon-link"></span></a>How do I install?</h4>
-
-<p><a href="https://github.com/bluebear94/amethyst/blob/master/README.md">あなたばかです。</a></p>
-
-<h4>
-<a name="why-does-for-example-calling-cdr-on-a-large-list-take-so-much-time" class="anchor" href="#why-does-for-example-calling-cdr-on-a-large-list-take-so-much-time"><span class="octicon octicon-link"></span></a>Why does, for example, calling <code>$:cdr</code> on a large list take so much time?</h4>
-
-<p>Amethyst vigilantly clones values on assignment, in order to avoid unnecessary mutation and model TI-Basic. Chances are that you can use a function such as <code>$:foldl</code> to do the same thing.</p>
       </section>
       <footer>
         <p><small>Hosted on <a href="http://pages.github.com">GitHub Pages</a> using the Dinky theme</small></p>

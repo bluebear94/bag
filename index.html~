@@ -1,0 +1,87 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Amethyst by bluebear94</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="javascripts/scale.fix.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1 class="header">Bag</h1>
+        <p class="header">$:hluna(&quot;A programming language</p>
+
+        <ul>
+          <li class="download"><a class="buttons" href="https://github.com/bluebear94/amethyst/zipball/master">Download ZIP</a></li>
+          <li class="download"><a class="buttons" href="https://github.com/bluebear94/amethyst/tarball/master">Download TAR</a></li>
+          <li><a class="buttons github" href="https://github.com/bluebear94/amethyst">View On GitHub</a></li>
+        </ul>
+
+        <ul>
+          <li><a class="buttons right-index" href="index.html"><b>Top</b></a>
+          <li><a class="buttons right" href="faq.html">FAQs</a>
+        </ul>
+
+        <p class="header">This project is maintained by <a class="header name" href="https://github.com/bluebear94">bluebear94</a></p>
+
+
+      </header>
+      <section>
+        <h3>bag</h3>
+
+<p>A programming language with both minimalism and utility in mind. It is inspired by TI-Basic.</p>
+
+<h3>
+<a name="example" class="anchor" href="#example"><span class="octicon octicon-link"></span></a>Example?</h3>
+
+<pre><code>_ Returns the nth Fibonacci number.
+_ For n = 0, produces an extraneous result of 1.
+Let $fib := λ
+  Let l := 0
+  Let u := 1
+  For i, 2, #1
+    Let t := u
+    u += l
+    l := t
+  EndFor
+  u
+Endλ
+</code></pre>
+
+<h3>
+<a name="version-05x" class="anchor" href="#version-05x"><span class="octicon octicon-link"></span></a>Version 0.5.x</h3>
+
+<p>Later versions may contain functions missing in earlier versions. The latest is <strong>0.5.12</strong>.</p>
+
+<h3>
+<a name="roadmap-to-06" class="anchor" href="#roadmap-to-06"><span class="octicon octicon-link"></span></a>Roadmap to 0.7</h3>
+
+<ul>
+<li>[x] bitwise operators</li>
+<li>[x] math functions</li>
+<li>[x] time functions</li>
+<li>[ ] collection functions</li>
+<li>[ ] random functions</li>
+</ul>
+
+<h3>
+<a href="faq.html">Frequently Asked Questions</a></h3>
+
+
+      </section>
+      <footer>
+        <p><small>Hosted on <a href="http://pages.github.com">GitHub Pages</a> using the Dinky theme</small></p>
+      </footer>
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+		
+  </body>
+</html>

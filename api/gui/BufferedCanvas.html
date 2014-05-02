@@ -1,5 +1,4 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<!DOCTYPE html >
 <html>
         <head>
           <title>BufferedCanvas - gui.BufferedCanvas</title>
@@ -9,6 +8,11 @@
           
       <link href="../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
       <link href="../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript" src="../lib/jquery.js" id="jquery-js"></script>
+      <script type="text/javascript" src="../lib/jquery-ui.js"></script>
+      <script type="text/javascript" src="../lib/template.js"></script>
+      <script type="text/javascript" src="../lib/tools.tooltip.js"></script>
+      
       <script type="text/javascript">
          if(top === self) {
             var url = '../index.html';
@@ -39,7 +43,8 @@
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>An extension of a Scala Swing panel that holds a buffered image.
+</p></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><span class="extype" name="scala.swing.Panel">Panel</span>, <span class="extype" name="scala.swing.Container.Wrapper">Wrapper</span>, <span class="extype" name="scala.swing.Container">Container</span>, <span class="extype" name="scala.swing.Component">Component</span>, <span class="extype" name="scala.swing.UIElement">UIElement</span>, <span class="extype" name="scala.swing.LazyPublisher">LazyPublisher</span>, <span class="extype" name="scala.swing.Publisher">Publisher</span>, <span class="extype" name="scala.swing.Reactor">Reactor</span>, <span class="extype" name="scala.Proxy">Proxy</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
@@ -131,19 +136,6 @@
         <div id="values" class="values members">
               <h3>Value Members</h3>
               <ol><li name="scala.AnyRef#!=" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="!=(x$1:AnyRef):Boolean"></a>
-      <a id="!=(AnyRef):Boolean"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">final </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="scala.Any#!=" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="!=(x$1:Any):Boolean"></a>
       <a id="!=(Any):Boolean"></a>
       <h4 class="signature">
@@ -155,7 +147,7 @@
         <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="scala.AnyRef###" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="##():Int"></a>
       <a id="##():Int"></a>
@@ -170,19 +162,6 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="scala.AnyRef#==" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="==(x$1:AnyRef):Boolean"></a>
-      <a id="==(AnyRef):Boolean"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">final </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="scala.Any#==" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="==(x$1:Any):Boolean"></a>
       <a id="==(Any):Boolean"></a>
       <h4 class="signature">
@@ -194,7 +173,7 @@
         <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="scala.swing.Container.Wrapper#_contents" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="_contents:Wrapper.this.Content"></a>
       <a id="_contents:Content"></a>
@@ -259,7 +238,8 @@
         <span class="name">bg</span><span class="result">: <span class="extype" name="java.awt.Graphics2D">Graphics2D</span></span>
       </span>
       </h4>
-      
+      <p class="shortcomment cmt">The Graphics2D object associated with the image
+</p>
     </li><li name="scala.swing.Component#border" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="border:javax.swing.border.Border"></a>
       <a id="border:Border"></a>
@@ -383,7 +363,7 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>UIElement</dd></dl></div>
-    </li><li name="gui.BufferedCanvas#draw" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+    </li><li name="gui.BufferedCanvas#draw" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="draw(grf:java.awt.Graphics2D=&gt;Unit):Unit"></a>
       <a id="draw((Graphics2D)⇒Unit):Unit"></a>
       <h4 class="signature">
@@ -395,7 +375,8 @@
         <span class="name">draw</span><span class="params">(<span name="grf">grf: (<span class="extype" name="java.awt.Graphics2D">Graphics2D</span>) ⇒ <span class="extype" name="scala.Unit">Unit</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
-      
+      <p class="shortcomment cmt">Performs an action with the Graphics2D object.</p><div class="fullcomment"><div class="comment cmt"><p>Performs an action with the Graphics2D object.</p></div><dl class="paramcmts block"><dt class="param">grf</dt><dd class="cmt"><p>a function that takes a Graphics2D and performs actions with it
+</p></dd></dl></div>
     </li><li name="scala.swing.Component#enabled" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="enabled:Boolean"></a>
       <a id="enabled:Boolean"></a>
@@ -622,7 +603,7 @@
         <span class="name">image</span><span class="result">: <span class="extype" name="java.awt.image.BufferedImage">BufferedImage</span></span>
       </span>
       </h4>
-      
+      <p class="shortcomment cmt">The image.</p>
     </li><li name="scala.swing.Component#initP" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="initP:javax.swing.JComponent"></a>
       <a id="initP:JComponent"></a>
@@ -1416,6 +1397,7 @@
       <div id="tooltip"></div>
 
       <div id="footer">  </div>
-      <script defer="defer" type="text/javascript" id="jquery-js" src="../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../lib/template.js"></script>
+
+
     </body>
       </html>

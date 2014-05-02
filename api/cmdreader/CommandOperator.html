@@ -1,5 +1,4 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<!DOCTYPE html >
 <html>
         <head>
           <title>CommandOperator - cmdreader.CommandOperator</title>
@@ -9,6 +8,11 @@
           
       <link href="../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
       <link href="../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript" src="../lib/jquery.js" id="jquery-js"></script>
+      <script type="text/javascript" src="../lib/jquery-ui.js"></script>
+      <script type="text/javascript" src="../lib/template.js"></script>
+      <script type="text/javascript" src="../lib/tools.tooltip.js"></script>
+      
       <script type="text/javascript">
          if(top === self) {
             var url = '../index.html';
@@ -44,9 +48,9 @@
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><a href="Command.html" class="extype" name="cmdreader.Command">Command</a>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div><div class="toggleContainer block">
-          <span class="toggle">Known Subclasses</span>
-          <div class="subClasses hiddenContent"><a href="std/HSort.html" class="extype" name="cmdreader.std.HSort">HSort</a>, <a href="std/OAdd.html" class="extype" name="cmdreader.std.OAdd">OAdd</a>, <a href="std/OAnd.html" class="extype" name="cmdreader.std.OAnd">OAnd</a>, <a href="std/OAndB.html" class="extype" name="cmdreader.std.OAndB">OAndB</a>, <a href="std/OAvg.html" class="extype" name="cmdreader.std.OAvg">OAvg</a>, <a href="std/ODiv.html" class="extype" name="cmdreader.std.ODiv">ODiv</a>, <a href="std/OEq.html" class="extype" name="cmdreader.std.OEq">OEq</a>, <a href="std/OFilter.html" class="extype" name="cmdreader.std.OFilter">OFilter</a>, <a href="std/OGe.html" class="extype" name="cmdreader.std.OGe">OGe</a>, <a href="std/OGt.html" class="extype" name="cmdreader.std.OGt">OGt</a>, <a href="std/OIDiv.html" class="extype" name="cmdreader.std.OIDiv">OIDiv</a>, <a href="std/OLe.html" class="extype" name="cmdreader.std.OLe">OLe</a>, <a href="std/OLt.html" class="extype" name="cmdreader.std.OLt">OLt</a>, <a href="std/OMap.html" class="extype" name="cmdreader.std.OMap">OMap</a>, <a href="std/OMod.html" class="extype" name="cmdreader.std.OMod">OMod</a>, <a href="std/OMult.html" class="extype" name="cmdreader.std.OMult">OMult</a>, <a href="std/ONeq.html" class="extype" name="cmdreader.std.ONeq">ONeq</a>, <a href="std/OOr.html" class="extype" name="cmdreader.std.OOr">OOr</a>, <a href="std/OOrB.html" class="extype" name="cmdreader.std.OOrB">OOrB</a>, <a href="std/OShl.html" class="extype" name="cmdreader.std.OShl">OShl</a>, <a href="std/OShr.html" class="extype" name="cmdreader.std.OShr">OShr</a>, <a href="std/OSubt.html" class="extype" name="cmdreader.std.OSubt">OSubt</a>, <a href="std/OTt.html" class="extype" name="cmdreader.std.OTt">OTt</a>, <a href="std/OXor.html" class="extype" name="cmdreader.std.OXor">OXor</a>, <a href="std/OXorB.html" class="extype" name="cmdreader.std.OXorB">OXorB</a>, <a href="std/Sort.html" class="extype" name="cmdreader.std.Sort">Sort</a>, <a href="std/UONegate.html" class="extype" name="cmdreader.std.UONegate">UONegate</a>, <a href="std/UONot.html" class="extype" name="cmdreader.std.UONot">UONot</a></div>
-        </div></div>
+            <span class="toggle">Known Subclasses</span>
+            <div class="subClasses hiddenContent"><a href="std/HSort.html" class="extype" name="cmdreader.std.HSort">HSort</a>, <a href="std/MSort.html" class="extype" name="cmdreader.std.MSort">MSort</a>, <a href="std/OAdd.html" class="extype" name="cmdreader.std.OAdd">OAdd</a>, <a href="std/OAnd.html" class="extype" name="cmdreader.std.OAnd">OAnd</a>, <a href="std/OAndB.html" class="extype" name="cmdreader.std.OAndB">OAndB</a>, <a href="std/OAug.html" class="extype" name="cmdreader.std.OAug">OAug</a>, <a href="std/OAvg.html" class="extype" name="cmdreader.std.OAvg">OAvg</a>, <a href="std/ODiv.html" class="extype" name="cmdreader.std.ODiv">ODiv</a>, <a href="std/OEq.html" class="extype" name="cmdreader.std.OEq">OEq</a>, <a href="std/OFilter.html" class="extype" name="cmdreader.std.OFilter">OFilter</a>, <a href="std/OGe.html" class="extype" name="cmdreader.std.OGe">OGe</a>, <a href="std/OGt.html" class="extype" name="cmdreader.std.OGt">OGt</a>, <a href="std/OIDiv.html" class="extype" name="cmdreader.std.OIDiv">OIDiv</a>, <a href="std/OLe.html" class="extype" name="cmdreader.std.OLe">OLe</a>, <a href="std/OLt.html" class="extype" name="cmdreader.std.OLt">OLt</a>, <a href="std/OMap.html" class="extype" name="cmdreader.std.OMap">OMap</a>, <a href="std/OMod.html" class="extype" name="cmdreader.std.OMod">OMod</a>, <a href="std/OMult.html" class="extype" name="cmdreader.std.OMult">OMult</a>, <a href="std/ONeq.html" class="extype" name="cmdreader.std.ONeq">ONeq</a>, <a href="std/OOr.html" class="extype" name="cmdreader.std.OOr">OOr</a>, <a href="std/OOrB.html" class="extype" name="cmdreader.std.OOrB">OOrB</a>, <a href="std/OSeq.html" class="extype" name="cmdreader.std.OSeq">OSeq</a>, <a href="std/OShl.html" class="extype" name="cmdreader.std.OShl">OShl</a>, <a href="std/OShr.html" class="extype" name="cmdreader.std.OShr">OShr</a>, <a href="std/OSubt.html" class="extype" name="cmdreader.std.OSubt">OSubt</a>, <a href="std/OTt.html" class="extype" name="cmdreader.std.OTt">OTt</a>, <a href="std/OXor.html" class="extype" name="cmdreader.std.OXor">OXor</a>, <a href="std/OXorB.html" class="extype" name="cmdreader.std.OXorB">OXorB</a>, <a href="std/QSort.html" class="extype" name="cmdreader.std.QSort">QSort</a>, <a href="std/Sort.html" class="extype" name="cmdreader.std.Sort">Sort</a>, <a href="std/UONegate.html" class="extype" name="cmdreader.std.UONegate">UONegate</a>, <a href="std/UONot.html" class="extype" name="cmdreader.std.UONot">UONot</a>, <a href="std/Yield.html" class="extype" name="cmdreader.std.Yield">Yield</a></div>
+          </div></div>
         
 
       <div id="mbrsel">
@@ -161,19 +165,6 @@
         <div id="values" class="values members">
               <h3>Concrete Value Members</h3>
               <ol><li name="scala.AnyRef#!=" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="!=(x$1:AnyRef):Boolean"></a>
-      <a id="!=(AnyRef):Boolean"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">final </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="scala.Any#!=" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="!=(x$1:Any):Boolean"></a>
       <a id="!=(Any):Boolean"></a>
       <h4 class="signature">
@@ -185,7 +176,7 @@
         <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="scala.AnyRef###" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="##():Int"></a>
       <a id="##():Int"></a>
@@ -200,19 +191,6 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="scala.AnyRef#==" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="==(x$1:AnyRef):Boolean"></a>
-      <a id="==(AnyRef):Boolean"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">final </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="scala.Any#==" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="==(x$1:Any):Boolean"></a>
       <a id="==(Any):Boolean"></a>
       <h4 class="signature">
@@ -224,7 +202,7 @@
         <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="cmdreader.Command#apply" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="apply(args:Array[types.Type]):types.Type"></a>
       <a id="apply(Array[Type]):Type"></a>
@@ -562,6 +540,7 @@
       <div id="tooltip"></div>
 
       <div id="footer">  </div>
-      <script defer="defer" type="text/javascript" id="jquery-js" src="../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../lib/template.js"></script>
+
+
     </body>
       </html>

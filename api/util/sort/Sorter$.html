@@ -1,5 +1,4 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<!DOCTYPE html >
 <html>
         <head>
           <title>Sorter - util.sort.Sorter</title>
@@ -9,6 +8,11 @@
           
       <link href="../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
       <link href="../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript" src="../../lib/jquery.js" id="jquery-js"></script>
+      <script type="text/javascript" src="../../lib/jquery-ui.js"></script>
+      <script type="text/javascript" src="../../lib/template.js"></script>
+      <script type="text/javascript" src="../../lib/tools.tooltip.js"></script>
+      
       <script type="text/javascript">
          if(top === self) {
             var url = '../../index.html';
@@ -86,19 +90,6 @@
         <div id="values" class="values members">
               <h3>Value Members</h3>
               <ol><li name="scala.AnyRef#!=" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="!=(x$1:AnyRef):Boolean"></a>
-      <a id="!=(AnyRef):Boolean"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">final </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="scala.Any#!=" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="!=(x$1:Any):Boolean"></a>
       <a id="!=(Any):Boolean"></a>
       <h4 class="signature">
@@ -110,7 +101,7 @@
         <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="scala.AnyRef###" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="##():Int"></a>
       <a id="##():Int"></a>
@@ -125,19 +116,6 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="scala.AnyRef#==" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="==(x$1:AnyRef):Boolean"></a>
-      <a id="==(AnyRef):Boolean"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">final </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="scala.Any#==" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="==(x$1:Any):Boolean"></a>
       <a id="==(Any):Boolean"></a>
       <h4 class="signature">
@@ -149,7 +127,7 @@
         <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <a id="asInstanceOf[T0]:T0"></a>
@@ -253,7 +231,7 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="util.sort.Sorter#heapsort" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+    </li><li name="util.sort.Sorter#heapsort" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="heapsort[T](a:scala.collection.mutable.ArrayBuffer[T],f:(T,T)=&gt;Boolean):scala.collection.mutable.ArrayBuffer[T]"></a>
       <a id="heapsort[T](ArrayBuffer[T],(T,T)⇒Boolean):ArrayBuffer[T]"></a>
       <h4 class="signature">
@@ -265,7 +243,8 @@
         <span class="name">heapsort</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="a">a: <span class="extype" name="scala.collection.mutable.ArrayBuffer">ArrayBuffer</span>[<span class="extype" name="util.sort.Sorter.heapsort.T">T</span>]</span>, <span name="f">f: (<span class="extype" name="util.sort.Sorter.heapsort.T">T</span>, <span class="extype" name="util.sort.Sorter.heapsort.T">T</span>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result">: <span class="extype" name="scala.collection.mutable.ArrayBuffer">ArrayBuffer</span>[<span class="extype" name="util.sort.Sorter.heapsort.T">T</span>]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Performs heapsort.</p>
+      <p class="shortcomment cmt">Performs heapsort.</p><div class="fullcomment"><div class="comment cmt"><p>Performs heapsort.</p></div><dl class="paramcmts block"><dt class="param">a</dt><dd class="cmt"><p>the <code>ArrayBuffer</code> to sort</p></dd><dt class="param">f</dt><dd class="cmt"><p>the comparison function. For all <code>i &gt; j</code>, <code>f(a(i), a(j))</code> after sorting.</p></dd><dt>returns</dt><dd class="cmt"><p>the sorted <code>ArrayBuffer</code>
+</p></dd></dl></div>
     </li><li name="scala.Any#isInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="isInstanceOf[T0]:Boolean"></a>
       <a id="isInstanceOf[T0]:Boolean"></a>
@@ -279,6 +258,20 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="util.sort.Sorter#mergesort" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="mergesort[T](a:scala.collection.mutable.ListBuffer[T],f:(T,T)=&gt;Boolean):scala.collection.mutable.ListBuffer[T]"></a>
+      <a id="mergesort[T](ListBuffer[T],(T,T)⇒Boolean):ListBuffer[T]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">mergesort</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="a">a: <span class="extype" name="scala.collection.mutable.ListBuffer">ListBuffer</span>[<span class="extype" name="util.sort.Sorter.mergesort.T">T</span>]</span>, <span name="f">f: (<span class="extype" name="util.sort.Sorter.mergesort.T">T</span>, <span class="extype" name="util.sort.Sorter.mergesort.T">T</span>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result">: <span class="extype" name="scala.collection.mutable.ListBuffer">ListBuffer</span>[<span class="extype" name="util.sort.Sorter.mergesort.T">T</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Performs mergesort.</p><div class="fullcomment"><div class="comment cmt"><p>Performs mergesort. (<a href="http://www.chiark.greenend.org.uk/~sgtatham/algorithms/listsort.html">algorithm</a>)</p></div><dl class="paramcmts block"><dt class="param">a</dt><dd class="cmt"><p>the <code>ListBuffer</code> to sort</p></dd><dt class="param">f</dt><dd class="cmt"><p>the comparison function. For all <code>i &gt; j</code>, <code>f(a(i), a(j))</code> after sorting.</p></dd><dt>returns</dt><dd class="cmt"><p>the sorted <code>ListBuffer</code>
+</p></dd></dl></div>
     </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a>
       <a id="ne(AnyRef):Boolean"></a>
@@ -318,6 +311,20 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="util.sort.Sorter#quicksort" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="quicksort[T](a:scala.collection.mutable.ArrayBuffer[T],f:(T,T)=&gt;Boolean):scala.collection.mutable.ArrayBuffer[T]"></a>
+      <a id="quicksort[T](ArrayBuffer[T],(T,T)⇒Boolean):ArrayBuffer[T]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">quicksort</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="a">a: <span class="extype" name="scala.collection.mutable.ArrayBuffer">ArrayBuffer</span>[<span class="extype" name="util.sort.Sorter.quicksort.T">T</span>]</span>, <span name="f">f: (<span class="extype" name="util.sort.Sorter.quicksort.T">T</span>, <span class="extype" name="util.sort.Sorter.quicksort.T">T</span>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result">: <span class="extype" name="scala.collection.mutable.ArrayBuffer">ArrayBuffer</span>[<span class="extype" name="util.sort.Sorter.quicksort.T">T</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Performs randomized quicksort.</p><div class="fullcomment"><div class="comment cmt"><p>Performs randomized quicksort.</p></div><dl class="paramcmts block"><dt class="param">a</dt><dd class="cmt"><p>the <code>ArrayBuffer</code> to sort</p></dd><dt class="param">f</dt><dd class="cmt"><p>the comparison function. For all <code>i &gt; j</code>, <code>f(a(i), a(j))</code> after sorting.</p></dd><dt>returns</dt><dd class="cmt"><p>the sorted <code>ArrayBuffer</code>
+</p></dd></dl></div>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>
@@ -430,6 +437,7 @@
       <div id="tooltip"></div>
 
       <div id="footer">  </div>
-      <script defer="defer" type="text/javascript" id="jquery-js" src="../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../lib/template.js"></script>
+
+
     </body>
       </html>

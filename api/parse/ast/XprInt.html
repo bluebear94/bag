@@ -1,5 +1,4 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<!DOCTYPE html >
 <html>
         <head>
           <title>XprInt - parse.ast.XprInt</title>
@@ -9,6 +8,11 @@
           
       <link href="../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
       <link href="../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript" src="../../lib/jquery.js" id="jquery-js"></script>
+      <script type="text/javascript" src="../../lib/jquery-ui.js"></script>
+      <script type="text/javascript" src="../../lib/template.js"></script>
+      <script type="text/javascript" src="../../lib/tools.tooltip.js"></script>
+      
       <script type="text/javascript">
          if(top === self) {
             var url = '../../index.html';
@@ -39,7 +43,7 @@
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>A parser for the Amethyst language.</p></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><span class="extype" name="scala.util.parsing.combinator.PackratParsers">PackratParsers</span>, <span class="extype" name="scala.util.parsing.combinator.JavaTokenParsers">JavaTokenParsers</span>, <span class="extype" name="scala.util.parsing.combinator.RegexParsers">RegexParsers</span>, <span class="extype" name="scala.util.parsing.combinator.Parsers">Parsers</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
@@ -202,7 +206,7 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>PackratParsers</dd></dl></div>
     </li><li name="scala.util.parsing.combinator.Parsers.ParseResult" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
-      <a id="ParseResult[+T&lt;:&lt;?&gt;]extendsAnyRef"></a>
+      <a id="ParseResult[+T]extendsAnyRef"></a>
       <a id="ParseResult[+T]:ParseResult[T]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -261,19 +265,6 @@
         <div id="values" class="values members">
               <h3>Value Members</h3>
               <ol><li name="scala.AnyRef#!=" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="!=(x$1:AnyRef):Boolean"></a>
-      <a id="!=(AnyRef):Boolean"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">final </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="scala.Any#!=" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="!=(x$1:Any):Boolean"></a>
       <a id="!=(Any):Boolean"></a>
       <h4 class="signature">
@@ -285,7 +276,7 @@
         <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="scala.AnyRef###" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="##():Int"></a>
       <a id="##():Int"></a>
@@ -300,19 +291,6 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="scala.AnyRef#==" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="==(x$1:AnyRef):Boolean"></a>
-      <a id="==(AnyRef):Boolean"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">final </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="scala.Any#==" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="==(x$1:Any):Boolean"></a>
       <a id="==(Any):Boolean"></a>
       <h4 class="signature">
@@ -324,7 +302,7 @@
         <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="scala.util.parsing.combinator.Parsers.NoSuccess" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="NoSuccess"></a>
       <a id="NoSuccess:NoSuccess"></a>
@@ -495,15 +473,54 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
     </li><li name="parse.ast.XprInt#assign" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="assign:XprInt.this.PackratParser[parse.ast.Expression]"></a>
-      <a id="assign:PackratParser[Expression]"></a>
+      <a id="assign:XprInt.this.Parser[parse.ast.Expression]"></a>
+      <a id="assign:Parser[Expression]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">lazy val</span>
       </span>
       <span class="symbol">
-        <span class="name">assign</span><span class="result">: <a href="#PackratParser[+T]extendsPackratParsers.this.Parser[T]" class="extmbr" name="parse.ast.XprInt.PackratParser">PackratParser</a>[<a href="Expression.html" class="extype" name="parse.ast.Expression">Expression</a>]</span>
+        <span class="name">assign</span><span class="result">: <a href="#Parser[+T]extendsParsers.this.Input=&gt;Parsers.this.ParseResult[T]" class="extmbr" name="parse.ast.XprInt.Parser">Parser</a>[<a href="Expression.html" class="extype" name="parse.ast.Expression">Expression</a>]</span>
+      </span>
+      </h4>
+      
+    </li><li name="parse.ast.XprInt#assignNew" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="assignNew:XprInt.this.PackratParser[parse.ast.Expression]"></a>
+      <a id="assignNew:PackratParser[Expression]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">lazy val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">assignNew</span><span class="result">: <a href="#PackratParser[+T]extendsPackratParsers.this.Parser[T]" class="extmbr" name="parse.ast.XprInt.PackratParser">PackratParser</a>[<a href="Expression.html" class="extype" name="parse.ast.Expression">Expression</a>]</span>
+      </span>
+      </h4>
+      
+    </li><li name="parse.ast.XprInt#assignOld" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="assignOld:XprInt.this.PackratParser[parse.ast.Expression]"></a>
+      <a id="assignOld:PackratParser[Expression]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">lazy val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">assignOld</span><span class="result">: <a href="#PackratParser[+T]extendsPackratParsers.this.Parser[T]" class="extmbr" name="parse.ast.XprInt.PackratParser">PackratParser</a>[<a href="Expression.html" class="extype" name="parse.ast.Expression">Expression</a>]</span>
+      </span>
+      </h4>
+      
+    </li><li name="parse.ast.XprInt#byteString" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="byteString:XprInt.this.PackratParser[parse.ast.SBExpression]"></a>
+      <a id="byteString:PackratParser[SBExpression]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">lazy val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">byteString</span><span class="result">: <a href="#PackratParser[+T]extendsPackratParsers.this.Parser[T]" class="extmbr" name="parse.ast.XprInt.PackratParser">PackratParser</a>[<a href="SBExpression.html" class="extype" name="parse.ast.SBExpression">SBExpression</a>]</span>
       </span>
       </h4>
       
@@ -831,6 +848,19 @@
       </span>
       </h4>
       
+    </li><li name="parse.ast.XprInt#funcAsByte" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="funcAsByte:XprInt.this.PackratParser[parse.ast.SBExpression]"></a>
+      <a id="funcAsByte:PackratParser[SBExpression]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">lazy val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">funcAsByte</span><span class="result">: <a href="#PackratParser[+T]extendsPackratParsers.this.Parser[T]" class="extmbr" name="parse.ast.XprInt.PackratParser">PackratParser</a>[<a href="SBExpression.html" class="extype" name="parse.ast.SBExpression">SBExpression</a>]</span>
+      </span>
+      </h4>
+      
     </li><li name="scala.AnyRef#getClass" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getClass():Class[_]"></a>
       <a id="getClass():Class[_]"></a>
@@ -948,6 +978,19 @@
       </span>
       </h4>
       
+    </li><li name="parse.ast.XprInt#hexDigits" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="hexDigits:scala.util.matching.Regex"></a>
+      <a id="hexDigits:Regex"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">hexDigits</span><span class="result">: <span class="extype" name="scala.util.matching.Regex">Regex</span></span>
+      </span>
+      </h4>
+      
     </li><li name="parse.ast.XprInt#hill" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="hill:XprInt.this.PackratParser[parse.ast.SBExpression]"></a>
       <a id="hill:PackratParser[SBExpression]"></a>
@@ -1052,6 +1095,19 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="parse.ast.XprInt#keyValue" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="keyValue:XprInt.this.PackratParser[(parse.ast.Expression,parse.ast.Expression)]"></a>
+      <a id="keyValue:PackratParser[(Expression,Expression)]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">lazy val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">keyValue</span><span class="result">: <a href="#PackratParser[+T]extendsPackratParsers.this.Parser[T]" class="extmbr" name="parse.ast.XprInt.PackratParser">PackratParser</a>[(<a href="Expression.html" class="extype" name="parse.ast.Expression">Expression</a>, <a href="Expression.html" class="extype" name="parse.ast.Expression">Expression</a>)]</span>
+      </span>
+      </h4>
+      
     </li><li name="parse.ast.XprInt#lIndexing" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="lIndexing:XprInt.this.PackratParser[parse.ast.LValue]"></a>
       <a id="lIndexing:PackratParser[LValue]"></a>
@@ -1155,7 +1211,7 @@
         <span class="name">loadOps</span><span class="result">: (<a href="#PackratParser[+T]extendsPackratParsers.this.Parser[T]" class="extmbr" name="parse.ast.XprInt.PackratParser">PackratParser</a>[(<a href="Expression.html" class="extype" name="parse.ast.Expression">Expression</a>, <a href="Expression.html" class="extype" name="parse.ast.Expression">Expression</a>) ⇒ <a href="Expression.html" class="extype" name="parse.ast.Expression">Expression</a>], <span class="extype" name="scala.Boolean">Boolean</span>)</span>
       </span>
       </h4>
-      
+      <p class="shortcomment cmt">Loads all the operators.</p>
     </li><li name="parse.ast.XprInt#loadWithPrec" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="loadWithPrec(prec:Int,parser:(XprInt.this.PackratParser[(parse.ast.Expression,parse.ast.Expression)=&gt;parse.ast.Expression],Boolean)):(XprInt.this.PackratParser[(parse.ast.Expression,parse.ast.Expression)=&gt;parse.ast.Expression],Boolean)"></a>
       <a id="loadWithPrec(Int,(PackratParser[(Expression,Expression)⇒Expression],Boolean)):(PackratParser[(Expression,Expression)⇒Expression],Boolean)"></a>
@@ -1192,6 +1248,19 @@
       </span>
       <span class="symbol">
         <span class="name">lvalue</span><span class="result">: <a href="#PackratParser[+T]extendsPackratParsers.this.Parser[T]" class="extmbr" name="parse.ast.XprInt.PackratParser">PackratParser</a>[<a href="LValue.html" class="extype" name="parse.ast.LValue">LValue</a>]</span>
+      </span>
+      </h4>
+      
+    </li><li name="parse.ast.XprInt#map" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="map:XprInt.this.PackratParser[parse.ast.SBExpression]"></a>
+      <a id="map:PackratParser[SBExpression]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">lazy val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">map</span><span class="result">: <a href="#PackratParser[+T]extendsPackratParsers.this.Parser[T]" class="extmbr" name="parse.ast.XprInt.PackratParser">PackratParser</a>[<a href="SBExpression.html" class="extype" name="parse.ast.SBExpression">SBExpression</a>]</span>
       </span>
       </h4>
       
@@ -1614,6 +1683,19 @@
       </span>
       </h4>
       
+    </li><li name="parse.ast.XprInt#sbwrapperl" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="sbwrapperl:XprInt.this.PackratParser[parse.ast.LValue]"></a>
+      <a id="sbwrapperl:PackratParser[LValue]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">sbwrapperl</span><span class="result">: <a href="#PackratParser[+T]extendsPackratParsers.this.Parser[T]" class="extmbr" name="parse.ast.XprInt.PackratParser">PackratParser</a>[<a href="LValue.html" class="extype" name="parse.ast.LValue">LValue</a>]</span>
+      </span>
+      </h4>
+      
     </li><li name="scala.util.parsing.combinator.RegexParsers#skipWhitespace" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="skipWhitespace:Boolean"></a>
       <a id="skipWhitespace:Boolean"></a>
@@ -1848,42 +1930,7 @@
 
         
 
-        <div id="values" class="values members">
-              <h3>Deprecated Value Members</h3>
-              <ol><li name="scala.util.parsing.combinator.Parsers#lastNoSuccess" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="lastNoSuccess:Parsers.this.NoSuccess"></a>
-      <a id="lastNoSuccess:NoSuccess"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name deprecated" title="Deprecated: (Since version 2.10.0) lastNoSuccess was not thread-safe and will be removed in 2.11.0">lastNoSuccess</span><span class="result">: <a href="#NoSuccessextendsParsers.this.ParseResult[Nothing]" class="extmbr" name="parse.ast.XprInt.NoSuccess">NoSuccess</a></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Parsers</dd><dt>Annotations</dt><dd>
-                <span class="name">@deprecated</span>
-              
-        </dd><dt>Deprecated</dt><dd class="cmt"><p><i>(Since version 2.10.0)</i> lastNoSuccess was not thread-safe and will be removed in 2.11.0</p></dd></dl></div>
-    </li><li name="scala.util.parsing.combinator.Parsers#lastNoSuccess_=" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="lastNoSuccess_=(x:&lt;?&gt;):Unit"></a>
-      <a id="lastNoSuccess_=(NoSuccess):Unit"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span title="gt4s: lastNoSuccess_$eq. Deprecated: (Since version 2.10.0) lastNoSuccess was not thread-safe and will be removed in 2.11.0" class="name deprecated">lastNoSuccess_=</span><span class="params">(<span name="x">x: <a href="#NoSuccessextendsParsers.this.ParseResult[Nothing]" class="extmbr" name="parse.ast.XprInt.NoSuccess">NoSuccess</a></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Parsers</dd><dt>Annotations</dt><dd>
-                <span class="name">@deprecated</span>
-              
-        </dd><dt>Deprecated</dt><dd class="cmt"><p><i>(Since version 2.10.0)</i> lastNoSuccess was not thread-safe and will be removed in 2.11.0</p></dd></dl></div>
-    </li></ol>
-            </div>
+        
         </div>
 
         <div id="inheritedMembers">
@@ -1915,6 +1962,7 @@
       <div id="tooltip"></div>
 
       <div id="footer">  </div>
-      <script defer="defer" type="text/javascript" id="jquery-js" src="../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../lib/template.js"></script>
+
+
     </body>
       </html>

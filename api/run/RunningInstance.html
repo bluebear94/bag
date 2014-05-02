@@ -1,5 +1,4 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<!DOCTYPE html >
 <html>
         <head>
           <title>RunningInstance - run.RunningInstance</title>
@@ -9,6 +8,11 @@
           
       <link href="../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
       <link href="../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript" src="../lib/jquery.js" id="jquery-js"></script>
+      <script type="text/javascript" src="../lib/jquery-ui.js"></script>
+      <script type="text/javascript" src="../lib/template.js"></script>
+      <script type="text/javascript" src="../lib/tools.tooltip.js"></script>
+      
       <script type="text/javascript">
          if(top === self) {
             var url = '../index.html';
@@ -39,7 +43,7 @@
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>A class to define a running instance of a program.</p></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
@@ -79,7 +83,7 @@
         <div id="allMembers">
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
-              <ol><li name="run.RunningInstance#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+              <ol><li name="run.RunningInstance#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="&lt;init&gt;(fn:String,c:run.RunningInstance,args:Array[types.Type]):run.RunningInstance"></a>
       <a id="&lt;init&gt;:RunningInstance"></a>
       <h4 class="signature">
@@ -91,7 +95,8 @@
         <span class="name">RunningInstance</span><span class="params">(<span name="fn">fn: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="c">c: <a href="" class="extype" name="run.RunningInstance">RunningInstance</a></span>, <span name="args">args: <span class="extype" name="scala.Array">Array</span>[<a href="../types/Type.html" class="extype" name="types.Type">Type</a>]</span>)</span>
       </span>
       </h4>
-      
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">fn</dt><dd class="cmt"><p>the file name</p></dd><dt class="param">c</dt><dd class="cmt"><p>the next running instance on the stack</p></dd><dt class="param">args</dt><dd class="cmt"><p>the arguments
+</p></dd></dl></div>
     </li></ol>
             </div>
 
@@ -102,19 +107,6 @@
         <div id="values" class="values members">
               <h3>Value Members</h3>
               <ol><li name="scala.AnyRef#!=" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="!=(x$1:AnyRef):Boolean"></a>
-      <a id="!=(AnyRef):Boolean"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">final </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="scala.Any#!=" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="!=(x$1:Any):Boolean"></a>
       <a id="!=(Any):Boolean"></a>
       <h4 class="signature">
@@ -126,7 +118,7 @@
         <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="scala.AnyRef###" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="##():Int"></a>
       <a id="##():Int"></a>
@@ -141,19 +133,6 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="scala.AnyRef#==" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="==(x$1:AnyRef):Boolean"></a>
-      <a id="==(AnyRef):Boolean"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">final </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="scala.Any#==" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="==(x$1:Any):Boolean"></a>
       <a id="==(Any):Boolean"></a>
       <h4 class="signature">
@@ -165,7 +144,7 @@
         <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="run.RunningInstance#ans" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="ans:types.Type"></a>
       <a id="ans:Type"></a>
@@ -178,7 +157,7 @@
         <span class="name">ans</span><span class="result">: <a href="../types/Type.html" class="extype" name="types.Type">Type</a></span>
       </span>
       </h4>
-      
+      <p class="shortcomment cmt">The last-answer variable.</p>
     </li><li name="run.RunningInstance#answer" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="answer:types.Type"></a>
       <a id="answer:Type"></a>
@@ -191,8 +170,8 @@
         <span class="name">answer</span><span class="result">: <a href="../types/Type.html" class="extype" name="types.Type">Type</a></span>
       </span>
       </h4>
-      
-    </li><li name="run.RunningInstance#argn" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <p class="shortcomment cmt">The last-answer variable, but doesn't update to a void value.</p>
+    </li><li name="run.RunningInstance#argn" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="argn(i:Int,r:Int):types.Type"></a>
       <a id="argn(Int,Int):Type"></a>
       <h4 class="signature">
@@ -204,8 +183,9 @@
         <span class="name">argn</span><span class="params">(<span name="i">i: <span class="extype" name="scala.Int">Int</span></span>, <span name="r">r: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <a href="../types/Type.html" class="extype" name="types.Type">Type</a></span>
       </span>
       </h4>
-      
-    </li><li name="run.RunningInstance#argn" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <p class="shortcomment cmt">Gets the i<sup>th</sup> argument, one-indexed.</sup></p><div class="fullcomment"><div class="comment cmt"><p>Gets the i<sup>th</sup> argument, one-indexed.</p></div><dl class="paramcmts block"><dt class="param">i</dt><dd class="cmt"><p>the argument index to recall</p></dd><dt class="param">r</dt><dd class="cmt"><p>how deep into the call stack to recall (0 is this entry)</p></dd><dt>returns</dt><dd class="cmt"><p>the i<sup>th</sup> argument, or if <code>i == 0</code>, the number of arguments
+</p></dd></dl></div>
+    </li><li name="run.RunningInstance#argn" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="argn(i:Int):types.Type"></a>
       <a id="argn(Int):Type"></a>
       <h4 class="signature">
@@ -217,7 +197,8 @@
         <span class="name">argn</span><span class="params">(<span name="i">i: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <a href="../types/Type.html" class="extype" name="types.Type">Type</a></span>
       </span>
       </h4>
-      
+      <p class="shortcomment cmt">Gets the i<sup>th</sup> argument, one-indexed.</sup></p><div class="fullcomment"><div class="comment cmt"><p>Gets the i<sup>th</sup> argument, one-indexed.</p></div><dl class="paramcmts block"><dt class="param">i</dt><dd class="cmt"><p>the argument index to recall</p></dd><dt>returns</dt><dd class="cmt"><p>the i<sup>th</sup> argument, or if <code>i == 0</code>, the number of arguments
+</p></dd></dl></div>
     </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <a id="asInstanceOf[T0]:T0"></a>
@@ -243,7 +224,7 @@
         <span class="name">bytecode</span><span class="result">: <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.Byte">Byte</span>]</span>
       </span>
       </h4>
-      
+      <p class="shortcomment cmt">The bytecode of the program.</p>
     </li><li name="run.RunningInstance#calling" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="calling:run.RunningInstance"></a>
       <a id="calling:RunningInstance"></a>
@@ -276,7 +257,7 @@
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="run.RunningInstance#delVar" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+    </li><li name="run.RunningInstance#delVar" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="delVar(name:String):Unit"></a>
       <a id="delVar(String):Unit"></a>
       <h4 class="signature">
@@ -288,7 +269,8 @@
         <span class="name">delVar</span><span class="params">(<span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
-      
+      <p class="shortcomment cmt">Deletes a variable.</p><div class="fullcomment"><div class="comment cmt"><p>Deletes a variable.</p></div><dl class="paramcmts block"><dt class="param">name</dt><dd class="cmt"><p>the variable name
+</p></dd></dl></div>
     </li><li name="run.RunningInstance#environment" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="environment:scala.collection.mutable.HashMap[String,types.Type]"></a>
       <a id="environment:HashMap[String,Type]"></a>
@@ -301,7 +283,7 @@
         <span class="name">environment</span><span class="result">: <span class="extype" name="scala.collection.mutable.HashMap">HashMap</span>[<span class="extype" name="scala.Predef.String">String</span>, <a href="../types/Type.html" class="extype" name="types.Type">Type</a>]</span>
       </span>
       </h4>
-      
+      <p class="shortcomment cmt">A list of variables and their values.</p>
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a>
       <a id="eq(AnyRef):Boolean"></a>
@@ -373,7 +355,7 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="run.RunningInstance#getVar" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+    </li><li name="run.RunningInstance#getVar" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getVar(name:String,r:Int):types.Type"></a>
       <a id="getVar(String,Int):Type"></a>
       <h4 class="signature">
@@ -385,8 +367,9 @@
         <span class="name">getVar</span><span class="params">(<span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="r">r: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <a href="../types/Type.html" class="extype" name="types.Type">Type</a></span>
       </span>
       </h4>
-      
-    </li><li name="run.RunningInstance#getVar" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <p class="shortcomment cmt">Gets the value of the variable.</p><div class="fullcomment"><div class="comment cmt"><p>Gets the value of the variable.</p></div><dl class="paramcmts block"><dt class="param">name</dt><dd class="cmt"><p>the variable name</p></dd><dt class="param">r</dt><dd class="cmt"><p>how deep into the call stack to recall (0 is this entry)</p></dd><dt>returns</dt><dd class="cmt"><p>the value stored in the variable
+</p></dd></dl></div>
+    </li><li name="run.RunningInstance#getVar" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getVar(name:String):types.Type"></a>
       <a id="getVar(String):Type"></a>
       <h4 class="signature">
@@ -398,7 +381,8 @@
         <span class="name">getVar</span><span class="params">(<span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <a href="../types/Type.html" class="extype" name="types.Type">Type</a></span>
       </span>
       </h4>
-      
+      <p class="shortcomment cmt">Gets the value of the variable.</p><div class="fullcomment"><div class="comment cmt"><p>Gets the value of the variable.</p></div><dl class="paramcmts block"><dt class="param">name</dt><dd class="cmt"><p>the variable name</p></dd><dt>returns</dt><dd class="cmt"><p>the value stored in the variable
+</p></dd></dl></div>
     </li><li name="scala.AnyRef#hashCode" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="hashCode():Int"></a>
       <a id="hashCode():Int"></a>
@@ -477,7 +461,7 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="run.RunningInstance#printStackTrace" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+    </li><li name="run.RunningInstance#printStackTrace" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="printStackTrace:Unit"></a>
       <a id="printStackTrace:Unit"></a>
       <h4 class="signature">
@@ -489,8 +473,9 @@
         <span class="name">printStackTrace</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
-      
-    </li><li name="run.RunningInstance#readInt" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <p class="shortcomment cmt">Prints a stacktrace; i.</p><div class="fullcomment"><div class="comment cmt"><p>Prints a stacktrace; i. e. a line for this program and the stacktrace for the calling program, if any.
+</p></div></div>
+    </li><li name="run.RunningInstance#readInt" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="readInt(n:Int):Int"></a>
       <a id="readInt(Int):Int"></a>
       <h4 class="signature">
@@ -502,8 +487,9 @@
         <span class="name">readInt</span><span class="params">(<span name="n">n: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
       </span>
       </h4>
-      
-    </li><li name="run.RunningInstance#readString" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <p class="shortcomment cmt">Reads an integer value at an index on the bytecode.</p><div class="fullcomment"><div class="comment cmt"><p>Reads an integer value at an index on the bytecode.</p></div><dl class="paramcmts block"><dt class="param">n</dt><dd class="cmt"><p>the index</p></dd><dt>returns</dt><dd class="cmt"><p>the integer value represented by the four bytes at that location</p></dd></dl><dl class="attributes block"> <dt>Exceptions thrown</dt><dd><span class="cmt">ArrayIndexOutOfBoundsException<p>when <code>n &gt; bytecode.length - 4</code>
+</p></span></dd></dl></div>
+    </li><li name="run.RunningInstance#readString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="readString(n:Int):(String,Int)"></a>
       <a id="readString(Int):(String,Int)"></a>
       <h4 class="signature">
@@ -515,8 +501,9 @@
         <span class="name">readString</span><span class="params">(<span name="n">n: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: (<span class="extype" name="java.lang.String">String</span>, <span class="extype" name="scala.Int">Int</span>)</span>
       </span>
       </h4>
-      
-    </li><li name="run.RunningInstance#run" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <p class="shortcomment cmt">Reads a UTF-8 string at an index on the bytecode.</p><div class="fullcomment"><div class="comment cmt"><p>Reads a UTF-8 string at an index on the bytecode.</p></div><dl class="paramcmts block"><dt class="param">n</dt><dd class="cmt"><p>the index</p></dd><dt>returns</dt><dd class="cmt"><p>the string value represented by the bytes at that location</p></dd></dl><dl class="attributes block"> <dt>Exceptions thrown</dt><dd><span class="cmt">ArrayIndexOutOfBoundsException<p>when needed
+</p></span></dd></dl></div>
+    </li><li name="run.RunningInstance#run" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="run:Unit"></a>
       <a id="run:Unit"></a>
       <h4 class="signature">
@@ -528,8 +515,9 @@
         <span class="name">run</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
-      
-    </li><li name="run.RunningInstance#setVar" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <p class="shortcomment cmt">Runs the bytecode in this instance.</p><div class="fullcomment"><div class="comment cmt"><p>Runs the bytecode in this instance.</p></div><dl class="attributes block"> <dt>Exceptions thrown</dt><dd><span class="cmt">RuntimeException<p>when encountering an invalid command, or encountering an error value on the stack.
+</p></span></dd></dl></div>
+    </li><li name="run.RunningInstance#setVar" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="setVar(name:String,t:types.Type,r:Int):Unit"></a>
       <a id="setVar(String,Type,Int):Unit"></a>
       <h4 class="signature">
@@ -541,8 +529,9 @@
         <span class="name">setVar</span><span class="params">(<span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="t">t: <a href="../types/Type.html" class="extype" name="types.Type">Type</a></span>, <span name="r">r: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
-      
-    </li><li name="run.RunningInstance#setVar" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <p class="shortcomment cmt">Sets the value of the variable.</p><div class="fullcomment"><div class="comment cmt"><p>Sets the value of the variable.</p></div><dl class="paramcmts block"><dt class="param">name</dt><dd class="cmt"><p>the variable name</p></dd><dt class="param">t</dt><dd class="cmt"><p>the value to store</p></dd><dt class="param">r</dt><dd class="cmt"><p>how deep into the call stack to recall (0 is this entry)
+</p></dd></dl></div>
+    </li><li name="run.RunningInstance#setVar" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="setVar(name:String,t:types.Type):Unit"></a>
       <a id="setVar(String,Type):Unit"></a>
       <h4 class="signature">
@@ -554,8 +543,35 @@
         <span class="name">setVar</span><span class="params">(<span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="t">t: <a href="../types/Type.html" class="extype" name="types.Type">Type</a></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
-      
-    </li><li name="run.RunningInstance#setargn" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <p class="shortcomment cmt">Sets the value of the variable.</p><div class="fullcomment"><div class="comment cmt"><p>Sets the value of the variable.</p></div><dl class="paramcmts block"><dt class="param">name</dt><dd class="cmt"><p>the variable name</p></dd><dt class="param">t</dt><dd class="cmt"><p>the value to store
+</p></dd></dl></div>
+    </li><li name="run.RunningInstance#setVarP" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="setVarP(name:String,t:types.Type,r:Int):Unit"></a>
+      <a id="setVarP(String,Type,Int):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">setVarP</span><span class="params">(<span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="t">t: <a href="../types/Type.html" class="extype" name="types.Type">Type</a></span>, <span name="r">r: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Same as setVar, but looks for the variable in the calling program.</p>
+    </li><li name="run.RunningInstance#setVarP" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="setVarP(name:String,t:types.Type):Unit"></a>
+      <a id="setVarP(String,Type):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">setVarP</span><span class="params">(<span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="t">t: <a href="../types/Type.html" class="extype" name="types.Type">Type</a></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Same as setVar, but looks for the variable in the calling program.</p>
+    </li><li name="run.RunningInstance#setargn" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="setargn(i:Int,t:types.Type,r:Int):types.Type"></a>
       <a id="setargn(Int,Type,Int):Type"></a>
       <h4 class="signature">
@@ -567,8 +583,9 @@
         <span class="name">setargn</span><span class="params">(<span name="i">i: <span class="extype" name="scala.Int">Int</span></span>, <span name="t">t: <a href="../types/Type.html" class="extype" name="types.Type">Type</a></span>, <span name="r">r: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <a href="../types/Type.html" class="extype" name="types.Type">Type</a></span>
       </span>
       </h4>
-      
-    </li><li name="run.RunningInstance#setargn" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <p class="shortcomment cmt">Stores a value into an argument.</p><div class="fullcomment"><div class="comment cmt"><p>Stores a value into an argument.</p></div><dl class="paramcmts block"><dt class="param">i</dt><dd class="cmt"><p>the argument index to recall</p></dd><dt class="param">t</dt><dd class="cmt"><p>the value to store</p></dd><dt class="param">r</dt><dd class="cmt"><p>how deep into the call stack to recall (0 is this entry)
+</p></dd></dl></div>
+    </li><li name="run.RunningInstance#setargn" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="setargn(i:Int,t:types.Type):types.Type"></a>
       <a id="setargn(Int,Type):Type"></a>
       <h4 class="signature">
@@ -580,7 +597,8 @@
         <span class="name">setargn</span><span class="params">(<span name="i">i: <span class="extype" name="scala.Int">Int</span></span>, <span name="t">t: <a href="../types/Type.html" class="extype" name="types.Type">Type</a></span>)</span><span class="result">: <a href="../types/Type.html" class="extype" name="types.Type">Type</a></span>
       </span>
       </h4>
-      
+      <p class="shortcomment cmt">Stores a value into an argument.</p><div class="fullcomment"><div class="comment cmt"><p>Stores a value into an argument.</p></div><dl class="paramcmts block"><dt class="param">i</dt><dd class="cmt"><p>the argument index to recall</p></dd><dt class="param">t</dt><dd class="cmt"><p>the value to store
+</p></dd></dl></div>
     </li><li name="run.RunningInstance#stack" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="stack:List[types.Type]"></a>
       <a id="stack:List[Type]"></a>
@@ -593,7 +611,7 @@
         <span class="name">stack</span><span class="result">: <span class="extype" name="scala.collection.immutable.List">List</span>[<a href="../types/Type.html" class="extype" name="types.Type">Type</a>]</span>
       </span>
       </h4>
-      
+      <p class="shortcomment cmt">The computation stack, with the first element on top.</p>
     </li><li name="run.RunningInstance#symstack" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="symstack:List[parse.ast.LValue]"></a>
       <a id="symstack:List[LValue]"></a>
@@ -606,7 +624,7 @@
         <span class="name">symstack</span><span class="result">: <span class="extype" name="scala.collection.immutable.List">List</span>[<a href="../parse/ast/LValue.html" class="extype" name="parse.ast.LValue">LValue</a>]</span>
       </span>
       </h4>
-      
+      <p class="shortcomment cmt">The symbolic stack (holds lvalues), with the first element on top.</p>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>
@@ -732,6 +750,7 @@
       <div id="tooltip"></div>
 
       <div id="footer">  </div>
-      <script defer="defer" type="text/javascript" id="jquery-js" src="../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../lib/template.js"></script>
+
+
     </body>
       </html>

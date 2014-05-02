@@ -161,8 +161,8 @@ p img {
 /* Code blocks */
 
 code, pre {
-	font-family: Monaco, "Bitstream Vera Sans Mono", "Lucida Console", Terminal, monospace;
-  color:#000;
+	font-family: Monaco, Consolas, "Bitstream Vera Sans Mono", "Lucida Console", Terminal, monospace;
+  color:#5a3;
   font-size:14px;
 }
 
@@ -306,6 +306,15 @@ a.buttons {
 
 a.github {
 	background: url(../images/octocat-small.png) no-repeat 1px;
+}
+
+a.right {
+        background: url(../images/arrow-right.png) no-repeat;
+}
+
+a.right-index {
+        background: url(../images/arrow-right.png) no-repeat;
+        font-weight: bold;
 }
 
 a.buttons:hover {

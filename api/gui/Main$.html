@@ -1,5 +1,4 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<!DOCTYPE html >
 <html>
         <head>
           <title>Main - gui.Main</title>
@@ -9,6 +8,11 @@
           
       <link href="../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
       <link href="../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript" src="../lib/jquery.js" id="jquery-js"></script>
+      <script type="text/javascript" src="../lib/jquery-ui.js"></script>
+      <script type="text/javascript" src="../lib/template.js"></script>
+      <script type="text/javascript" src="../lib/tools.tooltip.js"></script>
+      
       <script type="text/javascript">
          if(top === self) {
             var url = '../index.html';
@@ -39,7 +43,7 @@
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>The graphic user interface for the language.</p></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><span class="extype" name="scala.swing.SimpleSwingApplication">SimpleSwingApplication</span>, <span class="extype" name="scala.swing.SwingApplication">SwingApplication</span>, <span class="extype" name="scala.swing.Reactor">Reactor</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
@@ -86,19 +90,6 @@
         <div id="values" class="values members">
               <h3>Value Members</h3>
               <ol><li name="scala.AnyRef#!=" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="!=(x$1:AnyRef):Boolean"></a>
-      <a id="!=(AnyRef):Boolean"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">final </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="scala.Any#!=" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="!=(x$1:Any):Boolean"></a>
       <a id="!=(Any):Boolean"></a>
       <h4 class="signature">
@@ -110,7 +101,7 @@
         <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="scala.AnyRef###" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="##():Int"></a>
       <a id="##():Int"></a>
@@ -125,19 +116,6 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="scala.AnyRef#==" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="==(x$1:AnyRef):Boolean"></a>
-      <a id="==(AnyRef):Boolean"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">final </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="scala.Any#==" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="==(x$1:Any):Boolean"></a>
       <a id="==(Any):Boolean"></a>
       <h4 class="signature">
@@ -149,7 +127,7 @@
         <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="gui.Main#ASKING" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="ASKING:Int"></a>
       <a id="ASKING:Int"></a>
@@ -202,6 +180,19 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="gui.Main#ask" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ask:String"></a>
+      <a id="ask:String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">ask</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+      </span>
+      </h4>
+      
     </li><li name="scala.AnyRef#clone" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="clone():Object"></a>
       <a id="clone():AnyRef"></a>
@@ -244,6 +235,19 @@
       </span>
       <span class="symbol">
         <span class="name">drawScn</span><span class="result">: <a href="BufferedCanvas.html" class="extype" name="gui.BufferedCanvas">BufferedCanvas</a></span>
+      </span>
+      </h4>
+      
+    </li><li name="gui.Main#enterEvent" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="enterEvent:Unit"></a>
+      <a id="enterEvent:Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">enterEvent</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
       
@@ -356,7 +360,7 @@
         <span class="name">insertAtCaret</span><span class="params">(<span name="s">s: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
-      
+      <p class="shortcomment cmt">Inserts a string at the text caret.</p>
     </li><li name="scala.Any#isInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="isInstanceOf[T0]:Boolean"></a>
       <a id="isInstanceOf[T0]:Boolean"></a>
@@ -406,6 +410,19 @@
       </span>
       <span class="symbol">
         <span class="name">mono</span><span class="result">: <span class="extype" name="java.awt.Font">Font</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Standard monospace font.</p>
+    </li><li name="gui.Main#msg" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="msg:String"></a>
+      <a id="msg:String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">var</span>
+      </span>
+      <span class="symbol">
+        <span class="name">msg</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
       </h4>
       
@@ -460,8 +477,8 @@
         <span class="name">p</span><span class="result">: <a href="../parse/ast/XprInt.html" class="extype" name="parse.ast.XprInt">XprInt</a></span>
       </span>
       </h4>
-      
-    </li><li name="gui.Main#println" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <p class="shortcomment cmt">A parser.</p>
+    </li><li name="gui.Main#println" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="println(s:String):Unit"></a>
       <a id="println(String):Unit"></a>
       <h4 class="signature">
@@ -473,7 +490,8 @@
         <span class="name">println</span><span class="params">(<span name="s">s: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
-      
+      <p class="shortcomment cmt">Prints a message to the homescreen.</p><div class="fullcomment"><div class="comment cmt"><p>Prints a message to the homescreen.</p></div><dl class="paramcmts block"><dt class="param">s</dt><dd class="cmt"><p>the string to print
+</p></dd></dl></div>
     </li><li name="scala.swing.SwingApplication#quit" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="quit():Unit"></a>
       <a id="quit():Unit"></a>
@@ -538,7 +556,7 @@
         <span class="name">runCode</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
-      
+      <p class="shortcomment cmt">Runs code.</p>
     </li><li name="gui.Main#runCodeConcurrently" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="runCodeConcurrently():Unit"></a>
       <a id="runCodeConcurrently():Unit"></a>
@@ -551,8 +569,8 @@
         <span class="name">runCodeConcurrently</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
-      
-    </li><li name="gui.Main#setSt" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <p class="shortcomment cmt">Starts a new thread to run code.</p>
+    </li><li name="gui.Main#setSt" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="setSt(s:Int):Unit"></a>
       <a id="setSt(Int):Unit"></a>
       <h4 class="signature">
@@ -564,7 +582,8 @@
         <span class="name">setSt</span><span class="params">(<span name="s">s: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
-      
+      <p class="shortcomment cmt">Sets the status and repaints the status bar.</p><div class="fullcomment"><div class="comment cmt"><p>Sets the status and repaints the status bar.</p></div><dl class="paramcmts block"><dt class="param">s</dt><dd class="cmt"><p>the new status
+</p></dd></dl></div>
     </li><li name="scala.swing.SwingApplication#shutdown" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="shutdown():Unit"></a>
       <a id="shutdown():Unit"></a>
@@ -603,7 +622,7 @@
         <span class="name">status</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
       </span>
       </h4>
-      
+      <p class="shortcomment cmt">The status.</p>
     </li><li name="gui.Main#statusBar1" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="statusBar1:scala.swing.Label{defusb:Unit}"></a>
       <a id="statusBar1:Label{defusb:Unit}"></a>
@@ -656,6 +675,19 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="gui.Main#thread" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="thread:gui.ExecutionThread"></a>
+      <a id="thread:ExecutionThread"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">var</span>
+      </span>
+      <span class="symbol">
+        <span class="name">thread</span><span class="result">: <a href="ExecutionThread.html" class="extype" name="gui.ExecutionThread">ExecutionThread</a></span>
+      </span>
+      </h4>
+      
     </li><li name="scala.AnyRef#toString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="toString():String"></a>
       <a id="toString():String"></a>
@@ -694,7 +726,7 @@
         <span class="name">updDirs</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
-      
+      <p class="shortcomment cmt">Repaints the part of the status bar that shows the cd.</p>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <a id="wait():Unit"></a>
@@ -787,6 +819,7 @@
       <div id="tooltip"></div>
 
       <div id="footer">  </div>
-      <script defer="defer" type="text/javascript" id="jquery-js" src="../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../lib/template.js"></script>
+
+
     </body>
       </html>
