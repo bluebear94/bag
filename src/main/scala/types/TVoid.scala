@@ -14,6 +14,7 @@ class TVoid extends Type {
       case _ => false
     }
   }
+  override def hashCode = 0
   def equalsStrictly(that: Type): Boolean = that.getType == 0
   def getType(): Int = {
     0

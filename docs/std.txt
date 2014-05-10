@@ -137,3 +137,5 @@ throws 1 6
 #istb
 desc "Converts a number (#1) to a string given a radix #2."
 throws 1 6
+#require
+desc "Imports a library."

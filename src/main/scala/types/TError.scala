@@ -11,6 +11,7 @@ class TError(errno: Int, msg: String) extends Type {
       case _ => false
     }
   }
+  override def hashCode = errno
   def equalsStrictly(that: Type) = {
     throw new UnsupportedOperationException
   }

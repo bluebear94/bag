@@ -10,6 +10,9 @@ class LMap(h: HashMap[Type, Type]) extends Type {
   def equals(that: Type) = {
     (that.getType == 8) && h == that.asInstanceOf[LMap].gm
   }
+  override def hashCode: Int = {
+    h.foldLeft(83)((a, b) => 97 * a + 41 * b._1.hashCode + 101 * b._2.hashCode)
+  }
   override def toString(): String = {
     "Map(" + h.toList.map(p => (p._1.toString + " → " + p._2.toString)).mkString(", ") + ")"
   }

@@ -1,0 +1,6 @@
+#clrscn
+desc "Clears the draw screen."
+#getcol
+desc "Gets the pen color as a number."
+#setcol
+desc "Sets the pen color as a number."

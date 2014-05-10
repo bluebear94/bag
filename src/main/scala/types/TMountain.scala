@@ -27,6 +27,7 @@ case class TMountain(n2: BigInt) extends TNumerical {
       case _ => false
     }
   }
+  override def hashCode = n.hashCode
   override def gt(that: Type): Boolean = {
     val tt: Int = that.getType()
     (tt) match {

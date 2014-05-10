@@ -22,6 +22,9 @@ abstract class LList extends Type {
     that.isInstanceOf[LList] &&
     that.asInstanceOf[LList].l().equals(this)
   }
+  override def hashCode: Int = {
+    l.foldLeft(67)(_ * 41 + _.hashCode * 89)
+  }
   /**
    * An internal function to list the elements of the list, separated by commas but without braces or brackets.
    */

@@ -24,6 +24,9 @@ case class TByteString(aa: Array[Byte]) extends Type {
       case _ => false
     }
   }
+  override def hashCode = {
+    a.foldLeft(67)(_ * 41 + _ * 89)
+  }
   def equalsStrictly(that: Type) = {
     that match {
       case t: TByteString => a.equals(t.a)

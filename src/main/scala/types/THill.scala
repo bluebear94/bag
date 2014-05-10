@@ -30,6 +30,7 @@ case class THill(n2: Long) extends TNumerical {
         }
         )
   }
+  override def hashCode = n.hashCode
   override def gt(that: Type): Boolean = {
     val tt: Int = that.getType()
     (tt) match {

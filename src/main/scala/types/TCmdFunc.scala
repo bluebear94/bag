@@ -10,6 +10,7 @@ class TCmdFunc(name: String) extends TFunction {
       case _ => false
     }
   }
+  override def hashCode = name.hashCode
   override def toString(): String = name
   def >/< = new TCmdFunc(new String(name))
 }

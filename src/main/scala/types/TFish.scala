@@ -29,6 +29,10 @@ case class TFish(x: Double) extends TNumerical {
       case _ => false
     }
   }
+  override def hashCode = {
+    if (x.isWhole) x.toInt
+    else x.hashCode
+  }
   override def gt(that: Type): Boolean = {
     val tt: Int = that.getType()
     (tt) match {

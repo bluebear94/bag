@@ -24,6 +24,7 @@ case class TString(s2: String) extends Type {
     that.getType() == 3 &&
     that.asInstanceOf[TString].getVal() == s
   }
+  override def hashCode = s.hashCode
   def equalsStrictly(that: Type) = {
     that match {
       case t: TString => s == t.s
