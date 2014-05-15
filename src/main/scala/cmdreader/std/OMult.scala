@@ -6,9 +6,10 @@ import util._
 import java.math.BigInteger
 
 class OMult extends CommandOperator {
-  override def getName(): String = "mult"
-  override def getOpAlias() = "*"
-  override def apply(args: Array[Type]): Type = {
+  def getName(): String = "mult"
+  def getOpAlias() = "*"
+  def isValidArg0(n: Int) = true
+  def apply(args: Array[Type]): Type = {
     args.fold(
     new THill(1L)
     )(MathUtil.multiply(_, _))

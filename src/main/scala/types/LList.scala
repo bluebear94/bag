@@ -10,7 +10,7 @@ abstract class LList extends Type {
   /**
    * Returns the Buffer containing the list.
    */
-  def l(): Buffer[Type]
+  def l: Buffer[Type]
   /**
    * Sets an element.
    * @param index the index at which to set a new element
@@ -20,7 +20,7 @@ abstract class LList extends Type {
   def app(n: Type)
   def equals(that: Type): Boolean = {
     that.isInstanceOf[LList] &&
-    that.asInstanceOf[LList].l().equals(this)
+    that.asInstanceOf[LList].l.equals(this)
   }
   override def hashCode: Int = {
     l.foldLeft(67)(_ * 41 + _.hashCode * 89)
@@ -29,10 +29,10 @@ abstract class LList extends Type {
    * An internal function to list the elements of the list, separated by commas but without braces or brackets.
    */
   def elems(): String = {
-    l().mkString(", ")
+    l.mkString(", ")
   }
   def toBoolean(): Boolean = {
-    !l().isEmpty
+    !l.isEmpty
   }
   def toBytecode: Array[Byte] = {
     val s = l.map((t: Type) => {

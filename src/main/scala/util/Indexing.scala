@@ -15,7 +15,7 @@ object Indexing {
     }
   }
   def index(t: LList, i: Int): Type = {
-    if (i >= 0 && i < t.l.length) t.l()(i)
+    if (i >= 0 && i < t.l.length) t.l(i)
     else new TError(5)
   }
   def index(t: LMap, i: Type): Type = {

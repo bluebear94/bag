@@ -4,7 +4,7 @@ import scala.collection.mutable.Buffer
 import scala.collection.mutable.ArrayBuffer
 
 class LArray(a: ArrayBuffer[Type]) extends LList {
-  def l(): Buffer[Type] = {
+  def l: Buffer[Type] = {
     a
   }
   def lu(i: Int, n: Type) {

@@ -6,9 +6,10 @@ import util._
 import java.math.BigInteger
 
 class OAdd extends CommandOperator {
-  override def getName(): String = "add"
-  override def getOpAlias() = "+"
-  override def apply(args: Array[Type]): Type = {
+  def getName(): String = "add"
+  def getOpAlias() = "+"
+  def isValidArg0(n: Int) = true
+  def apply(args: Array[Type]): Type = {
     args.fold(
     if (!args.isEmpty && args(0).getType == 3) new TString("")
     else new THill(0L)

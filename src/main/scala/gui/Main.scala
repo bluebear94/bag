@@ -69,8 +69,7 @@ object Main extends SimpleSwingApplication {
     tooltip = "The homescreen. Holds previous operations and console output."
     lineWrap = true
   }
-  val drawScn = new BufferedCanvas { // the top panel, for drawing
-    preferredSize = new Dimension(640, 480)
+  val drawScn = new BufferedCanvas(new Dimension(640, 480)) { // the top panel, for drawing
     tooltip = "A canvas for graphical operations."
   }
   val statusBar1 = new Label {
@@ -220,12 +219,15 @@ object Main extends SimpleSwingApplication {
 
 /**
  * An extension of a Scala Swing panel that holds a buffered image.
+ * @param d The size of the image
  */
-class BufferedCanvas extends Panel { // sigh, I have to make one myself
+class BufferedCanvas(d: Dimension) extends Panel { // sigh, I have to make one myself
+  preferredSize = d
   /**
    * The image.
    */
-  var image = new BufferedImage(preferredSize.getWidth.toInt, preferredSize.getHeight.toInt, BufferedImage.TYPE_INT_ARGB)
+  val image = new BufferedImage(preferredSize.width, preferredSize.height, BufferedImage.TYPE_INT_ARGB)
+  //println(preferredSize)
   /**
    * The Graphics2D object associated with the image
    */
@@ -241,6 +243,7 @@ class BufferedCanvas extends Panel { // sigh, I have to make one myself
   def draw(grf: (Graphics2D) => Unit) = {
     grf(bg)
     repaint
+    //println(preferredSize)
   }
 }
 

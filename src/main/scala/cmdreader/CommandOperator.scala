@@ -9,7 +9,7 @@ abstract class CommandOperator extends Command {
   /**
    * Returns the operator symbol.
    */
-  def getOpAlias(): String = ""
+  def getOpAlias(): String// = ""
   /**
    * Returns whether the operator is unary.
    */
