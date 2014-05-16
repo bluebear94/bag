@@ -70,5 +70,9 @@ class Loader {
     Global.liblist("std").loadCmd("Stib")
     Global.liblist("std").loadCmd("Itsb")
     Global.liblist("std").loadCmd("Require")
+    Global.liblist("std").loadCmd("In")
+    Global.liblist("std").loadCmd("Idx")
+    Global.liblist("std").loadCmd("Isc")
+    Global.liblist("std").loadCmd("Ixsc")
   }
 }

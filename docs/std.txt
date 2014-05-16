@@ -139,3 +139,11 @@ desc "Converts a number (#1) to a string given a radix #2."
 throws 1 6
 #require
 desc "Imports a library."
+#in
+desc "Checks whether #1 is found as an element in #2."
+#idx
+desc "Starting from #3 (default: 0), searches #2 for an element #1 and returns the index."
+#isc
+desc "Checks whether #1 is found as a slice of #2."
+#ixsc
+desc "Starting from #3 (default: 0), searches #2 for a slice #1 and returns the index."

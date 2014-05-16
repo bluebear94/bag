@@ -13,22 +13,26 @@ class Help extends Command {
     val ZERO = TMountain(0)
     val ONE = TMountain(1)
     val TWO = TMountain(2)
+    val THREE = TMountain(3)
     if (args.length != 0) {
       args(0) match {
         case TString(s) => Main.println(DocGen.getHelp(s))
         case ZERO => {
-          Main.println("Available commands:")
+          Main.println("Available libraries:")
           for (l <- Global.liblist) {
-            Main.println("  In library " + l._1 + ":")
-            var s = "    "
-            for (c <- l._2.commandList) {
-              s += c._1 + " "
-            }
-            Main.println(s)
+            Main.println(l._1)
           }
         }
         case ONE => {
-          Main.println("About Bag (formerly Amethyst)\n\nWritten by bluebear94 in Scala\nWith help from toddobryan")
+          Main.println("""About Bag (formerly Amethyst)
+              |
+              |Written by bluebear94 in Scala
+              |With help from toddobryan
+              |
+              |The project was first a concept of a programming language true to TI-Basic.
+              |By October, some classes had been implemented in Java (under the codename Labyrinth), but the project became too complex.
+              |In December, the project was rewritten in Scala, taking advantage of the powerful parser combinator library.
+              |""".stripMargin)
         }
         case TWO => {
           Main.println("""Bag is a programming language based partially on TI-Basic.
@@ -54,15 +58,25 @@ class Help extends Command {
               |Comment:                         _ don't do this on the 83+!
               |""".stripMargin)
         }
+        case THREE => {
+          val lname = args(1).toString()
+          val ll = Global.liblist(lname)
+          Main.println("  In library " + lname + ":")
+          var s = "    "
+          for (c <- ll.commandList) {
+            s += c._1 + " "
+          }
+          Main.println(s)
+        }
         case _ => Main.println("Unrecognized value")
       }
-    }
-    else {
+    } else {
       Main.println("""To search for a specific built-in command, pass the complete command name
           |(if the library name is std, then it may be omitted) as an argument.
-          |Pass 0 as an argument to list all available commands.
+          |Pass 0 as an argument to list all loaded libraries.
           |Pass 1 as an argument to see info about this program.
-          |Pass 2 as an argument to see a brief introduction to the syntax.""".stripMargin)
+          |Pass 2 as an argument to see a brief introduction to the syntax.
+          |Pass 3 and a library name to see all commands in a given library.""".stripMargin)
     }
     new TVoid
   }
