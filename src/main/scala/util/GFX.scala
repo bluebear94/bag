@@ -77,7 +77,14 @@ object GFX {
       f.get(null).asInstanceOf[Color]
     }
     catch {
-      case e: Exception => Color.BLACK
+      case e: Exception => {
+        try {
+          Color.decode(n)
+        }
+        catch {
+          case e: NumberFormatException => Color.BLACK
+        }
+      }
     }
   }
   def getIntOrChoke(t: Type) = {
