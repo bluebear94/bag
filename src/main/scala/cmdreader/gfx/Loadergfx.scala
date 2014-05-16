@@ -4,6 +4,7 @@ import cmdreader.Global
 
 class Loader {
   def load = {
-    List("ClrScn", "GetCol", "SetCol", "Test").map(Global.liblist("gfx").loadCmd(_))
+    List("ClrScn", "GetCol", "SetCol", "Test", "STC", "Line", "Rect", "Circ",
+        "GetFont", "SetFont", "Text").map(Global.liblist("gfx").loadCmd(_))
   }
 }

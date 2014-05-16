@@ -150,10 +150,10 @@ case class AList(isArray: Boolean, args: Array[Expression]) extends SBExpression
 }
 case class AMap(underlying: HashMap[Expression, Expression]) extends SBExpression {
   def eval(ci: RunningInstance): Type = {
-    new LMap(underlying map {case (key, value) => (key.eval(ci), value.eval(ci))})
+    new LMap(underlying map { case (key, value) => (key.eval(ci), value.eval(ci)) })
   }
   def toBytecode = {
-    val args = underlying.toList.map{case (a, b) => List(a, b)}.fold(Nil)(_ ++ _).map(_.toBytecode).reverse
+    val args = underlying.toList.map { case (a, b) => List(a, b) }.fold(Nil)(_ ++ _).map(_.toBytecode).reverse
     args.foldLeft(Array[Bin]())(BFuncs.app(_, _)) ++
       Array(Bytes(Array[Byte](-0x17, 0x65) ++
         MakeByteArrays.intToByteArray(args.length)))
@@ -408,14 +408,15 @@ class XprInt extends JavaTokenParsers with PackratParsers {
   //[$[[^!@#$%^&*()_-=+~{}[]\|:;'",.<>/?][^@#$%^&*()_-=+~{}[]\|:;'",.<>/?]*:]?]?
   def id: Regex = """[^\x5C\s\d\Q^!@#$%^&*_-+~{}().[]=|:;'",<>/?\E][^\x5C\s\Q^@#$%^&*_-+~{}()[]=|:;'",<>/?\E]*""".r // EEK
   // note: ! is allowed, just not at the beginning (otherwise it has to be the only character)
-  lazy val void: PackratParser[SBExpression] = "Void" ^^^ { new Literal(new TVoid()) }
-  lazy val variable: PackratParser[LValue] = ((("\\$".r ~ (id | "") ~ ":") ^^ {
-    case d ~ lib ~ c => "$" + lib + ":"
-  } | "\\$".r | "".r) ~ id)
-    .filter(w => !Keywords.keywords.contains(w._2)) ^^
-    { s => Variable(s._1 + s._2) }
+  lazy val void: PackratParser[SBExpression] = literal("Void") ^^^ { new Literal(new TVoid()) }
+  lazy val varNames: PackratParser[String] = ((regex("\\$".r) ~ (id | "") ~ ":" ~ id) ^^ {
+    case d ~ lib ~ c ~ cmd => "$" + lib + ":" + cmd
+  } | ("$" ~> id) ^^ ("$" + _) | id)
+  lazy val variable: PackratParser[LValue] = varNames.filter(!Keywords.keywords.contains(_)) ^^ {s: String => Variable(s)}
+    //.filter(w => !Keywords.keywords.contains(w._2)) ^^
+    //{ s => Variable(s._1 + s._2) }
   lazy val mountain: PackratParser[SBExpression] = wholeNumber ^^ { s => new Literal(new TMountain(BigInt(s))) }
-  lazy val hill: PackratParser[SBExpression] = """↼[-]?\d+""".r ^^ { s => new Literal(new THill(BigInt(s.substring(1)).toLong)) }
+  lazy val hill: PackratParser[SBExpression] = regex("""↼[-]?\d+""".r) ^^ { s => new Literal(new THill(BigInt(s.substring(1)).toLong)) }
   lazy val string: PackratParser[SBExpression] = stringLiteral ^^ { s =>
     UnescapeString.unescape(s.substring(1, s.length - 1)) match {
       case Some(ues) => Literal(new TString(ues))
@@ -433,11 +434,12 @@ class XprInt extends JavaTokenParsers with PackratParsers {
     case e0 ~ a ~ e1 => (e0, e1)
   }
   lazy val map: PackratParser[SBExpression] = "Map(" ~> repsep(keyValue, ",") <~ ")" ^^ {
-    l => {
-      val res = new HashMap[Expression, Expression]
-      l.foreach(res += _)
-      AMap(res)
-    }
+    l =>
+      {
+        val res = new HashMap[Expression, Expression]
+        l.foreach(res += _)
+        AMap(res)
+      }
   }
   lazy val hashtag: PackratParser[LValue] = "#" ~> sbexpression ^^ { x => Hashtag(x) }
   lazy val lambda: PackratParser[SBExpression] = ("λ" ~ lineDelimiter) ~> lineDelimited <~ (lineDelimiter ~ "Endλ") ^^ { l => Lambda(l) }
@@ -606,7 +608,7 @@ class XprInt extends JavaTokenParsers with PackratParsers {
     loadWithPrec(PStandard.CONJUNCTION, (andParser, false))
     loadWithPrec(PStandard.DISJUNCTION, (orParser, false))
   }
-  def chainr1[T, U](first: => Parser[T], p: => Parser[U], q: => Parser[(T, U) => T]): Parser[T] = rep(p ~ q) ~ first ^^ {
+  def chainr1[T, U](first: => PackratParser[T], p: => PackratParser[U], q: => PackratParser[(T, U) => T]): PackratParser[T] = rep(p ~ q) ~ first ^^ {
     case xs ~ x => xs.foldRight(x: T) { case (b ~ f, a) => f(a, b) } // x's type annotation is needed to deal with changed type inference due to SI-5189
   }
   def chain(p: PackratParser[Expression], r: (PackratParser[(Expression, Expression) => Expression], Boolean)) = {
