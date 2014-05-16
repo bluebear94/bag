@@ -7,7 +7,7 @@ import java.awt._
 
 class SetCol extends Command {
   override def getName(): String = "setcol"
-  override def isValidArg0(n: Int): Boolean = n == 1
+  override def isValidArg0(n: Int): Boolean = n == 1 || n == 2
   /**
    * Returns the value returned by this command for a given set of arguments.
    * @param args the array containing the arguments
@@ -16,7 +16,7 @@ class SetCol extends Command {
     //new TMountain(GFX.getcol.getRGB)
     args(0) match {
       case x: TNumerical => {
-        val i = x.intValue
+        val i = if (args.length == 1 || !args(1).toBoolean) x.intValue | 0xFF000000 else x.intValue
         GFX.setcol(new Color(i))
         new TVoid
       }

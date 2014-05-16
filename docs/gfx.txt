@@ -2,8 +2,14 @@
 desc "Clears the draw screen."
 #getcol
 desc "Gets the pen color as a number."
+desc "If #1 evaluates to true, then returns the alpha bits as well."
+desc "Bits 24 - 31: alpha (if applicable)"
+desc "Bits 16 - 23: red"
+desc "Bits  8 - 15: green"
+desc "Bits  0 -  7: blue"
 #setcol
 desc "Sets the pen color as a number."
+desc "If #1 evaluates to true, then sets the alpha bits as well. Otherwise, they are set to 255."
 #getf
 desc "Gets the current font as a list in this format: {name, style, size}."
 desc "Style constants are as followed:"
