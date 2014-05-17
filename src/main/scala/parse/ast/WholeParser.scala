@@ -6,7 +6,7 @@ import scala.util.parsing.combinator._
 object WholeParser {
   def parse(code: String, p: XprInt) = {
     def isNL(c: Char) = c == ';' || c == '\n'
-    val preprocessedCode = Preprocessor.preprocess(code)
+    val preprocessedCode = Preprocessor.preprocess(code).replaceAll("\n","\n;")
     println(preprocessedCode)
     import p._
     var bytes = Array[Bin]()

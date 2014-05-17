@@ -120,6 +120,7 @@ object Preprocessor {
       l += 1
     }
     if (debug) println(out)
-    out.replaceAll("\n","\n;") // with your memory-wasting habits!
+    out
+    //out.replaceAll("\n","\n;") // with your memory-wasting habits!
   }
 }
