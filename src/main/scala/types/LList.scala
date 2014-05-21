@@ -1,7 +1,7 @@
 package types
 
 import scala.collection.mutable._
-import util.MakeByteArrays
+import util.{MakeByteArrays, MapOps}
 
 /**
  * A type to define lists of types.
@@ -53,5 +53,11 @@ abstract class LList extends Type {
       case t: LList if (getType == that.getType) => l == t.l
       case _ => false
     }
+  }
+  def cast(i: Int) = i match {
+    case 5 => new LArray(l.to[ArrayBuffer])
+    case 6 => new LLinked(l.to[ListBuffer])
+    case 0 => new TVoid
+    case 8 => MapOps.fromList(l.toList)
   }
 }

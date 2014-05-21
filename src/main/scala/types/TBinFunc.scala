@@ -4,7 +4,7 @@ import run.RunningInstance
 import cmdreader.Global
 import parse.ast.BFuncs
 
-class TBinFunc(bytecode: Array[Byte], source: String, ci: RunningInstance=null, name: String = "[ANON]") extends TFunction {
+class TBinFunc(bytecode: Array[Byte], source: String = "", ci: RunningInstance=null, name: String = "[ANON]") extends TFunction {
   def apply(args: Array[Type]): Type = {
     val newci = new RunningInstance(name, Global.top, args)
     Global.top = newci

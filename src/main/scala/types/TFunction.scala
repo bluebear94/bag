@@ -15,4 +15,9 @@ abstract class TFunction extends Type {
   override def toString(): String = "a function"
     //TODO method stub
   def toBytecode = Array[Byte]()
+  def cast(i: Int) = i match {
+    case 7 => this
+    case 0 => new TVoid
+    case 9 => new TByteString(toBytecode)
+  }
 }

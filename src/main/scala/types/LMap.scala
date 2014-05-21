@@ -1,6 +1,6 @@
 package types
 
-import scala.collection.mutable.HashMap
+import scala.collection.mutable._
 import util.MakeByteArrays
 
 class LMap(h: HashMap[Type, Type]) extends Type {
@@ -46,5 +46,16 @@ class LMap(h: HashMap[Type, Type]) extends Type {
       case t: LMap => h == t.gm
       case _ => false
     }
+  }
+  private def toList = {
+    h.toList.map((p: (Type, Type)) => {
+      List(p._1, p._2)
+    }).reduceLeft(_ ++ _)
+  }
+  def cast(i: Int): Type = i match {
+    case 8 => this
+    case 0 => new TVoid
+    case 5 => new LArray(toList.to[ArrayBuffer])
+    case 6 => new LLinked(toList.to[ListBuffer])
   }
 }

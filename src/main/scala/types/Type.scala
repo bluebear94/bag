@@ -1,6 +1,7 @@
 package types
 
 import cmdreader.Global
+import util._
 
 /**
  * An abstract class to define instances of an Amethyst type.
@@ -35,12 +36,10 @@ abstract class Type {
   def lt(that: Type): Boolean = {
     throw new UnsupportedOperationException()
   }
-  def equalsStrictly(that: Any): Boolean = {
-    that match {
+  def equalsStrictly(that: Any): Boolean = that match {
       case t: Type => equalsStrictly(t)
       case _ => false
     }
-  }
   def equalsStrictly(that: Type): Boolean
   override def toString(): String
   /**
@@ -52,6 +51,13 @@ abstract class Type {
    * Returns the binary representation of this type.
    */
   def toBytecode: Array[Byte]
+  def cast(i: Int): Type
+  def genfunc = {
+    val bc = toBytecode
+    new TBinFunc(Array[Byte](-0x1f, getType.toByte) ++
+            MakeByteArrays.intToByteArray(bc.length) ++ bc ++ Array[Byte](-0x17, 0x53))
+  }
+  
 }
 
 

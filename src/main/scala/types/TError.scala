@@ -20,4 +20,5 @@ class TError(errno: Int, msg: String) extends Type {
   }
   def >/< = new TError(errno, msg)
   def toBytecode: Array[Byte] = Array[Byte]()
+  def cast(i: Int): Type = throw new UnsupportedOperationException("cannot cast a TError")
 }

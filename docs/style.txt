@@ -1,0 +1,38 @@
+BAG STYLE GUIDE
+---------------
+
+by blue_bear_94
+
+
+* Indent with only one space. If the block to be indented is fewer than three lines long, then you may refrain from indenting that block. Ex:
+
+If x == 5; Then
+ a := 6
+ $:hluna("It's magic!
+ push((a + b) * (c + d
+ If e != f(x
+ e = e ^ x
+EndIf
+
+* The `Then` keyword should accompany `If` on the same line, with a semicolon and a space separating them (as in above).
+
+* Prefer If to If-Then-End for a single statement.
+
+* Closing parentheses, brackets, braces, and quotes should not be closed at the end of the line, as they will be added automatically by the preprocessor.
+
+* Expressions should be rearranged as to minimize the number of closing marks.
+
+BAD: (a + b) * 2
+GOOD: 2 * (a + b
+
+* Use short but mnemonic names for variables. Under no circumstances should they be over eight characters long, excluding the dollar sign and perhaps the library name.
+
+* In addition, variables should start with a lowercase letter, with word boundaries optionally indicated by capitals (e. g. a, window, pushVal, pushval)
+
+* Unlike in TI-Basic, comments will not show up in executable versions, but it is considered bad style to use them excessively. If they are used, then one space should follow the underscore.
+
+* Remember the rule of ASS: Avoid Superfluous Spaces.
+
+* At the same time, make sure to space your expressions adequately -- operators should get spaces between them, and if it is not possible for all of them to have them, then lower-precedence ones should get them. Spaces after, but not before commas, and after control keywords.
+
+* Prefer $:map, $:fold, and vector operations to looping over each element.

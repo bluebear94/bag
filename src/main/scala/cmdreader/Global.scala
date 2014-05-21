@@ -68,8 +68,8 @@ object Global {
   val TWO = new BigInteger("2")
   val vM = 0
   val vm = 6
-  val vr = 6
-  val vrr = "-alpha"
+  val vr = 7
+  val vrr = "-alpha0"
   val version = "v" + vM + "." + vm + "." + vr + vrr
   val r: Random = new Random
   var vigilant = true

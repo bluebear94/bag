@@ -74,5 +74,6 @@ class Loader {
     Global.liblist("std").loadCmd("Idx")
     Global.liblist("std").loadCmd("Isc")
     Global.liblist("std").loadCmd("Ixsc")
+    Global.liblist("std").loadCmd("Cast")
   }
 }

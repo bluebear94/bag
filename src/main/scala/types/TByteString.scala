@@ -2,12 +2,16 @@ package types
 
 import parse.ast.BFuncs
 import util._
+import scala.collection.mutable._
+import scala.math.BigInt
 
 case class TByteString(aa: Array[Byte]) extends Type {
   var a = aa
   /**
    * Returns the type identifier of the instance.
-   * @return the type ID
+   * @return the type ID{
+    
+  }
    */
   def getType(): Int = 9
   /**
@@ -44,5 +48,13 @@ case class TByteString(aa: Array[Byte]) extends Type {
   def toBytecode: Array[Byte] = {
     val bsl = a.length
     MakeByteArrays.intToByteArray(bsl) ++ a
+  }
+  def cast(i: Int) = i match {
+    case 9 => this
+    case 0 => new TVoid
+    case 7 => new TBinFunc(a)
+    case 5 => new LArray(a.map(new TMountain(_).asInstanceOf[Type]).to[ArrayBuffer])
+    case 6 => new LLinked(a.map(new TMountain(_).asInstanceOf[Type]).to[ListBuffer])
+    case 1 => TMountain(BigInt(a))
   }
 }
