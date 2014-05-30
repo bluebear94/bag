@@ -7,8 +7,8 @@ import util._
 
 class Ixsc extends CommandOperator {
   def getName = "ixsc"
-  def getOpAlias = "@%|*"
-  def isValidArg0(n: Int) = n == 2 | n == 3
+  def getOpAlias = "@%*|"
+  def isValidArg0(n: Int) = n == 2 || n == 3
   def getPrecedence = PStandard.RELATION
   def hasAssignmentEquiv = false
   def isReversed = false

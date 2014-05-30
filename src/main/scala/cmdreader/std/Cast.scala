@@ -6,7 +6,7 @@ import cmdreader._
 class Cast extends CommandOperator {
   def getName = "cast"
   def isValidArg0(n: Int) = n == 2
-  def getOpAlias = "@%"
+  def getOpAlias = "@&"
   def getPrecedence = PStandard.RELATION
   def hasAssignmentEquiv = false
   def getDoubleBase = None

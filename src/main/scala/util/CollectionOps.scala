@@ -72,4 +72,16 @@ object CollectionOps {
     (t: Type) =>
       encodeFromList(ctv(f)(t), t.getType)
   }
+  def findAllOccurrences[T](x: T, l: List[T]): List[Int] = l match {
+    case Nil => Nil
+    case f :: r => {
+      val rr = findAllOccurrences(x, r).map(_ + 1)
+      if (f == x) 0 :: rr else rr
+    }
+  }
+  def findAllOccurrences[T](x: List[T], l: List[T], overlapping: Boolean = true): List[Int] = {
+    val n = if (overlapping) 1 else x.length
+    if (l.startsWith(x)) 0 :: findAllOccurrences(x, l.drop(n), overlapping).map(_ + n)
+    else findAllOccurrences(x, l.tail, overlapping)
+  }
 }
