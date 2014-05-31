@@ -5,6 +5,7 @@ import java.awt._
 import types._
 import scala.collection.mutable.ArrayBuffer
 import java.lang.reflect.Field
+import cmdreader.Global
 
 object GFX {
   lazy val ds = Main.drawScn
@@ -57,14 +58,38 @@ object GFX {
     val t = f.l(2)
     new Font(z.toString, getIntOrChoke(o), getIntOrChoke(t))
   }
-  def test() = {
-    setcol(Color.YELLOW)
-    circ(320, 240, 200, true)
-    setcol(Color.BLACK)
-    circ(200, 200, 20, true)
-    circ(440, 200, 20, true)
-    line(200, 300, 320, 320)
-    line(440, 300, 320, 320)
+  def test() = { // I had this planned since the birth of the gfx library. Mwahahahaha!
+    var prev = false
+    def nb = {
+      prev = if (Global.r.nextDouble > 0.8) Global.r.nextBoolean else !prev
+      prev
+    }
+    def ttf = 3 + Global.r.nextInt(3)
+    def kagome(x0: Int, x1: Int, y0: Int, y1: Int): Unit = {
+      def dot(x: Int, y: Int) = circ(x * 16, y * 16, 4, true)
+      val vert = nb
+      if (if (vert) Math.abs(x0 - x1) > ttf else Math.abs(y0 - y1) > ttf) {
+        val pct = Global.r.nextDouble * 0.4 + 0.3
+        val dx = x1 - x0
+        val dy = y1 - y0
+        val sp = (if (vert) x0 + pct * dx else y0 + pct * dy).toInt
+        if (vert) {
+          kagome(x0, sp, y0, y1)
+          kagome(sp + 1, x1, y0, y1)
+          for (i <- y0 to y1)
+            dot(sp, i)
+        } else {
+          kagome(x0, x1, y0, sp)
+          kagome(x0, x1, sp + 1, y1)
+          for (i <- x0 to x1)
+            dot(i, sp)
+        }
+      }
+    }
+    setcol(Color.GREEN)
+    kagome(0, 40, 0, 30)
+    setcol(Color.WHITE)
+    text("\u30ab\u30b4\u30e1\u30ab\u30b4\u30e1", 550, 20)
   }
   /**
    * Method to return a color by name.

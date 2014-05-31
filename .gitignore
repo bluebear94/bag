@@ -50,3 +50,10 @@ amw/
 
 # swear data
 git-pissed.html
+
+# Ensime stuff
+.ensime-2.11
+.ensime_lucene/
+
+# Annoying backup files
+*~

@@ -66,9 +66,18 @@ object Global {
   var currentAlias = "root"
   @deprecated("Due to use of scala.math.BigInt instead.", "0.5.13")
   val TWO = new BigInteger("2")
+  /*
+   * The major version number.
+   */
   val vM = 0
-  val vm = 6
-  val vr = 7
+  /*
+   * The minor version number.
+   */
+  val vm = 7
+  /*
+   * The revision number.
+   */
+  val vr = 0 // time for a new test image!
   val vrr = "-alpha0"
   val version = "v" + vM + "." + vm + "." + vr + vrr
   val r: Random = new Random

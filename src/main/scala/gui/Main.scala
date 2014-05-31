@@ -22,7 +22,7 @@ object Main extends SimpleSwingApplication {
   /**
    * Standard monospace font.
    */
-  val mono = new Font("DejaVu Sans Mono", 0, 10)
+  val mono = new Font(Font.MONOSPACED, 0, 10)
   /**
    * A parser.
    */
@@ -64,8 +64,8 @@ object Main extends SimpleSwingApplication {
     font = mono
     editable = false
     charWrap = true
-    text = "Welcome to Bag " + Global.version + ".\nEnter `$:help()' to get help.\n\n" +
-      (if (mono.getFamily != "DejaVu Sans Mono") "Please install the DejaVu fonts.\n" else "")
+    text = "Welcome to Bag " + Global.version + ".\nEnter `$:help()' to get help.\n\n"// +
+      //(if (mono.getFamily != "DejaVu Sans Mono") "Please install the DejaVu fonts.\n" else "")
     tooltip = "The homescreen. Holds previous operations and console output."
     lineWrap = true
   }
