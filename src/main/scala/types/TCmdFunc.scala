@@ -1,9 +1,11 @@
 package types
 
 import cmdreader.Global
+import scala.collection.mutable.HashMap
 
 class TCmdFunc(name: String) extends TFunction {
-  def apply(args: Array[Type]): Type = Global.getCmdno(name)(args)
+  override def apply(args: Array[Type]): Type = Global.getCmdno(name)(args)
+  def applyWith(args: Array[Type], closure: HashMap[String, Type]) = new TError(1)
   override def equals(that: Any): Boolean = {
     that match {
       case other: TCmdFunc => name == other.toString

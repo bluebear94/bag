@@ -3,13 +3,15 @@ package types
 import run.RunningInstance
 import cmdreader.Global
 import parse.ast.BFuncs
+import scala.collection.mutable.HashMap
 
 class TBinFunc(bytecode: Array[Byte], source: String = "", ci: RunningInstance=null, name: String = "[ANON]") extends TFunction {
-  def apply(args: Array[Type]): Type = {
+  def applyWith(args: Array[Type], closure: HashMap[String, Type]): Type = {
     val newci = new RunningInstance(name, Global.top, args)
     Global.top = newci
     newci.bytecode = this.bytecode
-    newci.run
+    newci.environment = closure
+    newci.run()
     val res = newci.answer
     Global.top = Global.top.calling
     res

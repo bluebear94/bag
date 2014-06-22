@@ -66,8 +66,7 @@ class RunningInstance(fn: String, c: RunningInstance, args: Array[Type]) {
   def getVar(name: String): Type = {
     if (name == "this") {
       new TBinFunc(bytecode, fn)
-    }
-    else if (name.startsWith("$")) {
+    } else if (name.startsWith("$")) {
       // TODO A global variable or a command.
       if (name.indexOf(":") != -1) {
         new TCmdFunc(name.substring(1))
@@ -170,7 +169,7 @@ class RunningInstance(fn: String, c: RunningInstance, args: Array[Type]) {
       if (environment.isDefinedAt(name)) environment(name) = t
       else if (calling != null) calling.setVarP(name, t)
       else new TError(6)
-    } 
+    }
   }
   /**
    * Gets the value of the variable.
@@ -255,7 +254,7 @@ class RunningInstance(fn: String, c: RunningInstance, args: Array[Type]) {
    * Runs the bytecode in this instance.
    * @throws RuntimeException when encountering an invalid command, or encountering an error value on the stack.
    */
-  def run = { // runs the bytecode
+  def run() = { // runs the bytecode
     var needle = 0
     var isDone = false
     while (!isDone) {
@@ -271,6 +270,13 @@ class RunningInstance(fn: String, c: RunningInstance, args: Array[Type]) {
           val realArgs = args.reverse.toArray
           val toPush = function match {
             case f: TFunction => f(if (Global.vigilant) realArgs.map(_.>/<) else realArgs)
+            case m: LMap => {
+              val env = m.gm.map { case (k, v) => (k.toString, v) }
+              env("this") match {
+                case f: TFunction => f.applyWith(if (Global.vigilant) realArgs.map(_.>/<) else realArgs, env)
+                case _ => new TError(1)
+              }
+            }
             case _ => new TError(1)
           }
           stack = toPush :: stack
@@ -337,7 +343,7 @@ class RunningInstance(fn: String, c: RunningInstance, args: Array[Type]) {
           if ((argcount & 1) != 0) throw new RuntimeException("Cannot make a map out of an odd number of elements")
           val (args, ns) = stack.splitAt(argcount)
           stack = ns
-          def pairArgs[T](args: List[T], h: HashMap[T,T]): Unit = {
+          def pairArgs[T](args: List[T], h: HashMap[T, T]): Unit = {
             args match {
               case a :: b :: c => {
                 h += ((a, b))

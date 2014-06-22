@@ -55,7 +55,7 @@ object Preprocessor {
       case (_, _) => Math.min(si, ni)
     }
   }
-  def preprocess(c: String, debug: Boolean = false): String = {
+  def preprocess(c: String, debug: Boolean = true): String = {
     // You are not expected to understand what the f*ck this means.
     val code = if (c.last == '\n') c else c + "\n"
     var qm = false
@@ -108,8 +108,8 @@ object Preprocessor {
         // post: index holds one more than the index of the last applicable closing statement
         val left = code.substring(s, l + 1)
         val right = code.substring(index)
-        val mid = code.substring(l + 1, index - 1)
-        curLine += left + preprocess(mid) + "λ"
+        val mid = code.substring(l + 1, index - 4)
+        curLine += left + preprocess(mid) + "Endλ"
         s = index
         l = s - 1
         if (debug) {
@@ -120,7 +120,7 @@ object Preprocessor {
       l += 1
     }
     if (debug) println(out)
-    out
+    if (out.trim endsWith ";") out else out + ";"
     //out.replaceAll("\n","\n;") // with your memory-wasting habits!
   }
 }
