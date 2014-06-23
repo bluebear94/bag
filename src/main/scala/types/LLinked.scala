@@ -16,8 +16,7 @@ class LLinked(a: ListBuffer[Type]) extends LList {
   def getType(): Int = {
     6
   }
-  override def toString(): String = {
-    "[" + elems + "]"
-  }
+  def toStringNC(): String = "[" + elems + "]"
+  def toStringC_(visited: Set[Type]): String = "[" + elems(visited) + "]"
   def >/< = new LLinked(a.clone)
 }

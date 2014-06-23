@@ -8,7 +8,7 @@ import gui.Main
  * A type to define UTF-8 strings.
  * @author bluebear94
  */
-case class TString(s2: String) extends Type {
+case class TString(s2: String) extends Atom {
   var s = s2
   def getVal(): String = {
     s
@@ -19,9 +19,7 @@ case class TString(s2: String) extends Type {
   def toBoolean(): Boolean = {
     s != ""
   }
-  override def toString(): String = {
-    s
-  }
+  def toStringP: String = s
   def equals(that: Type): Boolean = {
     that.getType() == 3 &&
       that.asInstanceOf[TString].getVal() == s

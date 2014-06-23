@@ -7,7 +7,7 @@ import scala.collection.mutable._
  * A class to define numbers.
  * @author bluebear94
  */
-abstract class TNumerical extends Type {
+abstract class TNumerical extends Atom {
   /**
    * Gets the value of this type.
    */

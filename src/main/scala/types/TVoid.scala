@@ -5,7 +5,7 @@ import scala.collection.mutable._
 /**
  * A void value.
  */
-class TVoid extends Type {
+class TVoid extends Atom {
 
   def canEqual(that: Any): Boolean = {
     that.isInstanceOf[TVoid]
@@ -16,6 +16,7 @@ class TVoid extends Type {
       case _ => false
     }
   }
+  def toStringP: String = "Void"
   override def hashCode = 0
   def equalsStrictly(that: Type): Boolean = that.getType == 0
   def getType(): Int = {
@@ -23,9 +24,6 @@ class TVoid extends Type {
   }
   def toBoolean(): Boolean = {
     false
-  }
-  override def toString(): String = {
-    "Void"
   }
   def toBytecode: Array[Byte] = {
     Array()

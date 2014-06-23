@@ -5,13 +5,11 @@ import util._
 import scala.collection.mutable._
 import scala.math.BigInt
 
-case class TByteString(aa: Array[Byte]) extends Type {
+case class TByteString(aa: Array[Byte]) extends Atom {
   var a = aa
   /**
    * Returns the type identifier of the instance.
-   * @return the type ID{
-    
-  }
+   * @return the type ID
    */
   def getType(): Int = 9
   /**
@@ -37,7 +35,7 @@ case class TByteString(aa: Array[Byte]) extends Type {
       case _ => false
     }
   }
-  override def toString(): String = s"Bytes(${BFuncs.bytecodeToString(a)})"
+  def toStringP: String = s"Bytes(${BFuncs.bytecodeToString(a)})"
   /**
    * Returns a clone of this type.
    */

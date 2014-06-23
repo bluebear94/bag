@@ -32,3 +32,5 @@ desc "In other words, $gfx:text(str, 0, 0) will have the text cut off."
 desc "Outputs a test image."
 desc "This image will change with every minor revision before 1.0 (e. g. from 0.6 to 0.7)."
 desc "From 1.0 onwards, it will change with every major revision (e. g. from 1.x to 2.x)."
+#poly
+desc "Draws a polygon, with #1 a list of x-coordinates, #2 a list of y-coordinates, with fill property #3."

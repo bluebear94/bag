@@ -1,5 +1,6 @@
 package types
 
+import scala.collection.immutable.Set
 import scala.collection.mutable._
 import util.{MakeByteArrays, MapOps}
 
@@ -30,6 +31,9 @@ abstract class LList extends Type {
    */
   def elems(): String = {
     l.mkString(", ")
+  }
+  def elems(visited: Set[Type]) = {
+    l.map((e: Type) => e.toStringC(visited + this)).mkString(", ")
   }
   def toBoolean(): Boolean = {
     !l.isEmpty

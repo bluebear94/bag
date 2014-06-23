@@ -1,5 +1,6 @@
 package types
 
+import scala.collection.immutable.Set
 import scala.collection.mutable._
 import util.MakeByteArrays
 
@@ -13,9 +14,9 @@ class LMap(h: HashMap[Type, Type]) extends Type {
   override def hashCode: Int = {
     h.foldLeft(83)((a, b) => 97 * a + 41 * b._1.hashCode + 101 * b._2.hashCode)
   }
-  override def toString(): String = {
-    "Map(" + h.toList.map(p => (p._1.toString + " → " + p._2.toString)).mkString(", ") + ")"
-  }
+  def toStringNC(): String = "Map(" + h.toList.map(p => (p._1.toStringNC + " → " + p._2.toStringNC)).mkString(", ") + ")"
+  def toStringC_(visited: Set[Type]): String = "Map(" + (h.toList map { case (k, v) => 
+    k.toStringC(visited + this) + " → " + v.toStringC(visited + this) } mkString(", ")) + ")"
   def lu(i: Type, n: Type) = {
     h(i) = n
   }

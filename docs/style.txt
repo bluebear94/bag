@@ -18,9 +18,47 @@ EndIf
 
 * Prefer If to If-Then-End for a single statement.
 
+BAD:
+
+If a == 2; Then
+$:hluna(":P
+EndIf
+
+GOOD:
+
+If a == 2; $:hluna(":P
+
+ALSO OK:
+
+a == 2 && $:hluna(":P
+
 * No parentheses around the entire condition in control structures.
 
-* Closing parentheses, brackets, braces, and quotes should not be closed at the end of the line, as they will be added automatically by the preprocessor.
+BAD:
+
+While (a && (b || c))
+ _ loop body
+EndWhile
+
+GOOD:
+
+While a && (b || c)
+ _ loop body
+EndWhile
+
+* Closing parentheses, brackets, braces, and quotes should not be closed at the end of the line, as they will be added automatically by the preprocessor. One exception is strings with trailing spaces, in which case a closing quote takes fewer characters than a comment indicating the number of trailing spaces.
+
+BAD:
+
+$:hluna("hello world")
+s[80 + (i << 2) + j] := prv(s[40 + (i << 2) + j])
+p[5] := "ARENA   
+
+GOOD:
+
+$:hluna("hello world
+s[80 + (i << 2) + j] := prv(s[40 + j + (i << 2
+p[5] := "ARENA   "
 
 * Expressions should be rearranged as to minimize the number of closing marks.
 
@@ -29,22 +67,32 @@ GOOD: 2 * (a + b
 
 * Use short but mnemonic names for variables. Under no circumstances should an alphanumerical name (part of an identifier delimited by `$', `:', or `.') be over eight characters long.
 
-* In addition, variables should start with a lowercase letter, with word boundaries optionally indicated by capitals (e. g. a, window, pushVal, pushval)
+* In addition, variables should start with a lowercase letter, with word boundaries optionally indicated by capitals (e. g. a, window, pushVal, pushval). Underscores are reserved for comments.
 
 * Unlike in TI-Basic, comments will not show up in executable versions, but it is considered bad style to use them excessively. If they are used, then one space should precede and follow the underscore.
 
 * No space:
   - Before semicolons or commas
-  - Between the function name and the opening parenthesis
+  - Between the function name and the opening parenthesis, or between the collection name and the opening bracket
   - At the end of the line, unless part of a string
+  - After opening parentheses, brackets, or braces
+  - Before closing parentheses, brackets, or braces
   
 * Space:
   - Between operators, particularly lower-precedence ones
   - After control keywords
   - After semicolons and commas
 
-* Remember the rule of ASS: Avoid Superfluous Spaces.
-
-* At the same time, make sure to space your expressions adequately -- operators should get spaces between them, and if it is not possible for all of them to have them, then lower-precedence ones should get them. Spaces after, but not before commas, and after control keywords.
-
 * Prefer $:map, $:fold, and vector operations to looping over each element.
+
+BAD:
+
+Let l := $:len(a
+Let b := {
+For i, 0, l
+b[i] := $gfx:stc(a[i
+EndFor
+
+GOOD:
+
+Let b := a +> $gfx:stc

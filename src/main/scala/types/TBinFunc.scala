@@ -5,7 +5,7 @@ import cmdreader.Global
 import parse.ast.BFuncs
 import scala.collection.mutable.HashMap
 
-class TBinFunc(bytecode: Array[Byte], source: String = "", ci: RunningInstance=null, name: String = "[ANON]") extends TFunction {
+class TBinFunc(bytecode: Array[Byte], source: String = "", ci: RunningInstance=null, name: String = "[ANON]") extends TFunction with Atom {
   def applyWith(args: Array[Type], closure: HashMap[String, Type]): Type = {
     val newci = new RunningInstance(name, Global.top, args)
     Global.top = newci
@@ -24,6 +24,6 @@ class TBinFunc(bytecode: Array[Byte], source: String = "", ci: RunningInstance=n
     }
   }
   override def hashCode = bytecode.hashCode
-  override def toString(): String = s"Func(${BFuncs.bytecodeToString(bytecode)})"
+  def toStringP: String = s"Func(${BFuncs.bytecodeToString(bytecode)})"
   def >/< = new TBinFunc(bytecode.clone, new String(source), ci)
 }

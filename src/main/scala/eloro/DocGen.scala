@@ -64,7 +64,7 @@ object DocGen {
       val bp = getProperties(Global.getCmdno(name.substring(1)))
       val l = name.substring(1, name.indexOf(":"))
       val n = name.substring(name.indexOf(":") + 1)
-      val lib = if (l == "") "std" else l
+      val lib = if (l.isEmpty) "std" else l
       val s = Source.fromFile("docs/" + lib + ".txt");
       var hasFoundHeader = 0
       var details = ""
@@ -74,7 +74,7 @@ object DocGen {
       for (l <- s.getLines if hasFoundHeader != 2) {
         if (hasFoundHeader == 1) readAndAppend(l)
         if (l == "#" + n) hasFoundHeader = 1
-        else if (l startsWith "#") hasFoundHeader = 2
+        else if ((l startsWith "#") && hasFoundHeader == 1) hasFoundHeader = 2
       }
       bp + details
     }

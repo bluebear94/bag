@@ -1,6 +1,6 @@
 package types
 
-class TError(errno: Int, msg: String) extends Type {
+class TError(errno: Int, msg: String) extends Atom {
   def this(errno: Int) = this(errno, "")
   def getErrno(): Int = errno
   def getType(): Int = -1
@@ -15,7 +15,7 @@ class TError(errno: Int, msg: String) extends Type {
   def equalsStrictly(that: Type) = {
     throw new UnsupportedOperationException
   }
-  override def toString(): String = {
+  def toStringP(): String = {
     "Error #" + errno + ": " + msg
   }
   def >/< = new TError(errno, msg)

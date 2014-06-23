@@ -14,7 +14,7 @@ case class TFish(x: Double) extends TNumerical {
   def getType(): Int = {
     4
   }
-  override def toString(): String = {
+  def toStringP: String = {
     var raw: String = x.toString()
     if (raw.startsWith("0") && x != 0.0) raw = raw.substring(1)
     if (raw.endsWith("0")) raw = raw.substring(0, raw.length() - 1)

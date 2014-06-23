@@ -2,6 +2,7 @@ package types
 
 import cmdreader.Global
 import util._
+import scala.collection.immutable.Set
 
 /**
  * An abstract class to define instances of an Amethyst type.
@@ -41,7 +42,10 @@ abstract class Type {
       case _ => false
     }
   def equalsStrictly(that: Type): Boolean
-  override def toString(): String
+  override def toString(): String = if (Global.vigilant) toStringNC else toStringC(Set())
+  def toStringNC(): String
+  def toStringC_(visited: Set[Type]): String
+  def toStringC(visited: Set[Type]): String = if (visited contains this) "..." else toStringC_(visited)
   /**
    * Returns a clone of this type.
    */
@@ -60,4 +64,8 @@ abstract class Type {
   
 }
 
-
+trait Atom extends Type {
+  def toStringP: String
+  def toStringNC(): String = toStringP
+  def toStringC_(visited: Set[Type]): String = toStringP
+}
