@@ -1,6 +1,9 @@
 package cmdreader
 import java.lang._
 import scala.collection.mutable.HashMap
+import eloro._
+import scala.io.Source
+import gui.Main
 
 /**
  * A list of commands in a library.
@@ -23,15 +26,19 @@ class CmdList(libname: String) {
   /**
    * Loads a command.
    */
-  def loadCmd(cname: String) = {
+  def loadCmd(cname: String, lines: List[String]) = {
     val c = Class.forName("cmdreader." + libname + "." + cname)
-    val inst = c.newInstance()
-    val ilname = c.getMethod("getName").invoke(inst)
-    commandList(ilname.asInstanceOf[String]) = inst.asInstanceOf[Command]
+    val inst = c.newInstance().asInstanceOf[Command]
+    val ilname = inst.getName
+    commandList(ilname.asInstanceOf[String]) = inst
     inst match {
       case co: CommandOperator => ccol.loadOp(co)
       case _ => ()
     }
-    print(s"Loaded command $ilname\n")
+    println(s"Loaded command $ilname")
+    if (!(lines contains ("#" + ilname))) {
+      println(s"*** $ilname is undocumented")
+      Main.println(s"*** $ilname is undocumented")
+    }
   }
 }

@@ -406,6 +406,34 @@ object MathUtil {
       case (_, _) => new TError(1)
     }
   }
+  def rol(x: Type, y: Type): Type = {
+    (x, y) match {
+      case (xl: LList, yl: LList) => motl(rol(_, _), xl, yl)
+      case (xl: LList, _) => mool(rol(_, _), xl, y)
+      case (_, yl: LList) => mool((a, b) => rol(b, a), yl, x)
+      case (xm: TMountain, ym: TNumerical) => {
+        new TMountain(rol(xm.getVal, ym.intValue))
+      }
+      case (xm: THill, ym: TNumerical) => {
+        new THill(rol(xm.getVal, ym.intValue))
+      }
+      case (_, _) => new TError(1)
+    }
+  }
+  def ror(x: Type, y: Type): Type = {
+    (x, y) match {
+      case (xl: LList, yl: LList) => motl(ror(_, _), xl, yl)
+      case (xl: LList, _) => mool(ror(_, _), xl, y)
+      case (_, yl: LList) => mool((a, b) => ror(b, a), yl, x)
+      case (xm: TMountain, ym: TNumerical) => {
+        new TMountain(ror(xm.getVal, ym.intValue))
+      }
+      case (xm: THill, ym: TNumerical) => {
+        new THill(ror(xm.getVal, ym.intValue))
+      }
+      case (_, _) => new TError(1)
+    }
+  }
   def bitAnd(x: Type, y: Type): Type = {
     (x, y) match {
       case (xl: LList, yl: LList) => motl(bitAnd(_, _), xl, yl)
@@ -492,5 +520,30 @@ object MathUtil {
       case xl: LList => mool(abs(_), xl)
       case _ => new TError(1)
     }
+  }
+  def rol(x: Long, p: Int) = (x << p) | (x >>> (64 - p))
+  def ror(x: Long, p: Int) = (x >>> p) | (x << (64 - p))
+  def rol(x: BigInt, p: Int) = (x << p) | (x >> (x.bitLength - p))
+  def ror(x: BigInt, p: Int) = (x >> p) | (x << (x.bitLength - p))
+  def digit(d: Int) = (d + (if (d <= 9) '0' else 'W')).toChar
+  def toStringRadix(x: Double, b: Int) = {
+    var p = x.abs
+    var q = p.toInt
+    p -= q
+    var s = ""
+    while (q != 0) {
+      s = digit(q % b) + s
+      q /= b
+    }
+    if (s == "") s = "0"
+    s += "."
+    var i = 0
+    while (i < 16 && p != 0) {
+      p *= b
+      s += digit(p.toInt)
+      p -= p.toInt
+      i += 1
+    }
+    s
   }
 }

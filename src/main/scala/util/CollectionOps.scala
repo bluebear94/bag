@@ -1,6 +1,6 @@
 package util
 import types._
-import java.math.BigInteger
+import scala.math.BigInt
 import scala.collection.mutable._
 
 object CollectionOps {
@@ -28,11 +28,11 @@ object CollectionOps {
   def encodeFromList(l: List[Type], mode: Int): Type = {
     mode match {
       case 1 => {
-        var n = BigInteger.ZERO
+        var n = 0
         for (e <- l) {
           e match {
             case e: TNumerical => {
-              n = n.shiftLeft(1).add(BigInteger.valueOf(e.intValue))
+              n = (n << 1) + e.intValue
             }
             case _ => return new TError(1)
           }

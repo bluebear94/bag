@@ -134,7 +134,7 @@ desc "Produces a list from #1 up to, but not including, #2. If #3 is present, th
 #stib
 desc "Converts a string (#1) to a number given a radix #2. If there is no decimal point, then the result will have type 1; otherwise, the result will have type 4 and may be slightly off."
 throws 1 6
-#istb
+#itsb
 desc "Converts a number (#1) to a string given a radix #2."
 throws 1 6
 #require
@@ -155,3 +155,81 @@ desc "Starting from #3 (default: 0), searches #2 for a slice #1 and returns the 
 desc "Starting from #3 (default: the last element), searches #2 for a slice #1 (right-to-left!) and returns the index."
 #ixsce
 desc "Returns an array of all indices where #1 is found as a slice in #2, in the range [#3, #4) (default: whole list), overlapping if #5 evauluates to true (true by default)."
+#kv
+desc "Given a map, produces a list of key-value pairs. If #2 is given and evaluates to true, then this function gives a linked list instead of an array."
+#not
+desc "Returns the logical negation of the argument. Guaranteed to return either 0 or 1."
+#and
+desc "Returns the logical conjunction of the two given arguments. Unlike &&, this does not short-circuit and always returns 0 or 1."
+#or
+desc "Returns the logical disjunction of the two given arguments. Unlike ||, this does not short-circuit and always returns 0 or 1."
+#xor
+desc "Returns 1 if only one of the two given arguments evaluate to true; otherwise return 0."
+#band
+desc "Returns the logical conjunction of the two given arguments."
+vector
+#bor
+desc "Returns the logical disjunction of the two given arguments."
+vector
+#bxor
+desc "Returns the logical xor of the two given arguments."
+vector
+#shl
+desc "Returns #1 shifted #2 places left."
+vector
+#shr
+desc "Returns #1 shifted #2 places right."
+vector
+#rol
+desc "Returns #1 rotated #2 places left."
+vector
+#ror
+desc "Returns #1 rotated #2 places right."
+vector
+#tt
+desc "Returns #1 to the power of #2.
+vector
+#exp
+desc "Returns the natural exponential function of #1."
+vector
+#ln
+desc "Returns the natural lograrithm of #1."
+desc "Remark: Some programming languages use log, but we prefer ln in order to avoid confusion with the base-10 logarithm."
+vector
+#pi
+desc "Returns π."
+#aug
+desc "Returns #1 appended to #2."
+#cast
+desc "Returns #1 cast to the type with the id of #2."
+#compile
+desc "Compiles a source file into a variable."
+desc "#1 is the name of the variable, without any extension, in the Bag path format."
+desc "The source file is hence located at amw/<pathname in OS format>.bag."
+desc "Only the code, without λ...Endλ, is required in that file."
+#hask
+desc "Pauses until a value is entered into the prompt."
+#sin
+desc "Returns the sine of #1 radians."
+#cos
+desc "Returns the cosine of #1 radians."
+#tan
+desc "Returns the tangent of #1 radians."
+#asin
+desc "Returns the inverse sine of #1 in radians."
+#acos
+desc "Returns the inverse cosine of #1 in radians."
+#atan
+desc "Returns the inverse tangent of #1 in radians."
+#sinh
+desc "Returns the hyperbolic sine of #1 radians."
+#cosh
+desc "Returns the hyperbolic cosine of #1 radians."
+#tanh
+desc "Returns the hyperbolic tangent of #1 radians."
+#asinh
+desc "Returns the inverse hyperbolic sine of #1 in radians."
+#acosh
+desc "Returns the inverse hyperbolic cosine of #1 in radians."
+#atanh
+desc "Returns the inverse hyperbolic tangent of #1 in radians."

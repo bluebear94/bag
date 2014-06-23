@@ -416,7 +416,8 @@ class XprInt extends JavaTokenParsers with PackratParsers {
     //.filter(w => !Keywords.keywords.contains(w._2)) ^^
     //{ s => Variable(s._1 + s._2) }
   lazy val mountain: PackratParser[SBExpression] = wholeNumber ^^ { s => new Literal(new TMountain(BigInt(s))) }
-  lazy val hill: PackratParser[SBExpression] = regex("""↼[-]?\d+""".r) ^^ { s => new Literal(new THill(BigInt(s.substring(1)).toLong)) }
+  lazy val hill: PackratParser[SBExpression] = """↼[-]?\d+""".r ^^ { s => new Literal(new THill(BigInt(s.substring(1)).toLong)) } |
+  """[-]?\d+H""".r ^^ { s => new Literal(new THill(BigInt(s.substring(0, s.length - 1)).toLong)) }
   lazy val string: PackratParser[SBExpression] = stringLiteral ^^ { s =>
     UnescapeString.unescape(s.substring(1, s.length - 1)) match {
       case Some(ues) => Literal(new TString(ues))
@@ -424,7 +425,7 @@ class XprInt extends JavaTokenParsers with PackratParsers {
     }
   }
   lazy val fish: PackratParser[SBExpression] = floatingPointNumber ^^ { s => new Literal(new TFish(s.toDouble)) }
-  lazy val literal: PackratParser[SBExpression] = void | fish ||| mountain | hill | string | funcAsByte | byteString
+  lazy val literal: PackratParser[SBExpression] = void | hill | fish ||| mountain | string | funcAsByte | byteString
   val lineDelimiter: PackratParser[String] = ";" ^^^ ";"
   lazy val commaDelimited: PackratParser[List[Expression]] = repsep(expression, ",")
   lazy val lineDelimited: PackratParser[List[Expression]] = repsep(expression, lineDelimiter)

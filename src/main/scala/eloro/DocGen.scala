@@ -7,6 +7,7 @@ import scala.collection.immutable.HashMap
 import scala.util.parsing.input._
 import java.io._
 import java.util.Scanner
+import scala.io.Source
 /**
  * Documentation generator. Called through the $:help command.
  * @author bluebear94
@@ -37,9 +38,9 @@ object DocGen {
     cmd.getName + argstr + opProperties
   }
   val cmdl: HashMap[String, (List[String]) => String] = HashMap(
-    ("desc", _.head),
-    ("vector", _ => "If applied to one or more lists, this function will apply element-by-element."),
-    ("throws", (a: List[String]) => "Throws: " + a.mkString(", ")))
+    "desc" -> (_.head),
+    "vector" -> (_ => "If applied to one or more lists, this function will apply element-by-element."),
+    "throws" -> ((a: List[String]) => "Throws: " + a.mkString(", ")))
   def out(c: String, a: List[String]) = {
     if (cmdl.isDefinedAt(c)) cmdl(c)(a)
     else throw new NoSuchDocCommandException("Command not found: " + c)
@@ -64,19 +65,16 @@ object DocGen {
       val l = name.substring(1, name.indexOf(":"))
       val n = name.substring(name.indexOf(":") + 1)
       val lib = if (l == "") "std" else l
-      val s = new Scanner(new File("docs/" + lib + ".txt"))
-      var txt = ""
-      while (txt != ("#" + n) && s.hasNextLine) {
-        txt = s.nextLine
-      }
+      val s = Source.fromFile("docs/" + lib + ".txt");
+      var hasFoundHeader = 0
       var details = ""
-      def readAndAppend = {
-        txt = s.nextLine
-        if (!txt.startsWith("#")) details += "\n" + parseCmd(txt)
+      def readAndAppend(l: String) = {
+        if (!l.startsWith("#")) details += "\n" + parseCmd(l)
       }
-      if (s.hasNextLine) readAndAppend
-      while (!txt.startsWith("#") && s.hasNextLine) {
-        readAndAppend
+      for (l <- s.getLines if hasFoundHeader != 2) {
+        if (hasFoundHeader == 1) readAndAppend(l)
+        if (l == "#" + n) hasFoundHeader = 1
+        else if (l startsWith "#") hasFoundHeader = 2
       }
       bp + details
     }

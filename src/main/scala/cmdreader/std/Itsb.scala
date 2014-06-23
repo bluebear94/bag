@@ -3,6 +3,7 @@ package cmdreader.std
 import types._
 import cmdreader.Command
 import math._
+import util.MathUtil
 
 class Itsb extends Command {
   override def getName(): String = "itsb"
@@ -26,17 +27,7 @@ class Itsb extends Command {
     else new TString(s match {
       case s: BigInt => s.toString(b)
       case s: Long => BigInt(s).toString(b)
-      case s: Double => {
-        val g = s.signum
-        val p = g * (g * s).floor
-        var q = (s - p).abs
-        var e = 0
-        while (!q.isValidInt) {
-          e += 1
-          q *= b
-        }
-        BigInt(p.toInt).toString(b) + (if (e == 0) "" else ("." + BigInt(q.toInt).toString(b)))
-      }
+      case s: Double => MathUtil.toStringRadix(s, b)
     })
   }
 }
