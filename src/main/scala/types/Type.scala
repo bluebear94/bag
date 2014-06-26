@@ -9,7 +9,7 @@ import scala.collection.immutable.Set
  * @author bluebear94
  */
 
-abstract class Type {
+trait Type {
   /**
    * Returns the type identifier of the instance.
    * @return the type ID

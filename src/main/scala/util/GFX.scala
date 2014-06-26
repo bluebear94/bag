@@ -25,6 +25,9 @@ object GFX {
     if (f) ds.draw(_.fillRect(x0, y0, x1 - x0, y1 - y0))
     else ds.draw(_.drawRect(x0, y0, x1 - x0, y1 - y0))
   }
+  def ptOn(x: Int, y: Int) = {
+    ds.draw(_.fillRect(x, y, 1, 1))
+  }
   def circ(x: Int, y: Int, r: Int, f: Boolean) = {
     if (f) ds.draw(_.fillOval(x - r, y - r, r << 1, r << 1))
     else ds.draw(_.drawOval(x - r, y - r, r << 1, r << 1))
@@ -39,6 +42,15 @@ object GFX {
   def poly(xs: Array[Int], ys: Array[Int], f: Boolean) = {
     if (f) ds.draw(_.fillPolygon(xs, ys, xs.length))
     else ds.draw(_.drawPolygon(xs, ys, xs.length))
+  }
+  def iterate(f: (Int, Int) => Int, alpha: Boolean, x0: Int, y0: Int, x1: Int, y1: Int) = {
+    for (x <- x0 until x1) {
+      for (y <- y0 until y1) {
+        val c = f(x, y)
+        setcol(new Color(if (alpha) c else (c | 0xFF000000)))
+        ptOn(x, y)
+      }
+    }
   }
   def getf = {
     ds.bg.getFont
