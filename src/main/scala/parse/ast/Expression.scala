@@ -507,7 +507,7 @@ class XprInt extends JavaTokenParsers with PackratParsers {
   lazy val ternary: PackratParser[Expression] = sbexpression ~ "?" ~ expression ~ ":" ~ expression ^^ {
     case p ~ "?" ~ t ~ ":" ~ f => Ternary(p, t, f)
   }
-  def expression: PackratParser[Expression] = control | assign | ternary | getOpEq | operator(ops.firstKey) | delete | sbexpression
+  def expression: PackratParser[Expression] = control | assign | delete | ternary | getOpEq | operator(ops.firstKey) | sbexpression
   def sbwrapper: PackratParser[SBExpression] = "(" ~> expression <~ ")" ^^ { x => SBWrapper(x) }
   def sbwrapperl: PackratParser[LValue] = "(" ~> lvalue <~ ")" ^^ { x => x }
   def sbexpression: PackratParser[SBExpression] = getUnary | compound | literal | (getLOpOp ||| getOpOpL) | variable | answer | ans |
