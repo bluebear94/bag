@@ -69,3 +69,7 @@ trait Atom extends Type {
   def toStringNC(): String = toStringP
   def toStringC_(visited: Set[Type]): String = toStringP
 }
+
+trait FuncLike extends Type {
+  def apply(args: Array[Type]): Type
+}

@@ -83,6 +83,8 @@ GOOD: 2 * (a + b
   - After control keywords
   - After semicolons and commas
 
+* Share variables between loops! Recycling reduces namespace pollution.
+
 * Prefer $:map, $:fold, and vector operations to looping over each element.
 
 BAD:

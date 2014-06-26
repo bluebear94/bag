@@ -3,8 +3,9 @@ package types
 import scala.collection.immutable.Set
 import scala.collection.mutable._
 import util.MakeByteArrays
+import cmdreader.Global
 
-class LMap(h: HashMap[Type, Type]) extends Type {
+class LMap(h: HashMap[Type, Type]) extends FuncLike {
   def getType(): Int = 8
   def gm() = h
   def toBoolean(): Boolean = h.isEmpty
@@ -35,6 +36,13 @@ class LMap(h: HashMap[Type, Type]) extends Type {
     }).foldLeft(Array[Byte]())(_ ++ _)
     val bsl = h.toList.length
     MakeByteArrays.intToByteArray(bsl) ++ s
+  }
+  def apply(args: Array[Type]) = {
+    val env = gm.map { case (k, v) => (k.toString, v) }
+    env("this") match {
+      case f: TFunction => f.applyWith(if (Global.vigilant) args.map(_.>/<) else args, env)
+      case _ => new TError(1)
+    }
   }
   override def equals(that: Any) = {
     that match {

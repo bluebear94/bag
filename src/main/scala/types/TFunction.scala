@@ -6,7 +6,7 @@ import scala.collection.mutable.HashMap
 /**
  * An abstract representation of a function.
  */
-abstract class TFunction extends Type {
+abstract class TFunction extends FuncLike {
   def getType(): Int = {
     7
   }

@@ -13,7 +13,7 @@ class Yield extends CommandOperator {
     val e = args(1).asInstanceOf[TNumerical].intValue
     val f: (Type => Type) = if (args.length > 2) {
       args(2) match {
-        case h: TFunction => ((t: Type) => h(Array[Type](t)))
+        case h: FuncLike => ((t: Type) => h(Array[Type](t)))
         case _ => return new TError(1, "Third argument must be function")
       }
     } else ((t: Type) => t)

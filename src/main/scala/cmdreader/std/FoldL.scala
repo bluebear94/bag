@@ -11,8 +11,8 @@ class FoldL extends Command {
   override def apply(args: Array[Type]): Type = {
     val collection = args(0)
     val base = args(1)
-    val f: TFunction = args(2) match {
-      case func: TFunction => func
+    val f: FuncLike = args(2) match {
+      case func: FuncLike => func
       case _ => return new TError(1)
     }
     CollectionOps.ctv[Type](_.foldLeft(base)((a, b) => f(Array(a, b))))(collection)

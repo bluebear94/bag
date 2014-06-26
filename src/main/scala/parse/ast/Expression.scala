@@ -108,7 +108,7 @@ case class FCall(f: SBExpression, args: Array[Expression]) extends SBExpression 
   def eval(ci: RunningInstance): Type = {
     val g = f.eval(ci)
     g match {
-      case h: TFunction => h(args.map(_.eval(ci)))
+      case h: FuncLike => h(args.map(_.eval(ci)))
       case _ => new TError(1)
     }
   }

@@ -13,7 +13,7 @@ class QSort extends Sort {
       case _ => return new TError(1)
     }
     val f = args(1) match {
-      case fn: TFunction => fn
+      case fn: FuncLike => fn
       case _ => return new TError(1)
     }
     new LArray(Sorter.quicksort(l, (a, b) => f(Array(a, b)).toBoolean))

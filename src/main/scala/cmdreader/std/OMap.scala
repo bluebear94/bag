@@ -14,7 +14,7 @@ class OMap extends CommandOperator {
     val lists = args.dropRight(1)
     val f0 = args(argc - 1)
     val f = f0 match {
-      case f: TFunction => f
+      case f: FuncLike => f
       case _ => return new TError(1, f0 + "is not a function")
     }
     val trueLists = lists.map(CollectionOps.decodeToList(_))
