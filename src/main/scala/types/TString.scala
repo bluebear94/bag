@@ -36,7 +36,7 @@ case class TString(s2: String) extends Atom {
     else if (i == s.length - 1) s = s.substring(0, i) + new String(Array(c))
     else s = s.substring(0, i - 1) + new String(Array(c)) + s.substring(i + 1)
   }
-  def >/< = new TString(new String(s))
+  def >/< = new TString(s)
   def toBytecode: Array[Byte] = {
     s.getBytes("UTF-8")
   }

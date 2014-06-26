@@ -23,7 +23,7 @@ class LMap(h: HashMap[Type, Type]) extends Type {
   def du(i: Type) = {
     h.remove(i)
   }
-  def >/< = new LMap(h.clone)
+  def >/< = new LMap(h.map {case (k, v) => (k.>/<, v.>/<)})
   def toBytecode: Array[Byte] = {
     val s = h.toList.map((p: (Type, Type)) => {
       val t = p._1

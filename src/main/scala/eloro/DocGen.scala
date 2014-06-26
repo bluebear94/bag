@@ -40,7 +40,8 @@ object DocGen {
   val cmdl: HashMap[String, (List[String]) => String] = HashMap(
     "desc" -> (_.head),
     "vector" -> (_ => "If applied to one or more lists, this function will apply element-by-element."),
-    "throws" -> ((a: List[String]) => "Throws: " + a.mkString(", ")))
+    "throws" -> ((a: List[String]) => "Throws: " + a.mkString(", ")),
+    "contract" -> ("Contract: " + _.mkString(" ")))
   def out(c: String, a: List[String]) = {
     if (cmdl.isDefinedAt(c)) cmdl(c)(a)
     else throw new NoSuchDocCommandException("Command not found: " + c)

@@ -1,5 +1,6 @@
 #clrscn
 desc "Clears the draw screen."
+contract ->
 #getcol
 desc "Gets the pen color as a number."
 desc "If #1 evaluates to true, then returns the alpha bits as well."
@@ -7,30 +8,41 @@ desc "Bits 24 - 31: alpha (if applicable)"
 desc "Bits 16 - 23: red"
 desc "Bits  8 - 15: green"
 desc "Bits  0 -  7: blue"
+contract b? -> 1
 #setcol
 desc "Sets the pen color as a number."
-desc "If #1 evaluates to true, then sets the alpha bits as well. Otherwise, they are set to 255."
+desc "If #2 evaluates to true, then sets the alpha bits as well. Otherwise, they are set to 255."
+contract i b? ->
 #getf
 desc "Gets the current font as a list in this format: {name, style, size}."
 desc "Style constants are as followed:"
 desc "0: Plain; 1: Bold; 2: Italic; 3: Bold Italic"
+contract -> {?}
 #setf
 desc "Sets the current font from a list in this format: {name, style, size}."
 desc "Refer to the documentation for $gfx:getf for style values."
+contract <?> ->
 #line
 desc "Draws a line from (#1, #2) to (#3, #4)."
+contract i i i i ->
 #rect
 desc "Draws a rectangle from (#1, #2) to (#3, #4), with fill property #5."
+contract i i i i b ->
 #circ
 desc "Draws a circle with center (#1, #2) and radius #3, with fill property #4."
+contract i i i b ->
 #stc
 desc "Given a name of a color as a string, returns the corresponding numerical value."
+contract 3 -> 1
 #text
 desc "Outputs the text at #1 to (#2, #3). Notice that #3 refers to the baseline y-coordinate."
 desc "In other words, $gfx:text(str, 0, 0) will have the text cut off."
+contract 3 i i ->
 #test
 desc "Outputs a test image."
 desc "This image will change with every minor revision before 1.0 (e. g. from 0.6 to 0.7)."
 desc "From 1.0 onwards, it will change with every major revision (e. g. from 1.x to 2.x)."
+contract ->
 #poly
 desc "Draws a polygon, with #1 a list of x-coordinates, #2 a list of y-coordinates, with fill property #3."
+contract <i> <i> b ->

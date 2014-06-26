@@ -1,152 +1,224 @@
 #add
 desc "Adds zero or more values. Will return a value with the most generalized type. If all arguments are strings, then concatenates them."
+contract n/* -> n/
+contract 3/* -> 3/
 vector
 throws 1
 #subt
 desc "Subtracts zero or more values from the first argument. Will return a value with the most generalized type."
+contract n/+ -> n/
 vector
 throws 1
 #mult
 desc "Multiplies zero or more values. Will return a value with the most generalized type."
+contract n/* -> n/
 vector
 throws 1
 #div
 desc "Divides zero or more values from the first argument. Will always return a floating-point value."
+contract n/+ -> 4/
 vector
 throws 1
 #idiv
 desc "Integer divides zero or more values from the first argument. Note that this does not accept floating-point values."
+contract (1|2)/+ -> (1|2)/
 vector
 throws 1
 #mod
 desc "Finds the remainder of two integers. If more than two arguments are present, folds the operation from left to right."
+contract n/ n/+ -> n/
 vector
 throws 1
 #hluna
 desc "Displays the argument to the homescreen in the GUI. It might also be useful to note that the value is also shown in the terminal with the prefix `[hluna]'."
+contract ? -> 0
 #negate
 desc "Returns the additive inverse of an argument."
+contract n/* -> n/
 vector
 throws 1
 #avg
 desc "Takes the average of two numbers."
+contract n/ n/ -> n/
 vector
 throws 1
 #eq
 desc "Returns true if two values are equal; false otherwise."
+contract ?/ ?/ -> b/
 vector
 #seq
 desc "Returns true if two values are strictly equal; false otherwise."
+contract ? ? -> b
 #neq
 desc "Returns true if two values are unequal; false otherwise."
+contract ?/ ?/ -> b/
 vector
 #gt
 desc "Returns true if the first value is greater than the second; false otherwise."
+contract ?/ ?/ -> b/
 vector
 #lt
 desc "Returns true if the first value is less than the second; false otherwise."
+contract ?/ ?/ -> b/
 vector
 #ge
 desc "Returns true if the first value is greater than or equal to the second; false otherwise."
+contract ?/ ?/ -> b/
 vector
 #le
 desc "Returns true if the first value is less than or equal to the second; false otherwise."
+contract ?/ ?/ -> b/
 vector
 #abs
 desc "Returns the absolute value of a number."
+contract n/ -> n/
 vector
 throws 1
 #cons
 desc "Returns an element prepended to a list or string."
+contract ? <?> -> <?>
+contract I 3 -> 3
 throws 1
 #car
 desc "Returns the first element of a list or string."
+contract <?> -> ?
+contract 3 -> 2
 throws 1
 #cdr
 desc "Returns a list containing all but the first element of a list or string."
+contract <?> -> <?>
+contract 3 -> 3
 throws 1
 #econs
 desc "Returns an element appended to a list or string."
+contract ? <?> -> <?>
+contract I 3 -> 3
 throws 1
 #ecar
 desc "Returns the last element of a list or string."
+contract <?> -> ?
+contract 3 -> 2
 throws 1
 #ecdr
 desc "Returns a list containing all but the last element of a list or string."
+contract <?> -> <?>
+contract 3 -> 3
 throws 1
 #expr
 desc "Evaluates the amethyst expression passed as an argument."
+contract 3 -> ?
 #len
 desc "Returns the length of a list, string, or number."
+contract (<?>|3|n) -> 1
 throws 1
 #now
 desc "Returns the current time in milliseconds after Jan. 1, 1970."
+contract -> 2
 #sub
 desc "Returns the subcollection of the collection #1 from index #2 to #3 (or the end if #3 is undefined)."
+contract <T> i i -> <T> where T=?
+contract 3 i i -> 3
+contract n i i -> n
 throws 1
 #str
 desc "Returns the string representation for any value. Useful for concatenating to strings."
+contract ? -> 3
 #rrbzo
 desc "Returns a random real between zero and one. Might return 0, but never returns 1."
+contract -> 4
 #floor
 desc "Returns the floor of the number."
 throws 1
+contract n -> 1
 #fpart
 desc "Returns the fractional part of the number."
+contract n -> 4
 throws 1
 #map
 desc "Maps one or more lists to a function (the last argument). All lists must have the same length."
+contract (<?>|3).N [?.N -> ?] -> <?>|3 where N in [1, inf)
 throws 1
 #foldl
 desc "Given a list (#1), a base value (#2), and a function (#3), applies #3 over #2 and each element of #1 (starting from the first)."
+contract <S> T [S T -> T] -> T where S=? and T=?
+contract 3 T [N T -> N] -> T where T=?
 throws 1
 #foldr
 desc "Given a list (#1), a base value (#2), and a function (#3), applies #3 over #2 and each element of #1 (starting from the last)."
+contract <S> T [S T -> T] -> T where S=? and T=?
+contract 3 T [N T -> N] -> T where T=?
 throws 1
 #filter
 desc "Returns a list with all of the elements of #1 which, when passed to #2, return true values."
+contract <S> [S -> b] -> <S> where S=?
 throws 1
 #dsa
 desc "Returns a disassembly of a function. Useful in debugging the compiler."
+contract 7 -> 3
 throws 1
 #hsort
 desc "Returns a sorted array. This function also needs a comparison function. Heapsort, which always has an O(n log n) time complexity and an O(1) space complexity but is not stable and is generally slower than quicksort, is used for this function."
+contract {T} [T T -> b] -> T where T=?
 throws 1
 #qsort
 desc "Returns a sorted array. This function also needs a comparison function. Quicksort, which may occasionally have an O(n^2) time complexity (although use of randomization guarantees O(n log n) complexity in virtually all cases) but is stable unlike heapsort, is used for this function."
+contract {T} [T T -> b] -> T where T=?
 throws 1
 #msort
 desc "Returns a sorted linked list. This function also needs a comparison function. An implementation of mergesort for linked lists, which has an O(n log n) time complexity and O(1) space complexity, is used."
+contract [T] [T T -> b] -> T where T=?
 throws 1
 #help
 desc "Help function."
+contract ->
+contract 3 ->
+contract .1.|.2.|.4. ->
+contract .3. 3 ->
 #ribzpt
 desc "Returns a random integer between a zero and a power of 2 (2^#1)."
+contract i -> 1
 throws 1
 #clone
 desc "Returns a clone of this value. This is done by default on assignment; however, this command is useful when automatic value cloning is disabled."
+contract T -> T where T=?
 #valcopy
 desc "Returns the old AVC (automatic value copying) setting. If another argument is passed, then it determines the new setting. Recommended to be turned off if you're doing functional programming or know what you're doing."
+contract -> b
+contract b -> b
 #gettype
 desc "Gets the type of the input."
+contract ? -> 1
 #yield
 desc "Produces a list from #1 up to, but not including, #2. If #3 is present, then produces a list of what the function yields. If #4 is specified and true, then produces a linked list; otherwise, produces an array."
+contract i i -> {1}
+contract i i [i -> T] -> {T} where T=?
+contract i i [i -> T] b -> <T> where T=?
 #stib
 desc "Converts a string (#1) to a number given a radix #2. If there is no decimal point, then the result will have type 1; otherwise, the result will have type 4 and may be slightly off."
+contract 3 i -> (1|4)
 throws 1 6
 #itsb
 desc "Converts a number (#1) to a string given a radix #2."
+contract n i -> 3
 throws 1 6
 #require
 desc "Imports a library."
+contract 3 ->
 #in
 desc "Checks whether #1 is found as an element in #2."
+contract T <T> -> b where T=?
 #idx
 desc "Starting from #3 (default: 0), searches #2 for an element #1 and returns the index."
+contract T <T> -> 1 where T=?
+contract T <T> i -> 1 where T=?
 #idxl
 desc "Starting from #3 (default: the last element), searches #2 for an element #1 (right-to-left!) and returns the index."
+contract T <T> -> 1 where T=?
+contract T <T> i -> 1 where T=?
 #idxe
 desc "Returns an array of all indices where #1 occurs in #2, in the range [#3, #4) (default: whole list)."
+contract T <T> -> {1} where T=?
+contract T <T> i i -> {1} where T=?
 #isc
 desc "Checks whether #1 is found as a slice of #2."
 #ixsc
@@ -198,38 +270,55 @@ desc "Remark: Some programming languages use log, but we prefer ln in order to a
 vector
 #pi
 desc "Returns π."
+contract -> 4
 #aug
 desc "Returns #1 appended to #2."
+contract <?> <?> -> <?>
 #cast
 desc "Returns #1 cast to the type with the id of #2."
+contract ? i -> ?
 #compile
 desc "Compiles a source file into a variable."
 desc "#1 is the name of the variable, without any extension, in the Bag path format."
 desc "The source file is hence located at amw/<pathname in OS format>.bag."
 desc "Only the code, without λ...Endλ, is required in that file."
+contract 3 ->
 #hask
 desc "Pauses until a value is entered into the prompt."
+contract -> 3
 #sin
 desc "Returns the sine of #1 radians."
+contract n -> 4
 #cos
 desc "Returns the cosine of #1 radians."
+contract n -> 4
 #tan
 desc "Returns the tangent of #1 radians."
+contract n -> 4
 #asin
 desc "Returns the inverse sine of #1 in radians."
+contract n -> 4
 #acos
 desc "Returns the inverse cosine of #1 in radians."
+contract n -> 4
 #atan
 desc "Returns the inverse tangent of #1 in radians."
+contract n -> 4
 #sinh
 desc "Returns the hyperbolic sine of #1 radians."
+contract n -> 4
 #cosh
 desc "Returns the hyperbolic cosine of #1 radians."
+contract n -> 4
 #tanh
 desc "Returns the hyperbolic tangent of #1 radians."
+contract n -> 4
 #asinh
 desc "Returns the inverse hyperbolic sine of #1 in radians."
+contract n -> 4
 #acosh
 desc "Returns the inverse hyperbolic cosine of #1 in radians."
+contract n -> 4
 #atanh
 desc "Returns the inverse hyperbolic tangent of #1 in radians."
+contract n -> 4

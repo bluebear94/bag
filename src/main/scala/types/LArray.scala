@@ -18,5 +18,5 @@ class LArray(a: ArrayBuffer[Type]) extends LList {
   }
   def toStringNC(): String = "{" + elems + "}"
   def toStringC_(visited: Set[Type]): String = "{" + elems(visited) + "}"
-  def >/< = new LArray(a.clone)
+  def >/< = new LArray(a.map(_.>/<))
 }
