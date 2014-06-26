@@ -57,7 +57,7 @@ object Preprocessor {
   }
   def preprocess(c: String, debug: Boolean = true): String = {
     // You are not expected to understand what the f*ck this means.
-    val code = if (c.last == '\n') c else c + "\n"
+    val code = (if (c.last == '\n') c else c + "\n").replaceAll("; *", ";").replaceAll("\n *", "\n")
     var qm = false
     var out = ""
     var curLine = ""
