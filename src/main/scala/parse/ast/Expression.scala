@@ -49,6 +49,14 @@ case class Variable(name: String) extends LValue {
     Array(Bytes(Array[Byte](-0x20, 0x05) ++ MakeByteArrays.intToByteArray(inB.length) ++ inB))
   }
 }
+case class QVariable(id: Byte) extends LValue {
+  def eval(ci: RunningInstance): Type = ci.getVar(id)
+  def assign(ci: RunningInstance, t: Type) = ci.setVar(id, t)
+  def assignS(ci: RunningInstance, t: Type) = ci.setVarP(id, t)
+  def nuke(ci: RunningInstance) = ci.delVar(id)
+  def toBytecode = Array(Bytes(Array[Byte](0x75, id)))
+  def toSymBytecode = Array(Bytes(Array[Byte](0x76, id)))
+}
 case class Assign(left: LValue, right: Expression, shadow: Boolean = false) extends Expression {
   def eval(ci: RunningInstance): Type = {
     if (shadow) left.assignS(ci, right.eval(ci).cid)
@@ -122,8 +130,8 @@ object ML {
   def multiline(lines: List[Expression]) = {
     val lbc = lines.map(_.toBytecode)
     lbc.foldRight[Array[Bin]](Array(Bytes(Array[Byte]())))((a: Array[Bin], b: Array[Bin]) =>
-      BFuncs.app(a, BFuncs.app(Array(Bytes(Array[Byte](-0x17, 0x53))), b))) ++
-      Array(Bytes(Array[Byte](-0x1F, 0x00, 0x00, 0x00, 0x00, 0x00)))
+      BFuncs.app(a, BFuncs.app(Array(Bytes(Array[Byte](-0x17, 0x53))), b)))// ++
+      //Array(Bytes(Array[Byte](-0x1F, 0x00, 0x00, 0x00, 0x00, 0x00)))
   }
 }
 case class Lambda(lines: List[Expression]) extends SBExpression {
@@ -346,7 +354,12 @@ case class Hashtag(x: Expression) extends LValue {
       case TMountain(n) => ci.argn(n.intValue)
       case THill(n) => ci.argn(n.asInstanceOf[Int])
       case TFish(n) => ci.argn(n.asInstanceOf[Int])
-      case TString(n) => ci.getVar(n)
+      case TString(n) => {
+        RunningInstance.getId(n) match {
+          case Some(b) => ci.getVar(b)
+          case None => ci.getVar(n)
+        }
+      }
       case _ => new TError(1)
     }
   }
@@ -356,7 +369,12 @@ case class Hashtag(x: Expression) extends LValue {
       case TMountain(n) => ci.setargn(n.intValue, t)
       case THill(n) => ci.setargn(n.asInstanceOf[Int], t)
       case TFish(n) => ci.setargn(n.asInstanceOf[Int], t)
-      case TString(n) => ci.setVar(n, t)
+      case TString(n) => {
+        RunningInstance.getId(n) match {
+          case Some(b) => ci.setVar(b, t)
+          case None => ci.setVar(n, t)
+        }
+      }
       case _ => new TError(1)
     }
   }
@@ -366,14 +384,24 @@ case class Hashtag(x: Expression) extends LValue {
       case TMountain(n) => ci.setargn(n.intValue, t)
       case THill(n) => ci.setargn(n.asInstanceOf[Int], t)
       case TFish(n) => ci.setargn(n.asInstanceOf[Int], t)
-      case TString(n) => ci.setVarP(n, t)
+      case TString(n) => {
+        RunningInstance.getId(n) match {
+          case Some(b) => ci.setVarP(b, t)
+          case None => ci.setVarP(n, t)
+        }
+      }
       case _ => new TError(1)
     }
   }
   def nuke(ci: RunningInstance) = {
     val t = x.eval(ci)
     t match {
-      case TString(n) => ci.delVar(n)
+      case TString(n) => {
+        RunningInstance.getId(n) match {
+          case Some(b) => ci.delVar(b)
+          case None => ci.delVar(n)
+        }
+      }
       case _ => new TError(1)
     }
   }
@@ -412,7 +440,11 @@ class XprInt extends JavaTokenParsers with PackratParsers {
   lazy val varNames: PackratParser[String] = ((regex("\\$".r) ~ (id | "") ~ ":" ~ id) ^^ {
     case d ~ lib ~ c ~ cmd => "$" + lib + ":" + cmd
   } | ("$" ~> id) ^^ ("$" + _) | id)
-  lazy val variable: PackratParser[LValue] = varNames.filter(!Keywords.keywords.contains(_)) ^^ {s: String => Variable(s)}
+  lazy val variable: PackratParser[LValue] = varNames.filter(!Keywords.keywords.contains(_)) ^^ {s: String => RunningInstance.getId(s) match {
+      case Some(b) => QVariable(b)
+      case None => Variable(s)
+    }
+  }
     //.filter(w => !Keywords.keywords.contains(w._2)) ^^
     //{ s => Variable(s._1 + s._2) }
   lazy val mountain: PackratParser[SBExpression] = wholeNumber ^^ { s => new Literal(new TMountain(BigInt(s))) }

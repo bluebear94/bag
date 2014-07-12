@@ -8,6 +8,7 @@ import rwvar._
 import cmdreader.Global
 import parse.ast._
 import java.io.File
+import gui.Main
 
 // If fname starts with "code:", then it is an instance of code.
 /**
@@ -42,6 +43,7 @@ class RunningInstance(fn: String, c: RunningInstance, args: Array[Type]) {
    * A list of variables and their values.
    */
   var environment = new HashMap[String, Type]()
+  var qVars: Array[Option[Type]] = Array.fill(256){None}
   /**
    * The computation stack, with the first element on top.
    */
@@ -89,6 +91,16 @@ class RunningInstance(fn: String, c: RunningInstance, args: Array[Type]) {
       }
     }
   }
+  def getVar(id: Byte): Type = {
+    qVars(id + 128) match {
+      case Some(v) => v
+      case None => {
+        if (calling != null)
+          calling.getVar(id)
+        else new TVoid
+      }
+    }
+  }
   /**
    * Sets the value of the variable.
    * @param name the variable name
@@ -109,6 +121,9 @@ class RunningInstance(fn: String, c: RunningInstance, args: Array[Type]) {
       environment(name) = t
     }
   }
+  def setVar(id: Byte, t: Type): Unit = {
+    qVars(id + 128) = Some(t)
+  }
   /**
    * Deletes a variable.
    * @param name the variable name
@@ -126,6 +141,9 @@ class RunningInstance(fn: String, c: RunningInstance, args: Array[Type]) {
     } else {
       environment.remove(name)
     }
+  }
+  def delVar(id: Byte): Unit = {
+    qVars(id + 128) = None
   }
   /**
    * Gets the i<sup>th</sup> argument, one-indexed.
@@ -168,7 +186,16 @@ class RunningInstance(fn: String, c: RunningInstance, args: Array[Type]) {
     } else {
       if (environment.isDefinedAt(name)) environment(name) = t
       else if (calling != null) calling.setVarP(name, t)
-      else new TError(6)
+      else throw new BagException(new TError(6), 0, fn)
+    }
+  }
+  def setVarP(id: Byte, t: Type): Unit = {
+    qVars(id + 128) match {
+      case Some(_) => qVars(id + 128) = Some(t)
+      case None => {
+        if (calling != null) calling.setVarP(id, t)
+        else throw new BagException(new TError(6), 0, fn)
+      }
     }
   }
   /**
@@ -180,6 +207,10 @@ class RunningInstance(fn: String, c: RunningInstance, args: Array[Type]) {
   def getVar(name: String, r: Int): Type = {
     if (r == 0) getVar(name)
     else calling.getVar(name, r - 1)
+  }
+  def getVar(id: Byte, r: Int): Type = {
+    if (r == 0) getVar(id)
+    else calling.getVar(id, r - 1)
   }
   /**
    * Sets the value of the variable.
@@ -254,7 +285,7 @@ class RunningInstance(fn: String, c: RunningInstance, args: Array[Type]) {
    * Runs the bytecode in this instance.
    * @throws RuntimeException when encountering an invalid command, or encountering an error value on the stack.
    */
-  def run() = { // runs the bytecode
+  def run(sw: ISwitch) = { // runs the bytecode
     var needle = 0
     var isDone = false
     while (!isDone) {
@@ -402,27 +433,38 @@ class RunningInstance(fn: String, c: RunningInstance, args: Array[Type]) {
           stack = new TVoid :: stack
         }
         case _ => {
-          if ((cmd >> 8) == 0xE1) {
-            val valtype = cmd & 0xFF
+          val hb = cmd >> 8
+          val lb = cmd & 0xFF
+          if (hb == 0xE1) {
             val size = readInt(needle)
             needle += 4
-            stack = VariableReader.readData(bytecode.slice(needle, needle + size), valtype, "[ANON]") :: stack
+            stack = VariableReader.readData(bytecode.slice(needle, needle + size), lb, "[ANON]") :: stack
             needle += size
+          } else if (hb == 0x75) {
+            stack = getVar(lb.toByte) :: stack
+          } else if (hb == 0x76) {
+            symstack = QVariable(lb.toByte) :: symstack
           } else {
             printStackTrace
             throw new RuntimeException("Invalid command: " + cmd + "@" + (needle - 2).toHexString)
           }
         }
-
       }
       if (needle >= bytecode.length - 1) isDone = true
       if (!stack.isEmpty && stack.head.isInstanceOf[TError]) {
-        val e = stack.head
+        val e = stack.head.asInstanceOf[TError]
         stack = stack.tail
         printStackTrace
-        throw new RuntimeException("Runtime " + e + ": " + (needle - 2).toHexString + "@" + fname + ": " +
-          cmd.toHexString)
+        throw new BagException(e, needle - 2, fname)
+        // throw new RuntimeException("Runtime " + e + ": " + (needle - 2).toHexString + "@" + fname + ": " +
+        //   cmd.toHexString)
       }
+      if (sw.isSet) throw new RuntimeException("Computation interrupted")
     }
   }
+}
+object RunningInstance {
+  val qNames: Array[String] = Array.tabulate(26)((x: Int) => ('a' + x).toChar.toString)
+  val qnm: scala.collection.immutable.Map[String, Byte] = qNames.zipWithIndex.map{ case (s, b) => (s, b.toByte) }.toMap
+  def getId(s: String): Option[Byte] = qnm.get(s)
 }

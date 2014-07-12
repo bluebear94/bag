@@ -10,6 +10,7 @@ import parse.ast._
 import scala.util.parsing.input.CharSequenceReader
 import types.TVoid
 import scala.collection.mutable.ArrayBuffer
+import run.ISwitch
 
 
 // I'm a complete noob to this...
@@ -35,10 +36,15 @@ object Main extends SimpleSwingApplication {
     homeScn.text += s + "\n"
     homeScn.caret.dot = homeScn.text.length
   }
+  def clrHome() = {
+    homeScn.text = ""
+    homeScn.caret.dot = 0
+  }
   val IDLE = 0
   val BUSY = 1
   val ASKING = 2
   var thread: ExecutionThread = null
+  val switch: ISwitch = new ISwitch
   var msg: String = null
   /**
    * The status.
@@ -99,6 +105,22 @@ object Main extends SimpleSwingApplication {
       text = Array[String]("IDLE", "BUSY", "ASKING").apply(status)
     }
   }
+  val statusBar4 = new Label {
+    text = {
+      val r = Runtime.getRuntime
+      s"Memory (F/T/M): ${r.freeMemory}/${r.totalMemory}/${r.maxMemory}"
+    }
+    font = mono
+    horizontalAlignment = Alignment.Left
+    override def repaint() = {
+      val r = Runtime.getRuntime
+      text = s"Memory (F/T/M): ${r.freeMemory}/${r.totalMemory}/${r.maxMemory}"
+      super.repaint()
+    }
+  }
+  val mmt = new MemoryManagerThread
+  mmt.setPriority(2)
+  mmt.start()
   /**
    * Inserts a string at the text caret.
    */
@@ -115,6 +137,7 @@ object Main extends SimpleSwingApplication {
       }
     }
   }
+  def stopEvent = switch.trigger()
   /**
    * Starts a new thread to run code.
    */
@@ -135,7 +158,7 @@ object Main extends SimpleSwingApplication {
         val bc = WholeParser.parse(toRun, p)
         val tp = Global.top
         tp.bytecode = bc
-        tp.run
+        tp.run(Main.switch)
         println((if (toRun == "3-1+.5-2") "There are no buses in Gensokyo!" else tp.ans) + "\n")
       } catch {
         case e: RuntimeException => {
@@ -145,6 +168,7 @@ object Main extends SimpleSwingApplication {
         }
       }
       setSt(IDLE)
+      switch.reset()
     }
   }
   def ask = {
@@ -186,11 +210,16 @@ object Main extends SimpleSwingApplication {
     val rightArrowButton = new Button {
       text = "→"
     }
-    val buttons = new FlowPanel(lambdaButton, harpoonButton, superMinusButton, rightArrowButton, runButton)
+    val stopButton = new Button {
+      text = "Stop (Ctrl + Z)"
+      foreground = Color.RED
+    }
+    val buttons = new FlowPanel(lambdaButton, harpoonButton, superMinusButton, rightArrowButton, runButton, stopButton)
     val statusBar = new BoxPanel(Orientation.Vertical) {
       contents += statusBar1
       contents += statusBar2
       contents += statusBar3
+      contents += statusBar4
     }
     contents = new BoxPanel(Orientation.Vertical) {
       contents ++= ArrayBuffer(drawScn, homeScroll, inputScroll, buttons, statusBar)
@@ -198,10 +227,15 @@ object Main extends SimpleSwingApplication {
       requestFocus
       listenTo(keys, drawScn.keys, homeScroll.keys, inputArea.keys, buttons.keys, lambdaButton,
           harpoonButton, runButton, superMinusButton, rightArrowButton)
+      def isCtrl(m: Int) = (m & 0xC0) != 0
       reactions += {
         case KeyPressed(_, Key.Enter, m, _) => {
-          if ((m & 0xC0) != 0)
+          if (isCtrl(m))
             enterEvent
+        }
+        case KeyPressed(_, Key.Z, m, _) => {
+          if (isCtrl(m))
+            stopEvent
         }
         case ButtonClicked(component) => {
           if (component == lambdaButton) insertAtCaret("λ")
@@ -209,6 +243,7 @@ object Main extends SimpleSwingApplication {
           if (component == superMinusButton) insertAtCaret("⁻")
           if (component == rightArrowButton) insertAtCaret("→")
           if (component == runButton) enterEvent
+          if (component == stopButton) stopEvent
         }
       }
     }
@@ -253,4 +288,12 @@ class BufferedCanvas(d: Dimension) extends Panel { // sigh, I have to make one m
  */
 class ExecutionThread extends Thread {
   override def run = Main.runCode
+}
+class MemoryManagerThread extends Thread {
+  override def run = {
+    while (true) {
+      Main.statusBar4.repaint()
+      Thread.sleep(1000)
+    }
+  }
 }

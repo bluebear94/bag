@@ -1,0 +1,52 @@
+Let loop := λ
+ Let k := 0
+ For i, 0, 123456789
+  k += i
+ EndFor
+ k
+Endλ
+a function
+
+$:dsa(loop
+; Let k := 0
+00000000 pvs k
+00000007 push mt 0
+0000000E assign
+00000010 setans
+; Let i := 0
+00000012 pvs i
+00000019 push mt 0
+00000020 assign
+
+; Main loop
+; While i < 123456789
+00000022 pv i
+00000029 push mt 123456789
+00000033 pv $:lt
+0000003D fcall 2
+00000043 jf 000000B0 
+; k := k + i
+00000049 pvs k
+00000050 pv k
+00000057 pv i
+0000005E pv $:add
+00000069 fcall 2
+0000006F assign
+00000071 setans
+; i = i + 1
+00000073 pvs i
+0000007A pv i
+00000081 push hl 1H
+0000008F pv $:add
+0000009A fcall 2
+000000A0 assign
+000000A2 setans
+000000A4 push void Void
+000000AA j 00000022 
+; EndWhile
+
+000000B0 setans
+; k
+000000B2 pv k
+000000B9 setans
+000000BB push void Void

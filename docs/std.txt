@@ -322,3 +322,6 @@ contract n -> 4
 #atanh
 desc "Returns the inverse hyperbolic tangent of #1 in radians."
 contract n -> 4
+#clrHome
+desc "Clears the home screen."
+contract -> 0
