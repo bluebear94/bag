@@ -119,6 +119,8 @@ object Preprocessor {
       }
       l += 1
     }
+    //while (out matches "(.|\n)*;\\s*\m(.|\n)*")
+      out = out.replaceAll("\n\\s*\n", "\n")
     if (debug) println(out)
     if (out.trim endsWith ";") out else out + ";"
     //out.replaceAll("\n","\n;") // with your memory-wasting habits!

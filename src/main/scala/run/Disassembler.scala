@@ -4,9 +4,9 @@ import types._
 import rwvar.VariableReader
 
 object Disassembler {
-  def formattedHex(i: Int) = {
+  def formattedHex(i: Int, digits: Int = 8) = {
     var s = " "
-    for (j <- 0 until 8) {
+    for (j <- 0 until digits) {
       s = "0123456789ABCDEF".charAt((((15L << (j << 2)) & i.toLong) >> (j << 2)).toInt) + s
     }
     s
@@ -111,13 +111,18 @@ object Disassembler {
           string += "delvar"
         }
         case _ => {
-          if ((cmd >> 8) == 0xE1) {
-            val valtype = cmd & 0xFF
+          val hb = cmd >> 8
+          val lb = cmd & 0xFF
+          if (hb == 0xE1) {
             val size = readInt(needle)
             needle += 4
-            string += "push " + Array("void", "mt", "hl", "str", "fsh", "arr", "ll", "func").apply(valtype) + " " +
-              VariableReader.readData(bytecode.slice(needle, needle + size), valtype, "")
+            string += "push " + Array("void", "mt", "hl", "str", "fsh", "arr", "ll", "func").apply(lb) + " " +
+              VariableReader.readData(bytecode.slice(needle, needle + size), lb, "")
             needle += size
+          } else if (hb == 0x75) {
+            string += "pqv " + formattedHex(lb, 2)
+          } else if (hb == 0x76) {
+            string += "pqvs " + formattedHex(lb, 2)
           } else {
             throw new RuntimeException("Invalid command: " + cmd + "@" + (needle - 2).toHexString)
           }

@@ -455,7 +455,7 @@ class RunningInstance(fn: String, c: RunningInstance, args: Array[Type]) {
         val e = stack.head.asInstanceOf[TError]
         stack = stack.tail
         printStackTrace
-        throw new BagException(e, needle - 2, fname)
+        throw new BagException(e, needle, fname)
         // throw new RuntimeException("Runtime " + e + ": " + (needle - 2).toHexString + "@" + fname + ": " +
         //   cmd.toHexString)
       }

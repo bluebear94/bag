@@ -7,7 +7,7 @@ Let o := 0
 Repeat o == n
  Repeat o > 0 && o < 101
   $:hluna("Guess (1 - 100):
-  o := $:hask(
+  o := $:expr($:hask(
  EndRept
  $:hluna((o > n) ? "Lower" : (o < n) ? "Higher" : "Just right
  ++g
