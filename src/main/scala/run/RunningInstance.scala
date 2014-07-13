@@ -43,7 +43,7 @@ class RunningInstance(fn: String, c: RunningInstance, args: Array[Type]) {
    * A list of variables and their values.
    */
   var environment = new HashMap[String, Type]()
-  var qVars: Array[Option[Type]] = Array.fill(256){None}
+  var qVars: Array[Type] = Array.fill(256){null} // sorry, I must; the patience of many people depend on this
   /**
    * The computation stack, with the first element on top.
    */
@@ -92,13 +92,11 @@ class RunningInstance(fn: String, c: RunningInstance, args: Array[Type]) {
     }
   }
   def getVar(id: Byte): Type = {
-    qVars(id + 128) match {
-      case Some(v) => v
-      case None => {
-        if (calling != null)
-          calling.getVar(id)
-        else new TVoid
-      }
+    val v = qVars(id + 128)
+    if (v != null) v
+    else {
+      if (calling != null) calling.getVar(id)
+      else new TVoid
     }
   }
   /**
@@ -122,7 +120,7 @@ class RunningInstance(fn: String, c: RunningInstance, args: Array[Type]) {
     }
   }
   def setVar(id: Byte, t: Type): Unit = {
-    qVars(id + 128) = Some(t)
+    qVars(id + 128) = t
   }
   /**
    * Deletes a variable.
@@ -143,7 +141,7 @@ class RunningInstance(fn: String, c: RunningInstance, args: Array[Type]) {
     }
   }
   def delVar(id: Byte): Unit = {
-    qVars(id + 128) = None
+    qVars(id + 128) = null
   }
   /**
    * Gets the i<sup>th</sup> argument, one-indexed.
@@ -190,12 +188,11 @@ class RunningInstance(fn: String, c: RunningInstance, args: Array[Type]) {
     }
   }
   def setVarP(id: Byte, t: Type): Unit = {
-    qVars(id + 128) match {
-      case Some(_) => qVars(id + 128) = Some(t)
-      case None => {
-        if (calling != null) calling.setVarP(id, t)
-        else throw new BagException(new TError(6), 0, fn)
-      }
+    val v = qVars(id + 128)
+    if (v != null) qVars(id + 128) = t
+    else {
+      if (calling != null) calling.setVarP(id, t)
+      else throw new BagException(new TError(6), 0, fn)
     }
   }
   /**
@@ -445,7 +442,7 @@ class RunningInstance(fn: String, c: RunningInstance, args: Array[Type]) {
           } else if (hb == 0x76) {
             symstack = QVariable(lb.toByte) :: symstack
           } else {
-            printStackTrace
+            printStackTrace()
             throw new RuntimeException("Invalid command: " + cmd + "@" + (needle - 2).toHexString)
           }
         }

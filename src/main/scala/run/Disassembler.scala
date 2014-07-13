@@ -12,7 +12,7 @@ object Disassembler {
     s
   }
   
-  def disassemble(bytecode: Array[Byte]) = { // runs the bytecode
+  def disassemble(bytecode: Array[Byte], indent: Int = 0, start: Int = 0): String = { // runs the bytecode
     var needle = 0
     var isDone = false
     var string = ""
@@ -27,7 +27,7 @@ object Disassembler {
     def tus(n: Byte) = if (n >= 0) n else 0x100 + n
     while (!isDone) {
       val cmd = (tus(bytecode(needle)) << 8) + tus(bytecode(needle + 1))
-      string += formattedHex(needle)
+      string += formattedHex(needle + start) + " " * indent
       needle += 2
       cmd match {
         case 0xE000 => {
@@ -116,9 +116,14 @@ object Disassembler {
           if (hb == 0xE1) {
             val size = readInt(needle)
             needle += 4
-            string += "push " + Array("void", "mt", "hl", "str", "fsh", "arr", "ll", "func").apply(lb) + " " +
-              VariableReader.readData(bytecode.slice(needle, needle + size), lb, "")
-            needle += size
+            if (lb == 7) {
+              string += "push func where\n"
+              string += disassemble(bytecode.slice(needle, needle + size), indent + 1, needle + start)
+            } else {
+              string += "push " + Array("void", "mt", "hl", "str", "fsh", "arr", "ll", "func").apply(lb) + " " +
+               VariableReader.readData(bytecode.slice(needle, needle + size), lb, "")
+              needle += size
+            }
           } else if (hb == 0x75) {
             string += "pqv " + formattedHex(lb, 2)
           } else if (hb == 0x76) {

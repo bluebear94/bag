@@ -4,10 +4,13 @@ $:clrHome(
 Let n := 1 + $:floor(100 * $:rrbzo(
 Let g := 0
 Let o := 0
+Let f := λ
+ #1 ? ($:ecar(#1) - 49H + 10 * this($:ecdr(#1))) : 0
+Endλ
 Repeat o == n
  Repeat o > 0 && o < 101
   $:hluna("Guess (1 - 100):
-  o := $:expr($:hask(
+  o := f($:hask(
  EndRept
  $:hluna((o > n) ? "Lower" : (o < n) ? "Higher" : "Just right
  ++g

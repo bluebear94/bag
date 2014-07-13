@@ -76,11 +76,12 @@ object Preprocessor {
         for (i: Int <- s until l) {
           print("-")
         }
-        println("> " + (out + curLine).replaceAll("\n", ";"))
+        println("> " + (out + " ~ " + curLine).replaceAll("\n", ";"))
       }
       if (c == '\"') qm = !qm
       else if (c == '\n' || (!qm && c == ';')) {
         out += preprocessLn(curLine + code.substring(s, l))
+        curLine = ""
         s = l
       } else if (c == 'λ' && !qm) {
         var lvs = 1
@@ -97,11 +98,11 @@ object Preprocessor {
           }
           if (newIndex == -1) throw new RuntimeException("unmatched lambda constructs (missing Endλ)")
           else if (newIndex == li) {
-            index = li + 1;
-            lvs += 1;
+            index = li + 1
+            lvs += 1
           } else if (newIndex == ei) {
-            index = Math.min(code.length, ei + 4);
-            lvs -= 1;
+            index = Math.min(code.length, ei + 4)
+            lvs -= 1
             if (lvs < 0) throw new RuntimeException("unmatched lambda constructs (extra Endλ)")
           } else throw new RuntimeException("I just don't know what went wrong :(")
         }
