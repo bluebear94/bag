@@ -1,0 +1,15 @@
+_ Guess the number
+_ by bluebear94
+$:clrHome(
+Let n := 1 + $:floor(100 * $:rrbzo(
+Let g := 0
+Let o := 0
+Repeat o == n
+ Repeat o > 0 && o < 101
+  $:hluna("Guess (1 - 100):
+  o := $:hask(
+ EndRept
+ $:hluna((o > n) ? "Lower" : (o < n) ? "Higher" : "Just right
+ ++g
+EndRept
+$:hluna("It took " + $:str(g) + " guesses!
