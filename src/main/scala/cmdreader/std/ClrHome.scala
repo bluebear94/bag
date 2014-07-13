@@ -2,6 +2,7 @@ package cmdreader.std
 
 import types._
 import gui.Main
+import cmdreader._
 
 class ClrHome extends Command {
   def getName(): String = "clrHome"
