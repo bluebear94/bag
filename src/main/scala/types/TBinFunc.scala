@@ -27,4 +27,5 @@ class TBinFunc(bytecode: Array[Byte], source: String = "", ci: RunningInstance=n
   override def hashCode = bytecode.hashCode
   def toStringP: String = s"Func(${BFuncs.bytecodeToString(bytecode)})"
   def >/< = new TBinFunc(bytecode.clone, new String(source), ci)
+  def rename(newName: String) = new TBinFunc(bytecode, source, ci, newName)
 }

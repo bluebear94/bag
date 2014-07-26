@@ -38,6 +38,9 @@ object MathUtil {
     if (y >= 0) new THill(ttp(x, y))
     else new TFish(1.0 / ttp(x, -y))
   }
+  def tt(x: Double, y: Double): Type = {
+    TFish(Math.pow(x, y))
+  }
   // Set of math utilities.
   /**
    * Returns the result of a method on two buffers.
@@ -181,36 +184,22 @@ object MathUtil {
   def divide(x: Type, y: Type): Type = {
     multiply(x, recip(y))
   }
-  def tt(x: Type, y: Type): Type = {
-    val xt = x.getType; val yt = y.getType
-    if ((xt == 5 || xt == 6) && (yt == 5 || yt == 6)) motl(tt, x.asInstanceOf[LList], y.asInstanceOf[LList])
-    else if ((xt == 5 || xt == 6)) mool(tt, x.asInstanceOf[LList], y)
-    else if ((yt == 5 || yt == 6)) mool(tt, y.asInstanceOf[LList], x)
-    else if (xt == 1) {
-      val bi = x.asInstanceOf[TMountain].getVal
-      if (yt == 1) {
-        tt(bi, (y.asInstanceOf[TMountain].getVal))
-      } else if (yt == 2) {
-        tt(bi, y.asInstanceOf[THill].getVal)
-      } else if (yt == 4) {
-        new TFish(Math.pow(bi.floatValue(), y.asInstanceOf[TFish].getVal))
-      } else new TError(1)
-    } else if (xt == 2) {
-      if (yt == 1) tt(y, x)
-      else {
-        val lg = x.asInstanceOf[THill].getVal
-        if (yt == 2) tt(lg, y.asInstanceOf[THill].getVal)
-        else if (yt == 4) new TFish(Math.pow(lg, y.asInstanceOf[TFish].getVal))
-        else new TError(1)
-      }
-    } else if (xt == 4) {
-      if (yt == 1 || yt == 2) tt(y, x)
-      else if (yt == 4) new TFish(Math.pow(
-        x.asInstanceOf[TFish].getVal,
-          y.asInstanceOf[TFish].getVal))
-      else new TError(1)
-    } else new TError(1)
+  def tt(x: Type, y: Type): Type = (x, y) match {
+    case (x: LList, y: LList) => motl(tt, x, y)
+    case (x: LList, y: Type) => mool(tt, x, y)
+    case (x: Type, y: LList) => mool((a, b) => tt(b, a), y, x)
+    case (TMountain(x), TMountain(y)) => tt(x, y)
+    case (TMountain(x), THill(y)) => tt(x, y)
+    case (TMountain(x), TFish(y)) => tt(x.toDouble, y)
+    case (THill(x), TMountain(y)) => tt(x, y)
+    case (THill(x), THill(y)) => tt(x, y)
+    case (THill(x), TFish(y)) => tt(x, y)
+    case (TFish(x), TMountain(y)) => tt(x, y.toDouble)
+    case (TFish(x), THill(y)) => tt(x, y)
+    case (TFish(x), TFish(y)) => tt(x, y)
+    case (_, _) => new TError(1)
   }
+  
   /**
    * Applies a double-to-double function on an Amethyst value. Will be applied entry-by-entry on lists.
    * @param f a real-valued function to apply

@@ -36,7 +36,7 @@ class RunningInstance(fn: String, c: RunningInstance, args: Array[Type]) {
     }
     bytecode = bc.toArray
   }*/
-  val needle: Int = 0
+  var needle: Int = 0
   val calling = c
   val fname = fn
   /**
@@ -116,11 +116,17 @@ class RunningInstance(fn: String, c: RunningInstance, args: Array[Type]) {
         })
       }
     } else {
-      environment(name) = t
+      environment(name) = t match {
+        case f: TBinFunc => f.rename(name)
+        case _ => t
+      }
     }
   }
   def setVar(id: Byte, t: Type): Unit = {
-    qVars(id + 128) = t
+    qVars(id + 128) = t match {
+      case f: TBinFunc => f.rename(RunningInstance.qNames(id))
+      case _ => t
+    }
   }
   /**
    * Deletes a variable.
@@ -270,7 +276,7 @@ class RunningInstance(fn: String, c: RunningInstance, args: Array[Type]) {
   /**
    * Prints a stacktrace; i. e. a line for this program and the stacktrace for the calling program, if any.
    */
-  def printStackTrace = {
+  def printStackTrace() = {
     println("Stacktrace: ")
     var curNode = this
     while (curNode != null) {
@@ -283,7 +289,7 @@ class RunningInstance(fn: String, c: RunningInstance, args: Array[Type]) {
    * @throws RuntimeException when encountering an invalid command, or encountering an error value on the stack.
    */
   def run(sw: ISwitch) = { // runs the bytecode
-    var needle = 0
+    needle = 0
     var isDone = false
     while (!isDone) {
       val cmd = (tus(bytecode(needle)) << 8) + tus(bytecode(needle + 1))
@@ -451,7 +457,7 @@ class RunningInstance(fn: String, c: RunningInstance, args: Array[Type]) {
       if (!stack.isEmpty && stack.head.isInstanceOf[TError]) {
         val e = stack.head.asInstanceOf[TError]
         stack = stack.tail
-        printStackTrace
+        printStackTrace()
         throw new BagException(e, needle, fname)
         // throw new RuntimeException("Runtime " + e + ": " + (needle - 2).toHexString + "@" + fname + ": " +
         //   cmd.toHexString)

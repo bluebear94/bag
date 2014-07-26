@@ -44,12 +44,16 @@ object GFX {
     else ds.draw(_.drawPolygon(xs, ys, xs.length))
   }
   def iterate(f: (Int, Int) => Int, alpha: Boolean, x0: Int, y0: Int, x1: Int, y1: Int) = {
-    for (x <- x0 until x1) {
-      for (y <- y0 until y1) {
+    var x = x0
+    while (x < x1) {
+      var y = y0
+      while (y < y1) {
         val c = f(x, y)
         setcol(new Color(if (alpha) c else (c | 0xFF000000)))
         ptOn(x, y)
+        y += 1
       }
+      x += 1
     }
   }
   def getf = {
