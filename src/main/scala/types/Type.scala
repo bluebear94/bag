@@ -5,7 +5,7 @@ import util._
 import scala.collection.immutable.Set
 
 /**
- * An abstract class to define instances of an Amethyst type.
+ * A trait to define instances of an Amethyst type.
  * @author bluebear94
  */
 
@@ -37,6 +37,9 @@ trait Type {
   def lt(that: Type): Boolean = {
     throw new UnsupportedOperationException()
   }
+  /**
+    Returns whether one instance strictly equals another.
+  */
   def equalsStrictly(that: Any): Boolean = that match {
       case t: Type => equalsStrictly(t)
       case _ => false
@@ -64,12 +67,23 @@ trait Type {
   
 }
 
+/**
+  A trait for atomic types, useful for defining string functions that do not pose the risk of cycling.
+  @author bluebear94
+*/
 trait Atom extends Type {
   def toStringP: String
   def toStringNC(): String = toStringP
   def toStringC_(visited: Set[Type]): String = toStringP
 }
 
+/**
+  A trait describing a value that can be run as a function.
+  @author bluebear94
+*/
 trait FuncLike extends Type {
+  /**
+    The result of calling this function on zero or more arguments.
+  */
   def apply(args: Array[Type]): Type
 }

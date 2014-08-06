@@ -13,7 +13,7 @@ import scala.collection.mutable.ArrayBuffer
 import run.ISwitch
 
 
-// I'm a complete noob to this...
+// I'm <u>kind of</u> a <s>complete</s> noob to this...
 
 /**
  * The graphic user interface for the language.

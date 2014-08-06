@@ -79,9 +79,12 @@ object CollectionOps {
       if (f == x) 0 :: rr else rr
     }
   }
+  def findAllOccurrences[T](x: List[T], l: List[T], gap: Int): List[Int] = {
+    if (l.isEmpty) Nil
+    else if (l.startsWith(x)) 0 :: findAllOccurrences(x, l.drop(gap), gap).map(_ + gap)
+    else findAllOccurrences(x, l.tail, gap).map(_ + 1)
+  }
   def findAllOccurrences[T](x: List[T], l: List[T], overlapping: Boolean = true): List[Int] = {
-    val n = if (overlapping) 1 else x.length
-    if (l.startsWith(x)) 0 :: findAllOccurrences(x, l.drop(n), overlapping).map(_ + n)
-    else findAllOccurrences(x, l.tail, overlapping)
+    findAllOccurrences(x, l, if (overlapping) 1 else x.length)
   }
 }

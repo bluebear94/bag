@@ -7,7 +7,7 @@ import util._
 import scala.collection.mutable.ArrayBuffer
 
 class Idxe extends CommandOperator {
-  def getName = "idx"
+  def getName = "idxe"
   def getOpAlias = "@%|*"
   def isValidArg0(n: Int) = n == 2 || n == 4
   def getPrecedence = PStandard.RELATION

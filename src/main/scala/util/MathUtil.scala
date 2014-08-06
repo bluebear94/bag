@@ -102,7 +102,7 @@ object MathUtil {
     else new LLinked(theB.asInstanceOf[ListBuffer[Type]])
   }
   def add(x: Type, y: Type): Type = {
-    val xt = x.getType; val yt = y.getType
+    val xt = x.getType; val yt = y.getType; val err = new TError(1, s"Tried to add $x and $y")
     if (xt == 3 && yt == 3) new TString(x.asInstanceOf[TString].getVal + y.asInstanceOf[TString].getVal)
     else if ((xt == 5 || xt == 6) && (yt == 5 || yt == 6)) motl(add, x.asInstanceOf[LList], y.asInstanceOf[LList])
     else if ((xt == 5 || xt == 6)) mool(add, x.asInstanceOf[LList], y)
@@ -115,22 +115,22 @@ object MathUtil {
         new TMountain(bi + y.asInstanceOf[THill].getVal)
       } else if (yt == 4) {
         new TFish(bi.floatValue + y.asInstanceOf[TFish].getVal)
-      } else new TError(1)
+      } else err
     } else if (xt == 2) {
       if (yt == 1) add(y, x)
       else {
         val lg = x.asInstanceOf[THill].getVal
         if (yt == 2) new THill(lg + y.asInstanceOf[THill].getVal)
         else if (yt == 4) new TFish(lg + y.asInstanceOf[TFish].getVal)
-        else new TError(1)
+        else err
       }
     } else if (xt == 4) {
       if (yt == 1 || yt == 2) add(y, x)
       else if (yt == 4) new TFish(
         x.asInstanceOf[TFish].getVal +
           y.asInstanceOf[TFish].getVal)
-      else new TError(1)
-    } else new TError(1)
+      else err
+    } else err
   }
   def negate(x: Type): Type = {
     val xt = x.getType()
@@ -138,13 +138,13 @@ object MathUtil {
     else if (xt == 2) new THill(-x.asInstanceOf[THill].getVal)
     else if (xt == 4) new TFish(-x.asInstanceOf[TFish].getVal)
     else if (xt == 5 || xt == 6) mool(negate(_), x.asInstanceOf[LList])
-    else new TError(1)
+    else new TError(1, s"Tried to negate $x")
   }
   def subtract(x: Type, y: Type): Type = {
     add(x, negate(y))
   }
   def multiply(x: Type, y: Type): Type = {
-    val xt = x.getType; val yt = y.getType
+    val xt = x.getType; val yt = y.getType; val err = new TError(1, s"Tried to multiply $x and $y")
     if ((xt == 5 || xt == 6) && (yt == 5 || yt == 6)) motl(multiply, x.asInstanceOf[LList], y.asInstanceOf[LList])
     else if ((xt == 5 || xt == 6)) mool(multiply, x.asInstanceOf[LList], y)
     else if ((yt == 5 || yt == 6)) mool(multiply, y.asInstanceOf[LList], x)
@@ -156,22 +156,22 @@ object MathUtil {
         new TMountain(bi * y.asInstanceOf[THill].getVal)
       } else if (yt == 4) {
         new TFish(bi.floatValue() * y.asInstanceOf[TFish].getVal)
-      } else new TError(1)
+      } else err
     } else if (xt == 2) {
       if (yt == 1) multiply(y, x)
       else {
         val lg = x.asInstanceOf[THill].getVal
         if (yt == 2) new THill(lg * y.asInstanceOf[THill].getVal)
         else if (yt == 4) new TFish(lg * y.asInstanceOf[TFish].getVal)
-        else new TError(1)
+        else err
       }
     } else if (xt == 4) {
       if (yt == 1 || yt == 2) multiply(y, x)
       else if (yt == 4) new TFish(
         x.asInstanceOf[TFish].getVal *
           y.asInstanceOf[TFish].getVal)
-      else new TError(1)
-    } else new TError(1)
+      else err
+    } else err
   }
   def recip(x: Type): Type = {
     val xt = x.getType()
@@ -179,7 +179,7 @@ object MathUtil {
     else if (xt == 2) new TFish(1.0 / x.asInstanceOf[THill].getVal)
     else if (xt == 4) new TFish(1.0 / x.asInstanceOf[TFish].getVal)
     else if (xt == 5 || xt == 6) mool(negate(_), x.asInstanceOf[LList])
-    else new TError(1)
+    else new TError(1, s"Tried to take the reciprocal of $x")
   }
   def divide(x: Type, y: Type): Type = {
     multiply(x, recip(y))
@@ -197,7 +197,7 @@ object MathUtil {
     case (TFish(x), TMountain(y)) => tt(x, y.toDouble)
     case (TFish(x), THill(y)) => tt(x, y)
     case (TFish(x), TFish(y)) => tt(x, y)
-    case (_, _) => new TError(1)
+    case (_, _) => new TError(1, s"Tried to exponentiate $x to $y")
   }
   
   /**
@@ -212,7 +212,7 @@ object MathUtil {
     else if (xt == 2) new TFish(f(x.asInstanceOf[THill].getVal))
     else if (xt == 4) new TFish(f(x.asInstanceOf[TFish].getVal))
     else if (xt == 5 || xt == 6) mool(applyUnaryMath(f, _), x.asInstanceOf[LList])
-    else new TError(1)
+    else new TError(1, s"Tried to apply a unary math operator on $x")
   }
   def exp(x: Type): Type = applyUnaryMath(Math.exp(_), x)
   def ln(x: Type): Type = applyUnaryMath(Math.log(_), x)

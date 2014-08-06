@@ -229,6 +229,8 @@ desc "Starting from #3 (default: the last element), searches #2 for a slice #1 (
 desc "Returns an array of all indices where #1 is found as a slice in #2, in the range [#3, #4) (default: whole list), overlapping if #5 evauluates to true (true by default)."
 #kv
 desc "Given a map, produces a list of key-value pairs. If #2 is given and evaluates to true, then this function gives a linked list instead of an array."
+#unkv
+desc "Performs the inverse of $:kv; i. e. produces a map given a list of key-value pairs."
 #not
 desc "Returns the logical negation of the argument. Guaranteed to return either 0 or 1."
 #and
@@ -238,13 +240,13 @@ desc "Returns the logical disjunction of the two given arguments. Unlike ||, thi
 #xor
 desc "Returns 1 if only one of the two given arguments evaluate to true; otherwise return 0."
 #band
-desc "Returns the logical conjunction of the two given arguments."
+desc "Returns the bitwise conjunction of the two given arguments."
 vector
 #bor
-desc "Returns the logical disjunction of the two given arguments."
+desc "Returns the bitwise disjunction of the two given arguments."
 vector
 #bxor
-desc "Returns the logical xor of the two given arguments."
+desc "Returns the bitwise xor of the two given arguments."
 vector
 #shl
 desc "Returns #1 shifted #2 places left."

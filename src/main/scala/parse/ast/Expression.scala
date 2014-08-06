@@ -297,8 +297,8 @@ case class IfThenElse(p: Expression, t: List[Expression], f: List[Expression]) e
     val trueBody = ML.multiline(t)
     val falseBody = ML.multiline(f)
     BFuncs.app(predicate, BFuncs.app(
-      Array(Bytes(Array[Byte](-0x17, 0x33)), Offset(6 + BFuncs.alen(falseBody))),
-      BFuncs.app(falseBody, trueBody)))
+      Array(Bytes(Array[Byte](-0x17, 0x33)), Offset(12 + BFuncs.alen(falseBody))),
+      BFuncs.app(falseBody, BFuncs.app(Array(Bytes(Array[Byte](-0x17, 0x34)), Offset(6 + BFuncs.alen(trueBody))), trueBody))))
   }
 }
 case class While(p: Expression, b: List[Expression]) extends Expression {
@@ -422,7 +422,7 @@ case class Ans(aa: Boolean) extends SBExpression {
   // those bloody boolean types
 }
 /**
- * A parser for the Amethyst language.
+ * A parser for the Bag language.
  * @author bluebear94, toddobryan
  */
 class XprInt extends JavaTokenParsers with PackratParsers {
@@ -478,11 +478,23 @@ class XprInt extends JavaTokenParsers with PackratParsers {
   lazy val lambda: PackratParser[SBExpression] = ("λ" ~ lineDelimiter) ~> lineDelimited <~ (lineDelimiter ~ "Endλ") ^^ { l => Lambda(l) }
   lazy val call: PackratParser[SBExpression] = sbexpression ~ "(" ~ commaDelimited <~ ")" ^^ { sh => FCall(sh._1._1, sh._2.toArray[Expression]) }
   lazy val ifst: PackratParser[Expression] = "If " ~> expression ~ lineDelimiter ~ expression ^^ { sh => If(sh._1._1, sh._2) }
-  lazy val ifThen: PackratParser[Expression] = "If " ~> expression ~ lineDelimiter ~ "Then" ~ lineDelimiter ~ lineDelimited <~ lineDelimiter ~ "EndIf" ^^
+  /*lazy val ifThen: PackratParser[Expression] = "If " ~> expression ~ lineDelimiter ~ "Then" ~ lineDelimiter ~ lineDelimited <~ lineDelimiter ~ "EndIf" ^^
     { sh => IfThen(sh._1._1._1._1, sh._2) }
   lazy val ifThenElse: PackratParser[Expression] = ("If " ~> expression <~ lineDelimiter) ~ ("Then" ~> lineDelimiter ~> lineDelimited <~
     lineDelimiter) ~ ("Else" ~> lineDelimiter ~> lineDelimited <~ lineDelimiter <~ "EndIf") ^^
-    { case (condExpr ~ thens ~ elses) => IfThenElse(condExpr, thens, elses) }
+    { case (condExpr ~ thens ~ elses) => IfThenElse(condExpr, thens, elses) }*/
+  lazy val elifs: PackratParser[List[(Expression, List[Expression])]] = rep("Elif" ~ expression ~ lineDelimiter ~ lineDelimited ~ lineDelimiter) ^^ (_.map { case _ ~ x ~ _ ~ b ~ _ => (x, b) })
+  lazy val ifThen: PackratParser[Expression] = ("If " ~> expression <~ lineDelimiter) ~ ("Then" ~> lineDelimiter ~> lineDelimited <~ lineDelimiter) ~ elifs <~ "EndIf" ^^
+    { case cond ~ then ~ elifs => elifs match {
+        case Nil => IfThen(cond, then)
+        // have to include the              |    type annotation below; without it Scala thinks we're trying to get a List[IfThen] instead
+        case _ => IfThenElse(cond, then, // V
+          elifs.tail.foldRight[List[Expression]](List(IfThen(elifs.head._1, elifs.head._2)))((inc, prod: List[Expression]) => List(IfThenElse(inc._1, inc._2, prod))))
+      }}
+  lazy val ifThenElse: PackratParser[Expression] = ("If " ~> expression <~ lineDelimiter) ~ ("Then" ~> lineDelimiter ~> lineDelimited <~ lineDelimiter) ~ elifs ~ ("Else" ~> lineDelimiter ~> lineDelimited <~ lineDelimiter <~ "EndIf") ^^
+    { case cond ~ then ~ elifs ~ elses => 
+        IfThenElse(cond, then, elifs.foldRight(elses)((inc, prod) => List(IfThenElse(inc._1, inc._2, prod))))
+      }
   lazy val forst: PackratParser[Expression] = ("For " ~> commaDelimited <~ lineDelimiter) ~ lineDelimited <~ (lineDelimiter ~ "EndFor") ^^ {
     case (f3 ~ body) => f3(0) match {
       case lv: LValue => For(lv, f3(1), f3(2), if (f3.length == 3) Literal(THill(1L)) else f3(3), body)

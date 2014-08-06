@@ -3,7 +3,15 @@ package util
 import types._
 import scala.collection.mutable.HashMap
 
+/**
+  Collection of map operations.
+  @author bluebear94
+*/
 object MapOps {
+  /**
+    Constructs a map from a list.
+    @param l a list of entries alternating between key and value
+  */
   def fromList(l: List[Type]) = {
     def pairArgs[T](args: List[T], h: HashMap[T, T]): Unit = {
       args match {

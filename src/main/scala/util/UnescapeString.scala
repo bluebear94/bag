@@ -1,5 +1,9 @@
 package util
 
+/**
+  Yet another random object with a utility function.
+  @author bluebear94
+*/
 object UnescapeString {
   private def isOctal(c: Char): Boolean = '0' <= c && c < '8'
   private def isHex(c: Char): Boolean = '0' <= c && c <= '9' || 'A' <= c && c <= 'F'  || 'a' <= c && c <= 'f'
@@ -16,6 +20,11 @@ object UnescapeString {
     }
   }
   private def cts(c: Char): String = new String(Array(c))
+  /**
+    Unescapes a string; i. e. substitutes escape sequences such as \n with their literal counterparts (in this case the newline).
+    @param orig the string with escape sequences
+    @return a Some value with the result, or None if unsuccessful
+  */
   def unescape(orig: String): Option[String] = {
     if (orig == "") Some("")
     else if (orig.charAt(0) == '\\') { // an escape sequence
