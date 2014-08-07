@@ -481,7 +481,8 @@ class XprInt extends JavaTokenParsers with PackratParsers {
       }
   }
   lazy val hashtag: PackratParser[LValue] = "#" ~> sbexpression ^^ { x => Hashtag(x) }
-  lazy val lambda: PackratParser[SBExpression] = ("λ" ~ lineDelimiter) ~> lineDelimited <~ (lineDelimiter ~ "Endλ") ^^ { l => Lambda(l) }
+  lazy val shortLambda: PackratParser[SBExpression] = "λ{" ~> expression <~ "}" ^^ {l => Lambda(List(l))}
+  lazy val lambda: PackratParser[SBExpression] = ("λ" ~ lineDelimiter) ~> lineDelimited <~ (lineDelimiter ~ "Endλ") ^^ { l => Lambda(l) } | shortLambda
   lazy val call: PackratParser[SBExpression] = sbexpression ~ "(" ~ commaDelimited <~ ")" ^^ { sh => FCall(sh._1._1, sh._2.toArray[Expression]) }
   lazy val ifst: PackratParser[Expression] = "If " ~> expression ~ lineDelimiter ~ expression ^^ { sh => If(sh._1._1, sh._2) }
   /*lazy val ifThen: PackratParser[Expression] = "If " ~> expression ~ lineDelimiter ~ "Then" ~ lineDelimiter ~ lineDelimited <~ lineDelimiter ~ "EndIf" ^^
@@ -561,7 +562,21 @@ class XprInt extends JavaTokenParsers with PackratParsers {
   lazy val ternary: PackratParser[Expression] = sbexpression ~ "?" ~ expression ~ ":" ~ expression ^^ {
     case p ~ "?" ~ t ~ ":" ~ f => Ternary(p, t, f)
   }
-  def expression: PackratParser[Expression] = control | assign | delete | ternary | getOpEq | operator(ops.firstKey) | sbexpression
+  private def firstCharToLower(s: String) = s.charAt(0).toLower + s.substring(1)
+  lazy val pseudocommand: PackratParser[Expression] = varNames.filter(c => !Keywords.keywords.contains(c) && c.charAt(0).isUpper) ~ commaDelimited ^^ {
+    case keyword ~ args => {
+      val ci = keyword indexOf ":"
+      val fn = if (ci == -1) {
+        "$:" + firstCharToLower(keyword)
+      } else {
+        val lib = keyword.substring(0, ci)
+        val cmd = keyword.substring(ci + 1)
+        "$" + firstCharToLower(cmd) + ":" + firstCharToLower(lib)
+      }
+      FCall(Variable(fn), args.toArray)
+    }
+  }
+  def expression: PackratParser[Expression] = control | pseudocommand | assign | delete | ternary | getOpEq | operator(ops.firstKey) | sbexpression
   def sbwrapper: PackratParser[SBExpression] = "(" ~> expression <~ ")" ^^ { x => SBWrapper(x) }
   def sbwrapperl: PackratParser[LValue] = "(" ~> lvalue <~ ")" ^^ { x => x }
   def sbexpression: PackratParser[SBExpression] = getUnary | compound | literal | (getLOpOp ||| getOpOpL) | variable | answer | ans |

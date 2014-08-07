@@ -57,17 +57,18 @@ object Preprocessor {
   }
   def preprocess(c: String, debug: Boolean = true): String = {
     // You are not expected to understand what the f*ck this means.
-    val code = (if (c.last == '\n') c else c + "\n").replaceAll("; *", ";").replaceAll("\n *", "\n")
+    val code = (if (c.last == '\n') c else c + "\n").replaceAll("; *", ";").replaceAll("\n *", "\n").replaceAll("\\\\\n", "")
     var qm = false
     var out = ""
     var curLine = ""
     var l = 0
     var s = 0
+    val cl = code.length
     if (debug) {
       println("Preprocessing: ")
       println(code.replaceAll("\n", ";") + "|")
     }
-    while (l < code.length) {
+    while (l < cl) {
       val c = code.charAt(l)
       if (debug) {
         for (i: Int <- 0 until s) {
@@ -83,7 +84,7 @@ object Preprocessor {
         out += preprocessLn(curLine + code.substring(s, l))
         curLine = ""
         s = l
-      } else if (c == 'λ' && !qm) {
+      } else if (c == 'λ' && !qm && l + 1 < cl && code.charAt(l + 1) != '{') {
         var lvs = 1
         var index = l + 1
         while (lvs != 0) {
@@ -101,7 +102,7 @@ object Preprocessor {
             index = li + 1
             lvs += 1
           } else if (newIndex == ei) {
-            index = Math.min(code.length, ei + 4)
+            index = Math.min(cl, ei + 4)
             lvs -= 1
             if (lvs < 0) throw new RuntimeException("unmatched lambda constructs (extra Endλ)")
           } else throw new RuntimeException("I just don't know what went wrong :(")
