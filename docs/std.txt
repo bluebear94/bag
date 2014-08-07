@@ -327,3 +327,13 @@ contract n -> 4
 #clrHome
 desc "Clears the home screen."
 contract -> 0
+#idxr
+desc "Returns #3 with the first occurrence of #1 replaced with #2. If #4 is provided and evaluates to true, then throws an error if no occurrence of #1 was found."
+#ixscr
+desc "Returns #3 with the first occurrence of #1 (as a slice) replaced with #2 (as a slice). If #4 is provided and evaluates to true, then throws an error if no occurrence of #1 was found."
+#idxre
+desc "Returns #3 with the all occurrences of #1 replaced with #2."
+#ixscre
+desc "Returns #3 with the all occurrences of #1 (as a slice) replaced with #2 (as a slice)."
+#try
+desc "Attempts to execute #1 as a function, then if an error is thrown, executes #2 with the error code passed as a parameter."

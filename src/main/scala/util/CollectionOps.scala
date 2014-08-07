@@ -23,6 +23,7 @@ object CollectionOps {
       case t: TByteString => {
         t.a.toList.map(THill(_))
       }
+      case _ => throw new RuntimeException(s"$t cannot be decoded to a list")
     }
   }
   def encodeFromList(l: List[Type], mode: Int): Type = {
@@ -87,4 +88,34 @@ object CollectionOps {
   def findAllOccurrences[T](x: List[T], l: List[T], overlapping: Boolean = true): List[Int] = {
     findAllOccurrences(x, l, if (overlapping) 1 else x.length)
   }
+  def replaceFirstOccurrenceR[T](x: T, y: T, l: List[T], accum: List[T]): Option[List[T]] = l match {
+    case Nil => None
+    case h :: t => {
+      if (h == x) Some((t.reverse :+ y) ++ accum)
+      else replaceFirstOccurrenceR(x, y, t, h :: accum)
+    }
+  }
+  def replaceFirstOccurrence[T](x: T, y: T, l: List[T]): Option[List[T]] = replaceFirstOccurrenceR(x, y, l, Nil) map {(l: List[T]) => l.reverse}
+  def replaceFirstOccurrenceR[T](x: List[T], y: List[T], l: List[T], accum: List[T]): Option[List[T]] = {
+    val xd = x.length
+    if (l.isEmpty) None
+    else if (l startsWith x) Some(y ++ (l drop xd).reverse ++ accum)
+    else replaceFirstOccurrenceR(x, y, l.tail, l.head :: accum)
+  }
+  def replaceFirstOccurrence[T](x: List[T], y: List[T], l: List[T]): Option[List[T]] = replaceFirstOccurrenceR(x, y, l, Nil) map {(l: List[T]) => l.reverse}
+  def replaceAllOccurrencesR[T](x: T, y: T, l: List[T], accum: List[T]): List[T] = l match {
+    case Nil => accum
+    case h :: t => {
+      if (h == x) replaceAllOccurrencesR(x, y, t, y :: accum)
+      else replaceAllOccurrencesR(x, y, t, h :: accum)
+    }
+  }
+  def replaceAllOccurrences[T](x: T, y: T, l: List[T]): List[T] = replaceAllOccurrencesR(x, y, l, Nil).reverse
+  def replaceAllOccurrencesR[T](x: List[T], y: List[T], l: List[T], accum: List[T]): List[T] = {
+    val xd = x.length
+    if (l.isEmpty) accum
+    else if (l startsWith x) replaceAllOccurrencesR(x, y, l drop xd, y.reverse ++ accum)
+    else replaceAllOccurrencesR(x, y, l.tail, l.head :: accum)
+  }
+  def replaceAllOccurrences[T](x: List[T], y: List[T], l: List[T]): List[T] = replaceAllOccurrencesR(x, y, l, Nil).reverse
 }

@@ -447,7 +447,11 @@ class XprInt extends JavaTokenParsers with PackratParsers {
   }
     //.filter(w => !Keywords.keywords.contains(w._2)) ^^
     //{ s => Variable(s._1 + s._2) }
-  lazy val mountain: PackratParser[SBExpression] = wholeNumber ^^ { s => new Literal(new TMountain(BigInt(s))) }
+  lazy val mountain: PackratParser[SBExpression] = "0h" ~> hexDigits ^^ { s => Literal(new TMountain(BigInt(s, 16))) } |
+    wholeNumber ^^ { s => Literal(new TMountain(BigInt(s))) } |
+    "Base(" ~> "[0-9A-Za-z]*".r ~ "," ~ wholeNumber <~ ")" ^^ {
+      case dig ~ _ ~ bs => Literal(new TMountain(BigInt(dig, bs.toInt)))
+    }
   lazy val hill: PackratParser[SBExpression] = """↼[-]?\d+""".r ^^ { s => new Literal(new THill(BigInt(s.substring(1)).toLong)) } |
   """[-]?\d+H""".r ^^ { s => new Literal(new THill(BigInt(s.substring(0, s.length - 1)).toLong)) }
   lazy val string: PackratParser[SBExpression] = stringLiteral ^^ { s =>
@@ -465,6 +469,8 @@ class XprInt extends JavaTokenParsers with PackratParsers {
   lazy val linked: PackratParser[SBExpression] = "[" ~> commaDelimited <~ "]" ^^ { l => AList(false, l.toArray[Expression]) }
   lazy val keyValue: PackratParser[(Expression, Expression)] = expression ~ "→" ~ expression ^^ {
     case e0 ~ a ~ e1 => (e0, e1)
+  } | id ~ ":=" ~ expression ^^ {
+    case v ~ a ~ e => (Literal(TString(v)), e)
   }
   lazy val map: PackratParser[SBExpression] = "Map(" ~> repsep(keyValue, ",") <~ ")" ^^ {
     l =>
@@ -485,15 +491,15 @@ class XprInt extends JavaTokenParsers with PackratParsers {
     { case (condExpr ~ thens ~ elses) => IfThenElse(condExpr, thens, elses) }*/
   lazy val elifs: PackratParser[List[(Expression, List[Expression])]] = rep("Elif" ~ expression ~ lineDelimiter ~ lineDelimited ~ lineDelimiter) ^^ (_.map { case _ ~ x ~ _ ~ b ~ _ => (x, b) })
   lazy val ifThen: PackratParser[Expression] = ("If " ~> expression <~ lineDelimiter) ~ ("Then" ~> lineDelimiter ~> lineDelimited <~ lineDelimiter) ~ elifs <~ "EndIf" ^^
-    { case cond ~ then ~ elifs => elifs match {
-        case Nil => IfThen(cond, then)
+    { case cond ~ thenst ~ elifs => elifs match {
+        case Nil => IfThen(cond, thenst)
         // have to include the              |    type annotation below; without it Scala thinks we're trying to get a List[IfThen] instead
-        case _ => IfThenElse(cond, then, // V
+        case _ => IfThenElse(cond, thenst, // V
           elifs.tail.foldRight[List[Expression]](List(IfThen(elifs.head._1, elifs.head._2)))((inc, prod: List[Expression]) => List(IfThenElse(inc._1, inc._2, prod))))
       }}
   lazy val ifThenElse: PackratParser[Expression] = ("If " ~> expression <~ lineDelimiter) ~ ("Then" ~> lineDelimiter ~> lineDelimited <~ lineDelimiter) ~ elifs ~ ("Else" ~> lineDelimiter ~> lineDelimited <~ lineDelimiter <~ "EndIf") ^^
-    { case cond ~ then ~ elifs ~ elses => 
-        IfThenElse(cond, then, elifs.foldRight(elses)((inc, prod) => List(IfThenElse(inc._1, inc._2, prod))))
+    { case cond ~ thenst ~ elifs ~ elses => 
+        IfThenElse(cond, thenst, elifs.foldRight(elses)((inc, prod) => List(IfThenElse(inc._1, inc._2, prod))))
       }
   lazy val forst: PackratParser[Expression] = ("For " ~> commaDelimited <~ lineDelimiter) ~ lineDelimited <~ (lineDelimiter ~ "EndFor") ^^ {
     case (f3 ~ body) => f3(0) match {
@@ -513,6 +519,8 @@ class XprInt extends JavaTokenParsers with PackratParsers {
         val index = sh._2
         Index(thing, index)
       }
+    } | sbexpression ~ "->" ~ id ^^ {
+      case thing ~ _ ~ index => Index(thing, Literal(TString(index)))
     }
   lazy val lIndexing: PackratParser[LValue] = lvalue ~ "[" ~ expression <~ "]" ^^ {
     sh =>
@@ -521,6 +529,8 @@ class XprInt extends JavaTokenParsers with PackratParsers {
         val index = sh._2
         LIndex(thing, index)
       }
+  } | lvalue ~ "->" ~ id ^^ {
+    case thing ~ _ ~ index => LIndex(thing, Literal(TString(index)))
   }
   lazy val control: PackratParser[Expression] = ifst | ifThen | ifThenElse | forst | whilst | repeat
   def lvalue: PackratParser[LValue] = lIndexing | hashtag | variable | sbwrapperl
@@ -645,7 +655,7 @@ class XprInt extends JavaTokenParsers with PackratParsers {
         }
       }
     }
-    // now add the logical and and or parsers (short-circuit)
+    // now add the logical `and' and `or' parsers (short-circuit)
     val andParser: PackratParser[(Expression, Expression) => Expression] = "&&" ^^^
       { (a: Expression, b: Expression) => Ternary(a, b, Literal(TMountain(0))) }
     val orParser: PackratParser[(Expression, Expression) => Expression] = "||" ^^^

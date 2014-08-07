@@ -77,7 +77,7 @@ object Global {
   /*
    * The revision number.
    */
-  val vr = 10 // time for a new test image!
+  val vr = 11 // time for a new test image!
   val vrr = "-alpha0"
   val version = "v" + vM + "." + vm + "." + vr + vrr
   val r: Random = new Random

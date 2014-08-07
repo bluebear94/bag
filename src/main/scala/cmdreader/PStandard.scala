@@ -22,4 +22,5 @@ object PStandard {
   val DOUBLE_OP = 1600
   val SHIFT = 175
   val MAP = 2000
+  val TRY = 25
 }

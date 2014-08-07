@@ -26,7 +26,7 @@ class Sub extends Command {
           else w.getVal.substring(n.intValue, p.intValue)
         })
       }
-      case (_, _, _) => new TError(1)
+      case (dick, tom, harry) => new TError(1, s"($dick, $tom, $harry) are not valid arguments")
     }
       
   }

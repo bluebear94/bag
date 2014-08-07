@@ -98,3 +98,8 @@ EndFor
 GOOD:
 
 Let b := a +> $gfx:stc
+
+* Use the Base keyword for compile-time base conversion.
+
+BAD: Let a := $:stib("012012210210", 3
+GOOD: Let a := Base(012012210210, 3

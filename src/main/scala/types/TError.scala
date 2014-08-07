@@ -1,13 +1,14 @@
 package types
 
-class TError(errno: Int, msg: String) extends Atom {
+class TError(val errno: Int, val msg: String) extends Atom {
   def this(errno: Int) = this(errno, "")
+  @deprecated("Use TError.errno instead.", "0.7.11")
   def getErrno(): Int = errno
   def getType(): Int = -1
   def toBoolean(): Boolean = false
   override def equals(that: Any): Boolean = {
     that match {
-      case other: TError => errno == other.getErrno()
+      case other: TError => errno == other.errno
       case _ => false
     }
   }
