@@ -21,7 +21,7 @@ abstract class TFunction extends FuncLike {
   def toBytecode = Array[Byte]()
   def cast(i: Int) = i match {
     case 7 => this
-    case 0 => new TVoid
+    case 0 => TVoid.inst
     case 9 => new TByteString(toBytecode)
   }
 }

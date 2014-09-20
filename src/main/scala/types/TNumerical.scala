@@ -33,7 +33,7 @@ abstract class TNumerical extends Atom {
   def cast(i: Int): Type = {
     if (i == getType) this
     else i match {
-      case 0 => new TVoid
+      case 0 => TVoid.inst
       case 1 => TMountain(getVal match {
         case a: Long => a
         case b: Double => b.toLong
@@ -49,7 +49,7 @@ abstract class TNumerical extends Atom {
       })
       case 5 => new LArray(ArrayBuffer(this))
       case 6 => new LLinked(ListBuffer(this))
-      case 8 => new LMap(HashMap((this, new TVoid)))
+      case 8 => new LMap(HashMap((this, TVoid.inst)))
       case 9 => new TByteString(toBytecode)
     }
   }

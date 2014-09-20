@@ -61,7 +61,7 @@ abstract class LList extends Type {
   def cast(i: Int) = i match {
     case 5 => new LArray(l.to[ArrayBuffer])
     case 6 => new LLinked(l.to[ListBuffer])
-    case 0 => new TVoid
+    case 0 => TVoid.inst
     case 8 => MapOps.fromList(l.toList)
   }
 }

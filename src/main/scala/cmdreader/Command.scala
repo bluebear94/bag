@@ -19,5 +19,5 @@ abstract class Command {
    * Returns the value returned by this command for a given set of arguments.
    * @param args the array containing the arguments
    */
-  def apply(args: Array[Type]): Type// = new TVoid()
+  def apply(args: Array[Type]): Type// = TVoid
 }

@@ -17,7 +17,7 @@ class SetFont extends Command {
     args(0) match {
       case x: LArray => {
         GFX.setf(GFX.deserializeFont(x))
-        new TVoid
+        TVoid.inst
       }
       case _ => new TError(1, "Font setting must be array in format {name, style, size}")
     }

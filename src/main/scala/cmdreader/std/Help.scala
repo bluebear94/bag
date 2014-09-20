@@ -89,6 +89,6 @@ class Help extends Command {
           |Pass 3 and a library name to see all commands in a given library.
           |Pass 4 to view the Bag style guide.""".stripMargin)
     }
-    new TVoid
+    TVoid.inst
   }
 }

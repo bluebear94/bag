@@ -11,7 +11,7 @@ class Require extends Command {
     args(0) match {
       case s: TString => {
         Global.loadLib(s.getVal)
-        new TVoid
+        TVoid.inst
       }
       case _ => new TError(1, "library name must be string")
     }

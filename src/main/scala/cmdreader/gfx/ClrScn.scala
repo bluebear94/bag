@@ -13,6 +13,6 @@ class ClrScn extends Command {
    */
   override def apply(args: Array[Type]): Type = {
     GFX.clrscn()
-    new TVoid()
+    TVoid.inst
   }
 }

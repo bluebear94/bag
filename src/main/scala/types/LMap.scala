@@ -63,7 +63,7 @@ class LMap(h: HashMap[Type, Type]) extends FuncLike {
   }
   def cast(i: Int): Type = i match {
     case 8 => this
-    case 0 => new TVoid
+    case 0 => TVoid.inst
     case 5 => new LArray(toList.to[ArrayBuffer])
     case 6 => new LLinked(toList.to[ListBuffer])
   }

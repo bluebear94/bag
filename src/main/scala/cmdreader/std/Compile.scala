@@ -20,6 +20,6 @@ class Compile extends Command {
     val f = WholeParser.parse(src, Main.p)
     VariableWriter.writeValToVarfile(VariableReader.readData(f.drop(6), 7, fname),
       addr.substring(0, addr.length - 3) + "variable")
-    new TVoid
+    TVoid.inst
   }
 }

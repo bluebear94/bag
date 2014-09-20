@@ -12,6 +12,6 @@ class Line extends Command {
       GFX.getIntOrChoke(args(1)),
       GFX.getIntOrChoke(args(2)),
       GFX.getIntOrChoke(args(3)))
-    new TVoid
+    TVoid.inst
   }
 }

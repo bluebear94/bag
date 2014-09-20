@@ -55,11 +55,11 @@ class RunningInstance(fn: String, c: RunningInstance, args: Array[Type]) {
   /**
    * The last-answer variable.
    */
-  var ans: Type = new TVoid
+  var ans: Type = TVoid.inst
   /**
    * The last-answer variable, but doesn't update to a void value.
    */
-  var answer: Type = new TVoid
+  var answer: Type = TVoid.inst
   /**
    * Gets the value of the variable.
    * @param name the variable name
@@ -86,7 +86,7 @@ class RunningInstance(fn: String, c: RunningInstance, args: Array[Type]) {
         if (calling != null) {
           calling.getVar(name)
         } else {
-          new TVoid
+          TVoid.inst
         }
       }
     }
@@ -96,7 +96,7 @@ class RunningInstance(fn: String, c: RunningInstance, args: Array[Type]) {
     if (v != null) v
     else {
       if (calling != null) calling.getVar(id)
-      else new TVoid
+      else TVoid.inst
     }
   }
   /**
@@ -171,7 +171,7 @@ class RunningInstance(fn: String, c: RunningInstance, args: Array[Type]) {
   def setargn(i: Int, t: Type): Type = {
     if (i > 0) {
       args(i - 1) = t
-      new TVoid
+      TVoid.inst
     } else new TError(6)
   }
   /**
@@ -413,7 +413,7 @@ class RunningInstance(fn: String, c: RunningInstance, args: Array[Type]) {
         }
         case 0xE953 => {
           ans = stack match {
-            case Nil => new TVoid
+            case Nil => TVoid.inst
             case f :: r => f match {
               case e: TError => ans
               case _ => f
@@ -433,7 +433,7 @@ class RunningInstance(fn: String, c: RunningInstance, args: Array[Type]) {
         case 0xE956 => {
           symstack.head.nuke(this)
           symstack = symstack.tail
-          stack = new TVoid :: stack
+          stack = TVoid.inst :: stack
         }
         case _ => {
           val hb = cmd >> 8

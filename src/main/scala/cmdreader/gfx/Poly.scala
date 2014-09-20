@@ -29,6 +29,6 @@ class Poly extends Command {
     GFX.poly(xs,
       ys,
       args(2).toBoolean)
-    new TVoid
+    TVoid.inst
   }
 }

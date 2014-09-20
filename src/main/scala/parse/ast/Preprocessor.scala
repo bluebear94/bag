@@ -1,5 +1,7 @@
 package parse.ast
 
+import scala.collection.mutable.StringBuilder
+
 /**
  * Utilities for applying changes to Amethyst code for it to be parsed.
  * @author bluebear94
@@ -59,7 +61,7 @@ object Preprocessor {
     // You are not expected to understand what the f*ck this means.
     val code = (if (c.last == '\n') c else c + "\n").replaceAll("; *", ";").replaceAll("\n *", "\n").replaceAll("\\\\\n", "")
     var qm = false
-    var out = ""
+    var out = new StringBuilder(code.length)
     var curLine = ""
     var l = 0
     var s = 0
@@ -81,7 +83,7 @@ object Preprocessor {
       }
       if (c == '\"') qm = !qm
       else if (c == '\n' || (!qm && c == ';')) {
-        out += preprocessLn(curLine + code.substring(s, l))
+        out ++= preprocessLn(curLine + code.substring(s, l))
         curLine = ""
         s = l
       } else if (c == 'λ' && !qm && l + 1 < cl && code.charAt(l + 1) != '{') {
@@ -121,10 +123,10 @@ object Preprocessor {
       }
       l += 1
     }
+    val outF = out.toString.replaceAll("\n\\s*\n", "\n")
     //while (out matches "(.|\n)*;\\s*\m(.|\n)*")
-      out = out.replaceAll("\n\\s*\n", "\n")
-    if (debug) println(out)
-    if (out.trim endsWith ";") out else out + ";"
+    if (debug) println(outF)
+    if (outF.trim endsWith ";") outF else outF + ";"
     //out.replaceAll("\n","\n;") // with your memory-wasting habits!
   }
 }

@@ -10,6 +10,6 @@ class PtOn extends Command {
   def apply(args: Array[Type]) = {
     GFX.ptOn(GFX.getIntOrChoke(args(0)),
       GFX.getIntOrChoke(args(1)))
-    new TVoid
+    TVoid.inst
   }
 }

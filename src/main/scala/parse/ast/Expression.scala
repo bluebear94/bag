@@ -71,7 +71,7 @@ case class Assign(left: LValue, right: Expression, shadow: Boolean = false) exte
 case class Delete(left: LValue) extends Expression {
   def eval(ci: RunningInstance): Type = {
     left.nuke(ci)
-    new TVoid
+    TVoid.inst
   }
   def toBytecode = {
     BFuncs.app(left.toSymBytecode,
@@ -258,7 +258,7 @@ case class If(p: Expression, t: Expression) extends Expression {
     if (p.eval(ci).toBoolean) {
       t.eval(ci)
     }
-    new TVoid
+    TVoid.inst
   }
   def toBytecode = {
     val predicate = p.toBytecode
@@ -273,7 +273,7 @@ case class IfThen(p: Expression, t: List[Expression]) extends Expression {
     if (p.eval(ci).toBoolean) {
       t.map(_.eval(ci))
     }
-    new TVoid
+    TVoid.inst
   }
   def toBytecode = {
     val predicate = p.toBytecode
@@ -290,7 +290,7 @@ case class IfThenElse(p: Expression, t: List[Expression], f: List[Expression]) e
     } else {
       f.map(_.eval(ci))
     }
-    new TVoid
+    TVoid.inst
   }
   def toBytecode = {
     val predicate = p.toBytecode
@@ -306,7 +306,7 @@ case class While(p: Expression, b: List[Expression]) extends Expression {
     while (p.eval(ci).toBoolean) {
       b.map(_.eval(ci))
     }
-    new TVoid
+    TVoid.inst
   }
   def toBytecode = {
     val predicate = p.toBytecode
@@ -323,7 +323,7 @@ case class Repeat(p: Expression, b: List[Expression]) extends Expression {
     do {
       b.map(_.eval(ci))
     } while (!p.eval(ci).toBoolean)
-    new TVoid
+    TVoid.inst
   }
   def toBytecode = {
     val predicate = p.toBytecode
@@ -340,7 +340,7 @@ case class For(v: LValue, st: Expression, end: Expression, inc: Expression, b: L
       b.map(_.eval(ci))
       v.assign(ci, MathUtil.add(v.eval(ci), inc.eval(ci)))
     }
-    new TVoid
+    TVoid.inst
   }
   def toBytecode = {
     BFuncs.app(Assign(v, st).toBytecode,
@@ -436,7 +436,7 @@ class XprInt extends JavaTokenParsers with PackratParsers {
   //[$[[^!@#$%^&*()_-=+~{}[]\|:;'",.<>/?][^@#$%^&*()_-=+~{}[]\|:;'",.<>/?]*:]?]?
   def id: Regex = """[^\x5C\s\d\Q^!@#$%^&*_-+~{}().[]=|:;'",<>/?\E][^\x5C\s\Q^@#$%^&*_-+~{}()[]=|:;'",<>/?\E]*""".r // EEK
   // note: ! is allowed, just not at the beginning (otherwise it has to be the only character)
-  lazy val void: PackratParser[SBExpression] = literal("Void") ^^^ { new Literal(new TVoid()) }
+  lazy val void: PackratParser[SBExpression] = literal("Void") ^^^ { new Literal(TVoid.inst) }
   lazy val varNames: PackratParser[String] = ((regex("\\$".r) ~ (id | "") ~ ":" ~ id) ^^ {
     case d ~ lib ~ c ~ cmd => "$" + lib + ":" + cmd
   } | ("$" ~> id) ^^ ("$" + _) | id)

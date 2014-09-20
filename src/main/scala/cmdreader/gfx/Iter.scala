@@ -16,6 +16,6 @@ class Iter extends Command {
     val win = if (args.length == 6) args.drop(2).map(GFX.getIntOrChoke(_)) else Array(0, 0, 640, 480)
     GFX.iterate(f, a,
       win(0), win(1), win(2), win(3))
-    new TVoid
+    TVoid.inst
   }
 }

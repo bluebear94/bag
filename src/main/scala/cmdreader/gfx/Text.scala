@@ -11,6 +11,6 @@ class Text extends Command {
     GFX.text(args(0).toString,
       GFX.getIntOrChoke(args(1)),
       GFX.getIntOrChoke(args(2)))
-    new TVoid
+    TVoid.inst
   }
 }

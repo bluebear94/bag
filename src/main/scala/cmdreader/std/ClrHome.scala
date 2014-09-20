@@ -9,6 +9,6 @@ class ClrHome extends Command {
   def isValidArg0(n: Int): Boolean = n == 0
   def apply(args: Array[Type]): Type = {
     Main.clrHome()
-    new TVoid
+    TVoid.inst
   }
 }

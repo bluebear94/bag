@@ -49,7 +49,7 @@ case class TByteString(aa: Array[Byte]) extends Atom {
   }
   def cast(i: Int) = i match {
     case 9 => this
-    case 0 => new TVoid
+    case 0 => TVoid.inst
     case 7 => new TBinFunc(a)
     case 5 => new LArray(a.map(new TMountain(_).asInstanceOf[Type]).to[ArrayBuffer])
     case 6 => new LLinked(a.map(new TMountain(_).asInstanceOf[Type]).to[ListBuffer])

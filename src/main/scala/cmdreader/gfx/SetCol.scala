@@ -18,7 +18,7 @@ class SetCol extends Command {
       case x: TNumerical => {
         val i = if (args.length == 1 || !args(1).toBoolean) x.intValue | 0xFF000000 else x.intValue
         GFX.setcol(new Color(i))
-        new TVoid
+        TVoid.inst
       }
       case _ => new TError(1, "Color must be number")
     }

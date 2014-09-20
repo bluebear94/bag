@@ -12,6 +12,6 @@ class Circ extends Command {
       GFX.getIntOrChoke(args(1)),
       GFX.getIntOrChoke(args(2)),
       args(3).toBoolean)
-    new TVoid
+    TVoid.inst
   }
 }

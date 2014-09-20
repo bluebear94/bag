@@ -22,7 +22,7 @@ object VariableReader {
    */
   def readData(bc: Array[Byte], typeid: Int, fn: String): Type = {
     typeid match {
-      case 0 => new TVoid
+      case 0 => TVoid.inst
       case 1 => new TMountain(new BigInteger(bc))
       case 2 => {
         var cumVal = 0L
@@ -111,7 +111,7 @@ object VariableReader {
         readData(a.drop(8), t, fn)
       }
     } catch {
-      case e: FileNotFoundException => new TVoid
+      case e: FileNotFoundException => TVoid.inst
     }
   }
 }

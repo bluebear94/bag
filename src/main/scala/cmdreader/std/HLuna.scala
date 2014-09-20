@@ -10,6 +10,6 @@ class HLuna extends Command {
   override def apply(args: Array[Type]): Type = {
     println("[hluna] " + args(0))
     Main.println(args(0).toString)
-    new TVoid
+    TVoid.inst
   }
 }

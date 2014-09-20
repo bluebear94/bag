@@ -5,8 +5,7 @@ import scala.collection.mutable._
 /**
  * A void value.
  */
-class TVoid extends Atom {
-
+class TVoid protected extends Atom {
   def canEqual(that: Any): Boolean = {
     that.isInstanceOf[TVoid]
   }
@@ -28,7 +27,7 @@ class TVoid extends Atom {
   def toBytecode: Array[Byte] = {
     Array()
   }
-  def >/< = new TVoid
+  def >/< = this
   def cast(i: Int): Type = i match {
     case 0 => this
     case 1 => TMountain(0)
@@ -41,4 +40,8 @@ class TVoid extends Atom {
     case 8 => new LMap(HashMap())
     case 9 => new TByteString(Array[Byte]())
   }
+}
+
+object TVoid {
+  val inst: Type = new TVoid()
 }
