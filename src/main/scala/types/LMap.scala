@@ -61,6 +61,32 @@ class LMap(h: HashMap[Type, Type]) extends FuncLike {
       List(p._1, p._2)
     }).reduceLeft(_ ++ _)
   }
+  private def lts(l: Buffer[Type]): Set[Int] = {
+    l filter (_.isInstanceOf[TNumerical]) map {
+      case n: TNumerical => n.intValue
+    } toSet
+  }
+  lazy val _protocol = h.get(TString("protocol")) match {
+    case Some(x) => x match {
+      case l: LList => {
+        if (l.l.length < 2) FProtocol.empty
+        else {
+          l.l(0) match {
+            case ref: LList => {
+              l.l(1) match {
+                case vel: LList => {
+                  FProtocol(lts(ref.l), lts(vel.l))
+                }
+              }
+            }
+          }
+        }
+      }
+      case _ => FProtocol.empty
+    }
+    case None => FProtocol.empty
+  }
+  def protocol = _protocol
   def cast(i: Int): Type = i match {
     case 8 => this
     case 0 => TVoid.inst

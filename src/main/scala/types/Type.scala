@@ -5,7 +5,7 @@ import util._
 import scala.collection.immutable.Set
 
 /**
- * A trait to define instances of an Amethyst type.
+ * A trait to define instances of an Bag type.
  * @author bluebear94
  */
 
@@ -58,13 +58,31 @@ trait Type {
    * Returns the binary representation of this type.
    */
   def toBytecode: Array[Byte]
+  /**
+    Returns the value cast to another type.
+  */
   def cast(i: Int): Type
+  /**
+    Returns a Bag function that returns this value.
+  */
   def genfunc = {
     val bc = toBytecode
     new TBinFunc(Array[Byte](-0x1f, getType.toByte) ++
             MakeByteArrays.intToByteArray(bc.length) ++ bc ++ Array[Byte](-0x17, 0x53))
   }
   
+}
+object Type {
+  /**
+    Applies the protocol to a list and produces an array of values that are copied as declared by the protocol given and the global AVC settings.
+  */
+  def implementProtocol(args: List[Type], protocol: FProtocol): Array[Type] =
+    args.zipWithIndex map {
+      case (arg, i) =>
+        if (protocol.refargs contains i + 1) arg
+        else if (protocol.valargs contains i + 1) arg.>/<
+        else arg.cid
+    } toArray
 }
 
 /**
@@ -86,4 +104,18 @@ trait FuncLike extends Type {
     The result of calling this function on zero or more arguments.
   */
   def apply(args: Array[Type]): Type
+  def protocol: FProtocol
+}
+
+/**
+  Protocol for determining which arguments are explicitly passed by reference or value.
+*/
+case class FProtocol(refargs: Set[Int] = Set(), valargs: Set[Int] = Set()) {
+  require((refargs & valargs).isEmpty)
+}
+object FProtocol {
+  /**
+    The empty protocol, which does not explicitly define which arguments are passed in which method.
+  */
+  val empty = FProtocol()
 }

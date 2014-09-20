@@ -9,7 +9,7 @@ import java.util.Arrays
 import scala.collection.mutable._
 
 /**
- * Methods for reading variables.
+ * Methods for reading variable data from files.
  * @author bluebear94
  */
 object VariableReader {
@@ -23,7 +23,7 @@ object VariableReader {
   def readData(bc: Array[Byte], typeid: Int, fn: String): Type = {
     typeid match {
       case 0 => TVoid.inst
-      case 1 => new TMountain(new BigInteger(bc))
+      case 1 => new TMountain(new BigInteger(bc)) // not BigInt; we're reading from an array
       case 2 => {
         var cumVal = 0L
         for (b <- 0 until 8) {

@@ -301,9 +301,9 @@ class RunningInstance(fn: String, c: RunningInstance, args: Array[Type]) {
           val argcount = readInt(needle)
           val (args, ns) = stack.splitAt(argcount)
           stack = ns
-          val realArgs = args.reverse.toArray
+          val realArgs = args.reverse
           val toPush = function match {
-            case f: FuncLike => f(if (Global.vigilant) realArgs.map(_.>/<) else realArgs)
+            case f: FuncLike => f(Type.implementProtocol(realArgs, f.protocol))
             /*case m: LMap => {
               val env = m.gm.map { case (k, v) => (k.toString, v) }
               env("this") match {

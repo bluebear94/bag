@@ -2,7 +2,7 @@ package util
 
 object Keywords {
   /**
-   * List of Amethyst keywords.
+   * List of Bag keywords.
    * Some of them are unused. Hopefully we'll find a use for them.
    */
   val keywords = List[String]("Ans", "Answer", "Cycle", "EndFor", "EndIf", "EndRept", "EndWhile", "Elif", "Else", "Exit",

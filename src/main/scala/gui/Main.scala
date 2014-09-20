@@ -289,6 +289,9 @@ class BufferedCanvas(d: Dimension) extends Panel { // sigh, I have to make one m
 class ExecutionThread extends Thread {
   override def run = Main.runCode
 }
+/**
+  A thread that updates Status Bar #4, which holds memory info.
+*/
 class MemoryManagerThread extends Thread {
   override def run = {
     while (true) {

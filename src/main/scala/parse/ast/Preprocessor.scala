@@ -3,10 +3,13 @@ package parse.ast
 import scala.collection.mutable.StringBuilder
 
 /**
- * Utilities for applying changes to Amethyst code for it to be parsed.
+ * Utilities for applying changes to Bag code for it to be parsed.
  * @author bluebear94
  */
 object Preprocessor {
+  /**
+    Preprocesses a single line.
+  */
   def preprocessLn(line: String) = {
     var quoteMode = false
     var bs = false
@@ -57,6 +60,9 @@ object Preprocessor {
       case (_, _) => Math.min(si, ni)
     }
   }
+  /**
+    Preprocesses a source.
+  */
   def preprocess(c: String, debug: Boolean = true): String = {
     // You are not expected to understand what the f*ck this means.
     val code = (if (c.last == '\n') c else c + "\n").replaceAll("; *", ";").replaceAll("\n *", "\n").replaceAll("\\\\\n", "")

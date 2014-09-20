@@ -6,7 +6,7 @@ import parse.ast.BFuncs
 import scala.collection.mutable.HashMap
 import gui.Main
 
-class TBinFunc(bytecode: Array[Byte], source: String = "", ci: RunningInstance=null, name: String = "[ANON]") extends TFunction with Atom {
+class TBinFunc(bytecode: Array[Byte], source: String = "", ci: RunningInstance=null, name: String = "[ANON]", _protocol: FProtocol = FProtocol.empty) extends TFunction with Atom {
   def applyWith(args: Array[Type], closure: HashMap[String, Type]): Type = {
     val newci = new RunningInstance(name, Global.top, args)
     Global.top = newci
@@ -17,6 +17,7 @@ class TBinFunc(bytecode: Array[Byte], source: String = "", ci: RunningInstance=n
     Global.top = Global.top.calling
     res
   }
+  def protocol = _protocol
   override def toBytecode(): Array[Byte] = bytecode
   override def equals(that: Any): Boolean = {
     that match {

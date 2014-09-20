@@ -43,5 +43,8 @@ class TVoid protected extends Atom {
 }
 
 object TVoid {
+  /**
+    The void value.
+  */
   val inst: Type = new TVoid()
 }

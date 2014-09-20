@@ -14,6 +14,7 @@ class TASTFunc(lines: List[Expression], ci: RunningInstance) extends TFunction w
     Global.top = Global.top.calling
     res
   }
+  def protocol = FProtocol.empty
   def toStringP: String = "why the fuck are you still using this..."
   def >/< = new TASTFunc(lines.toList, ci)
 }
