@@ -112,10 +112,18 @@ trait FuncLike extends Type {
 */
 case class FProtocol(refargs: Set[Int] = Set(), valargs: Set[Int] = Set()) {
   require((refargs & valargs).isEmpty)
+  def toBytecode = {
+    FProtocol.arrayize(refargs) ++ FProtocol.arrayize(valargs)
+  }
 }
 object FProtocol {
   /**
     The empty protocol, which does not explicitly define which arguments are passed in which method.
   */
   val empty = FProtocol()
+  private def arrayize(set: Set[Int]): Array[Byte] = {
+    set.foldRight(Array[Byte](0, 0)) { (argn, array) =>
+      Array[Byte]((argn >> 8).toByte, (argn & 0xFF).toByte) ++ array
+    }
+  }
 }

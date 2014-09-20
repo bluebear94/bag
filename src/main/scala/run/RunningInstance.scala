@@ -342,7 +342,7 @@ class RunningInstance(fn: String, c: RunningInstance, args: Array[Type]) {
           stack = Hashtag(Literal(stack.head)).eval(this) :: stack.tail
         }
         case 0xE948 => {
-          symstack = Hashtag(Literal(stack.head)) :: symstack.tail
+          symstack = Hashtag(Literal(stack.head)) :: symstack//.tail
           stack = stack.tail
         }
         case 0xE939 => {

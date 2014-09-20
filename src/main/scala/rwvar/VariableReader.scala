@@ -6,7 +6,8 @@ import java.lang.Double
 import cmdreader.Global
 import java.io._
 import java.util.Arrays
-import scala.collection.mutable._
+import scala.collection.mutable.{HashMap, Buffer, ArrayBuffer, ListBuffer}
+import scala.collection.immutable.Set
 
 /**
  * Methods for reading variable data from files.
@@ -14,6 +15,13 @@ import scala.collection.mutable._
  */
 object VariableReader {
   def tus(n: Byte) = if (n >= 0) n else 0x100 + n
+  def readProtocolPart(bc: Array[Byte], start: Int = 0, accum: Set[Int] = Set()): (Set[Int], Int) = {
+    val argn = (tus(bc(start)) << 8) + tus(bc(start + 1))
+    argn match {
+      case 0 => (accum, start + 2)
+      case _ => readProtocolPart(bc, start + 2, accum + argn)
+    }
+  }
   /**
    * Reads data from an array of bytes, given the type identifier and the filename.
    * @param bc the bytecode, excluding the header and the length declaration
@@ -56,7 +64,9 @@ object VariableReader {
         if (typeid == 5) new LArray(ce.to[ArrayBuffer]) else new LLinked(ce.to[ListBuffer])
       }
       case 7 => {
-        new TBinFunc(bc, "", Global.top, fn)
+        val (ref, i) = readProtocolPart(bc)
+        val (vel, j) = readProtocolPart(bc, i)
+        new TBinFunc(bc drop j, "", Global.top, fn, FProtocol(ref, vel))
       }
       case 8 => {
         val nElems = (tus(bc(0)) << 24) + (tus(bc(1)) << 16) + (tus(bc(2)) << 8) + tus(bc(3))

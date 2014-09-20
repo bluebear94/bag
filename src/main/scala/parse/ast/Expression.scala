@@ -8,11 +8,11 @@ import types._
 //import org.scalatest._
 import scala.util.parsing.input.CharSequenceReader
 import cmdreader._
-import scala.collection.mutable
 import util._
 import scala.util.matching.Regex
 import java.util.TreeMap // darn, no mutable TreeMap yet
-import scala.collection.mutable.HashMap
+import scala.collection.mutable.{HashMap, Buffer, ArrayBuffer, ListBuffer}
+import scala.collection.immutable.Set
 
 trait Expression {
   def eval(ci: RunningInstance): Type
@@ -134,21 +134,22 @@ object ML {
       //Array(Bytes(Array[Byte](-0x1F, 0x00, 0x00, 0x00, 0x00, 0x00)))
   }
 }
-case class Lambda(lines: List[Expression]) extends SBExpression {
+case class Lambda(lines: List[Expression], protocol: FProtocol) extends SBExpression {
   def eval(ci: RunningInstance): Type = {
     new TASTFunc(lines, ci)
   }
   def toBytecode = {
     val lbc = ML.multiline(lines)
-    Array(Bytes(Array[Byte](-0x1F, 0x07) ++ MakeByteArrays.intToByteArray(BFuncs.alen(lbc)))) ++ lbc
+    val pbc = protocol.toBytecode
+    Array(Bytes(Array[Byte](-0x1F, 0x07) ++ MakeByteArrays.intToByteArray(BFuncs.alen(lbc) + pbc.length) ++ pbc)) ++ lbc
   }
 }
 case class AList(isArray: Boolean, args: Array[Expression]) extends SBExpression {
   def eval(ci: RunningInstance): Type = {
     if (isArray)
-      new LArray(args.map(_.eval(ci)).to[mutable.ArrayBuffer])
+      new LArray(args.map(_.eval(ci)).to[ArrayBuffer])
     else
-      new LLinked(args.map(_.eval(ci)).to[mutable.ListBuffer])
+      new LLinked(args.map(_.eval(ci)).to[ListBuffer])
   }
   def toBytecode = {
     args.reverse.map(_.toBytecode).foldLeft(Array[Bin]())(BFuncs.app(_, _)) ++
@@ -428,8 +429,8 @@ case class Ans(aa: Boolean) extends SBExpression {
 class XprInt extends JavaTokenParsers with PackratParsers {
   var ops: TreeMap[Int, (PackratParser[(Expression, Expression) => Expression], Boolean)] =
     new TreeMap[Int, (PackratParser[(Expression, Expression) => Expression], Boolean)]()
-  val oeOps: mutable.ListBuffer[String] = new mutable.ListBuffer[String]()
-  val ooOps: mutable.ListBuffer[String] = new mutable.ListBuffer[String]()
+  val oeOps: ListBuffer[String] = new ListBuffer[String]()
+  val ooOps: ListBuffer[String] = new ListBuffer[String]()
   var opEq: PackratParser[Expression] = failure("No such assignment operator.")
   val uOps: HashMap[String, String] = new HashMap[String, String]()
   // Regex for valid identifiers.
@@ -481,8 +482,16 @@ class XprInt extends JavaTokenParsers with PackratParsers {
       }
   }
   lazy val hashtag: PackratParser[LValue] = "#" ~> sbexpression ^^ { x => Hashtag(x) }
-  lazy val shortLambda: PackratParser[SBExpression] = "λ{" ~> expression <~ "}" ^^ {l => Lambda(List(l))}
-  lazy val lambda: PackratParser[SBExpression] = ("λ" ~ lineDelimiter) ~> lineDelimited <~ (lineDelimiter ~ "Endλ") ^^ { l => Lambda(l) } | shortLambda
+  case class ProtocolEntry(argn: Int, t: Boolean)
+  lazy val protocolEntry: PackratParser[ProtocolEntry] = "&" ~> wholeNumber ^^ { n => ProtocolEntry(n.toInt, false) } |
+                                                         "*" ~> wholeNumber ^^ { n => ProtocolEntry(n.toInt, true)  }
+  lazy val protocolList: PackratParser[FProtocol] = "(" ~> repsep(protocolEntry, ",") <~ ")" ^^ plToProtocol | "" ^^^ FProtocol.empty
+  def plToProtocol(pl: List[ProtocolEntry]) = pl.foldLeft(FProtocol.empty) { (protocol, entry) =>
+    if (entry.t) FProtocol(protocol.refargs, protocol.valargs + entry.argn)
+    else FProtocol(protocol.refargs + entry.argn, protocol.valargs)
+  }
+  lazy val shortLambda: PackratParser[SBExpression] = "λ" ~> protocolList ~ "{" ~ expression <~ "}" ^^ { case p ~ _ ~ l => Lambda(List(l), p) }
+  lazy val lambda: PackratParser[SBExpression] = "λ" ~> protocolList ~ lineDelimiter ~ lineDelimited <~ (lineDelimiter ~ "Endλ") ^^ { case p ~ _ ~ l => Lambda(l, p) } | shortLambda
   lazy val call: PackratParser[SBExpression] = sbexpression ~ "(" ~ commaDelimited <~ ")" ^^ { sh => FCall(sh._1._1, sh._2.toArray[Expression]) }
   lazy val ifst: PackratParser[Expression] = "If " ~> expression ~ lineDelimiter ~ expression ^^ { sh => If(sh._1._1, sh._2) }
   /*lazy val ifThen: PackratParser[Expression] = "If " ~> expression ~ lineDelimiter ~ "Then" ~ lineDelimiter ~ lineDelimited <~ lineDelimiter ~ "EndIf" ^^

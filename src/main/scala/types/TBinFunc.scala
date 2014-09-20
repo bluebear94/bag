@@ -18,7 +18,7 @@ class TBinFunc(bytecode: Array[Byte], source: String = "", ci: RunningInstance=n
     res
   }
   def protocol = _protocol
-  override def toBytecode(): Array[Byte] = bytecode
+  override def toBytecode(): Array[Byte] = _protocol.toBytecode ++ bytecode
   override def equals(that: Any): Boolean = {
     that match {
       case other: TBinFunc => other.toBytecode() == bytecode
@@ -27,6 +27,6 @@ class TBinFunc(bytecode: Array[Byte], source: String = "", ci: RunningInstance=n
   }
   override def hashCode = bytecode.hashCode
   def toStringP: String = s"Func(${BFuncs.bytecodeToString(bytecode)})"
-  def >/< = new TBinFunc(bytecode.clone, new String(source), ci)
-  def rename(newName: String) = new TBinFunc(bytecode, source, ci, newName)
+  def >/< = new TBinFunc(bytecode.clone, source, ci, name, _protocol)
+  def rename(newName: String) = new TBinFunc(bytecode, source, ci, newName, _protocol)
 }
