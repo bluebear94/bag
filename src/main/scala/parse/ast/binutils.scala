@@ -73,7 +73,7 @@ object BFuncs {
     }).foldLeft("")(_ + " " + _)
   }
   def stringToBytes(s: String) = {
-    var b = new Array[Byte](s.length / 2)
+    var b = new Array[Byte](s.length >> 1)
     for (i <- 0 until s.length by 2) {
       b(i / 2) = BigInt("0" + s.substring(i, i+2), 16).toByte
     }

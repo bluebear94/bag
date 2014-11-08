@@ -337,3 +337,5 @@ desc "Returns #3 with the all occurrences of #1 replaced with #2."
 desc "Returns #3 with the all occurrences of #1 (as a slice) replaced with #2 (as a slice)."
 #try
 desc "Attempts to execute #1 as a function, then if an error is thrown, executes #2 with the error code passed as a parameter."
+#delay
+desc "Sleeps for #1 (1000 by default) milliseconds."

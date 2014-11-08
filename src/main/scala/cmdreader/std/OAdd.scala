@@ -19,4 +19,5 @@ class OAdd extends CommandOperator {
   def isReversed() = false
   def hasAssignmentEquiv() = true
   def getDoubleBase() = Some(new TMountain(1))
+  override def isPure = true
 }

@@ -14,4 +14,5 @@ class UONot extends CommandOperator {
   def isReversed(): Boolean = false
   def hasAssignmentEquiv(): Boolean = false
   def getDoubleBase(): Option[Type] = None
+  override def isPure = true
 }

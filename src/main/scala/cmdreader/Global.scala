@@ -6,6 +6,7 @@ import java.lang._
 import run.RunningInstance
 import java.math.BigInteger
 import scala.util.Random
+import logger.Logger
 
 /**
  * Global properties.
@@ -25,6 +26,7 @@ object Global {
    * @param lname the library name, which must be a valid identifier
    */
   def loadLib(lname: String) = {
+    //Logger.println(s"Loading library $lname", 2)
     liblist(lname) = new CmdList(lname)
     val c = Class.forName("cmdreader." + lname + ".Loader")
     c.getMethod("load").invoke(c.newInstance)
@@ -77,9 +79,9 @@ object Global {
   /*
    * The revision number.
    */
-  val vr = 252 // time for a new test image!
+  val vr = 253 // time for a new test image!
   val vrr = "-alphaDev"
   val version = "v" + vM + "." + vm + "." + vr + vrr
   val r: Random = new Random
-  var vigilant = true
+  var vigilant = false
 }

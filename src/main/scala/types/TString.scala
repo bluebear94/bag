@@ -8,8 +8,7 @@ import gui.Main
  * A type to define UTF-8 strings.
  * @author bluebear94
  */
-case class TString(s2: String) extends Atom {
-  var s = s2
+case class TString(var s: String) extends Atom {
   def getVal(): String = {
     s
   }

@@ -17,4 +17,5 @@ class KeyValue extends Command {
       case _ => new TError(1, "#1 must be map")
     }
   }
+  override def isPure = true
 }

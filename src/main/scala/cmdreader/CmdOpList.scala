@@ -1,6 +1,7 @@
 package cmdreader
 
 import scala.collection.mutable.HashMap
+import logger.Logger
 
 class CmdOpList(libname: String) {
   def getLib(): String = libname
@@ -8,6 +9,6 @@ class CmdOpList(libname: String) {
   def loadOp(c: CommandOperator) {
     val opn = c.getOpAlias
     opList(opn) = c
-    println(s"Loaded operator $opn")
+    Logger.println(s"Loaded operator $opn")
   }
 }

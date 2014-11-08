@@ -11,4 +11,5 @@ class Abs extends Command {
   override def apply(args: Array[Type]): Type = {
     MathUtil.abs(args(0))
   }
+  override def isPure = true
 }

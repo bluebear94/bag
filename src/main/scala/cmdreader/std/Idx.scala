@@ -14,14 +14,20 @@ class Idx extends CommandOperator {
   def isReversed = false
   def getDoubleBase = None
   def apply(args: Array[Type]): Type = {
-    if (args.length == 2)
-      TMountain(CollectionOps.ctv(_.indexOf(args(0)))(args(1)))
-    else {
-      val si = args(2) match {
-        case n: TNumerical => n.intValue
-        case _ => return new TError(1, "Starting index must be number")
+    val si = if (args.length == 2) 0
+    else args(2) match {
+      case n: TNumerical => n.intValue
+      case _ => return new TError(1, "Starting index must be number")
+    }
+    args(1) match {
+      case TString(s) => args(0) match {
+        case n: TNumerical => TMountain(s.indexOf(n.intValue.toChar, si))
       }
-      TMountain(CollectionOps.ctv(_.indexOf(args(0), si))(args(1)))
+      case TByteString(s) => args(0) match {
+        case n: TNumerical => TMountain(s.indexOf(n.intValue.toByte, si))
+      }
+      case _ => TMountain(CollectionOps.ctv(_.indexOf(args(0), si))(args(1)))
     }
   }
+  override def isPure = true
 }

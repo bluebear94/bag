@@ -8,8 +8,7 @@ import java.math.BigInteger
  * A class to define 64-bit integers.
  * @author bluebear94
  */
-case class THill(n2: Long) extends TNumerical {
-  var n = n2
+case class THill(var n: Long) extends TNumerical {
   def getVal(): Long = {
     n
   }

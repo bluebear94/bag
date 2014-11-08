@@ -14,6 +14,7 @@ class TCmdFunc(name: String, _protocol: FProtocol = FProtocol.empty) extends TFu
   }
   def protocol = _protocol
   override def hashCode = name.hashCode
+  override def toString = name
   def toStringP: String = name
   def >/< = new TCmdFunc(new String(name))
 }

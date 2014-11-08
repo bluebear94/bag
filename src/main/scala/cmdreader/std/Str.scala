@@ -9,4 +9,5 @@ class Str extends Command {
   override def apply(args: Array[Type]): Type = {
     TString(args(0).toString)
   }
+  override def isPure = true
 }

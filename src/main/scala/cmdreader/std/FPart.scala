@@ -11,4 +11,5 @@ class FPart extends Command {
   override def apply(args: Array[Type]): Type = {
     MathUtil.fpart(args(0))
   }
+  override def isPure = true
 }

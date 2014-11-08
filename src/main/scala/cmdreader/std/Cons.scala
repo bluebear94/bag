@@ -30,4 +30,5 @@ class Cons extends Command {
       case e: RuntimeException => new TError(1)
     }
   }
+  override def isPure = true
 }

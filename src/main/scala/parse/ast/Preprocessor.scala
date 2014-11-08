@@ -1,6 +1,7 @@
 package parse.ast
 
 import scala.collection.mutable.StringBuilder
+import logger.Logger
 
 /**
  * Utilities for applying changes to Bag code for it to be parsed.
@@ -72,20 +73,18 @@ object Preprocessor {
     var l = 0
     var s = 0
     val cl = code.length
-    if (debug) {
-      println("Preprocessing: ")
-      println(code.replaceAll("\n", ";") + "|")
-    }
+    Logger.println("Preprocessing: ", -1)
+    Logger.println(code.replaceAll("\n", ";") + "|", -2)
     while (l < cl) {
       val c = code.charAt(l)
       if (debug) {
         for (i: Int <- 0 until s) {
-          print(" ")
+          Logger.print(" ", -3)
         }
         for (i: Int <- s until l) {
-          print("-")
+          Logger.print("-", -3)
         }
-        println("> " + (out + " ~ " + curLine).replaceAll("\n", ";"))
+        Logger.println("> " + (out + " ~ " + curLine).replaceAll("\n", ";"), -3)
       }
       if (c == '\"') qm = !qm
       else if (c == '\n' || (!qm && c == ';')) {
@@ -101,9 +100,9 @@ object Preprocessor {
           val newIndex = minIndex(li, ei)
           if (newIndex != -1 && debug) {
             for (i: Int <- 0 until newIndex) {
-              print(" ")
+              Logger.print(" ", -3)
             }
-            println(".")
+            Logger.println(".", -3)
           }
           if (newIndex == -1) throw new RuntimeException("unmatched lambda constructs (missing Endλ)")
           else if (newIndex == li) {
@@ -123,15 +122,15 @@ object Preprocessor {
         s = index
         l = s - 1
         if (debug) {
-          println("Preprocessing again: ")
-          println(code.replaceAll("\n", ";") + "|")
+          Logger.println("Preprocessing again: ", -1)
+          Logger.println(code.replaceAll("\n", ";") + "|", -2)
         }
       }
       l += 1
     }
     val outF = out.toString.replaceAll("\n\\s*\n", "\n")
     //while (out matches "(.|\n)*;\\s*\m(.|\n)*")
-    if (debug) println(outF)
+    if (debug) Logger.println(outF)
     if (outF.trim endsWith ";") outF else outF + ";"
     //out.replaceAll("\n","\n;") // with your memory-wasting habits!
   }

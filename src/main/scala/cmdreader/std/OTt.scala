@@ -18,4 +18,5 @@ class OTt extends CommandOperator {
   def isReversed() = true
   def hasAssignmentEquiv() = true
   def getDoubleBase() = Some(new TMountain(new BigInteger("2")))
+  override def isPure = true
 }

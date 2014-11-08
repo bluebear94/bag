@@ -20,4 +20,9 @@ abstract class Command {
    * @param args the array containing the arguments
    */
   def apply(args: Array[Type]): Type// = TVoid
+  /**
+  * Returns whether this command always returns the same results for the same arguments,
+  * and has no side effects.
+  */
+  def isPure: Boolean = false
 }

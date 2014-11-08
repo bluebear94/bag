@@ -7,8 +7,7 @@ import util._
  * A type to define arbitrary-precision integers.
  * @author bluebear94
  */
-case class TMountain(n2: BigInt) extends TNumerical {
-  var n = n2
+case class TMountain(var n: BigInt) extends TNumerical {
   def getVal(): BigInt = {
     n
   }

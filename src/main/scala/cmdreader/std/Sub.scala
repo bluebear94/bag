@@ -28,6 +28,6 @@ class Sub extends Command {
       }
       case (dick, tom, harry) => new TError(1, s"($dick, $tom, $harry) are not valid arguments")
     }
-      
   }
+  override def isPure = true
 }

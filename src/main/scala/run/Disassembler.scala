@@ -110,6 +110,10 @@ object Disassembler {
         case 0xE956 => {
           string += "delvar"
         }
+        case 0xE957 => {
+          val argcount = readInt(needle)
+          string += s"revive $argcount"
+        }
         case _ => {
           val hb = cmd >> 8
           val lb = cmd & 0xFF

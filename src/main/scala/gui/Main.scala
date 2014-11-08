@@ -11,6 +11,7 @@ import scala.util.parsing.input.CharSequenceReader
 import types.TVoid
 import scala.collection.mutable.ArrayBuffer
 import run.ISwitch
+import logger.Logger
 
 
 // I'm <u>kind of</u> a <s>complete</s> noob to this...
@@ -163,8 +164,8 @@ object Main extends SimpleSwingApplication {
       } catch {
         case e: RuntimeException => {
           println(e.getMessage)
-          System.out.println(e.getMessage)
-          e.printStackTrace
+          Logger.println(e.getMessage, 2)
+          Logger.printStackTrace(e)
         }
       }
       setSt(IDLE)
@@ -186,7 +187,7 @@ object Main extends SimpleSwingApplication {
   }
   def top = new MainFrame {
     Global.loadLib("std")
-    p.loadOps
+    p.loadOps()
     title = "Bag " + Global.version
 
     val inputScroll = new ScrollPane(inputArea) {

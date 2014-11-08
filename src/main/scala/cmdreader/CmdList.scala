@@ -4,6 +4,7 @@ import scala.collection.mutable.HashMap
 import eloro._
 import scala.io.Source
 import gui.Main
+import logger.Logger
 
 /**
  * A list of commands in a library.
@@ -35,9 +36,9 @@ class CmdList(libname: String) {
       case co: CommandOperator => ccol.loadOp(co)
       case _ => ()
     }
-    println(s"Loaded command $ilname")
+    Logger.println(s"Loaded command $ilname", 0)
     if (!(lines contains ("#" + ilname))) {
-      println(s"*** $ilname is undocumented")
+      Logger.println(s"*** $ilname is undocumented", 2)
       Main.println(s"*** $ilname is undocumented")
     }
   }

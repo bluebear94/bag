@@ -31,4 +31,5 @@ class Stib extends Command {
         BigDecimal(BigInt(s.substring(i + 1), b)) * ip.signum / BigDecimal(b).pow(s.length - i - 1)).floatValue)
     }
   }
+  override def isPure = true
 }

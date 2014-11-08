@@ -22,4 +22,5 @@ class Disassembly extends Command {
       case _ => new TError(1)
     }
   }
+  override def isPure = true
 }

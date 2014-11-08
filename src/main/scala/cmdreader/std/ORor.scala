@@ -16,4 +16,5 @@ class ORor extends CommandOperator {
   def isReversed() = false
   def hasAssignmentEquiv() = true
   def getDoubleBase() = None
+  override def isPure = true
 }

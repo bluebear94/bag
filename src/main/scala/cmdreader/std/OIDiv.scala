@@ -16,4 +16,5 @@ class OIDiv extends CommandOperator {
   def isReversed() = false
   def hasAssignmentEquiv() = true
   def getDoubleBase() = Some(new TMountain(2))
+  override def isPure = true
 }

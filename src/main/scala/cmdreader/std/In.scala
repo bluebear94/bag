@@ -14,6 +14,11 @@ class In extends CommandOperator {
   def isReversed = false
   def getDoubleBase = None
   def apply(args: Array[Type]) = {
-    BTI.bti(CollectionOps.ctv(_.contains(args(0)))(args(1)))
+    (args(0), args(1)) match {
+      case (needle: TNumerical, TString(haystack)) => BTI.bti(haystack contains needle.intValue.toChar)
+      case (needle: TNumerical, TByteString(haystack)) => BTI.bti(haystack contains needle.intValue.toByte)
+      case (needle, haystack) => BTI.bti(CollectionOps.ctv(_ contains needle)(haystack))
+    }
   }
+  override def isPure = true
 }

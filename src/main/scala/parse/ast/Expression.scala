@@ -1,7 +1,7 @@
 package parse.ast
 
 import types._
-import run.RunningInstance
+import run._
 import scala.util.parsing.combinator._
 import scala.math.BigInt
 import types._
@@ -13,6 +13,7 @@ import scala.util.matching.Regex
 import java.util.TreeMap // darn, no mutable TreeMap yet
 import scala.collection.mutable.{HashMap, Buffer, ArrayBuffer, ListBuffer}
 import scala.collection.immutable.Set
+import logger.Logger
 
 trait Expression {
   def eval(ci: RunningInstance): Type
@@ -20,6 +21,7 @@ trait Expression {
   // in intermediate bytecode (see specifications.txt).
   def toBytecode: Array[Bin] // this is going to take FOREVER
   // def toString: String
+  def toBytecode(cx: ParseContext): Array[Bin] = toBytecode
 }
 trait SBExpression extends Expression
 trait LValue extends SBExpression {
@@ -44,6 +46,10 @@ case class Variable(name: String) extends LValue {
     val inB = name.getBytes
     Array(Bytes(Array[Byte](-0x20, 0x04) ++ MakeByteArrays.intToByteArray(inB.length) ++ inB))
   }
+  override def toBytecode(cx: ParseContext) = {
+    if (cx.environment.isDefinedAt(name)) Literal(cx.const(name)).toBytecode
+    else toBytecode
+  }
   def toSymBytecode = {
     val inB = name.getBytes
     Array(Bytes(Array[Byte](-0x20, 0x05) ++ MakeByteArrays.intToByteArray(inB.length) ++ inB))
@@ -55,7 +61,19 @@ case class QVariable(id: Byte) extends LValue {
   def assignS(ci: RunningInstance, t: Type) = ci.setVarP(id, t)
   def nuke(ci: RunningInstance) = ci.delVar(id)
   def toBytecode = Array(Bytes(Array[Byte](0x75, id)))
+  override def toBytecode(cx: ParseContext) = {
+    if (cx.environment.isDefinedAt(RunningInstance.qNames(id))) Literal(cx.const(RunningInstance.qNames(id))).toBytecode
+    else toBytecode
+  }
   def toSymBytecode = Array(Bytes(Array[Byte](0x76, id)))
+}
+case class AssignConst(left: String, right: Expression) extends Expression {
+  def eval(ci: RunningInstance): Type = Assign(Variable(left), right).eval(ci)
+  def toBytecode = {Array[Bin]()}
+  override def toBytecode(cx: ParseContext) = {
+    cx.addConst(left, right.eval(cx.toRI))
+    Array[Bin]()
+  }
 }
 case class Assign(left: LValue, right: Expression, shadow: Boolean = false) extends Expression {
   def eval(ci: RunningInstance): Type = {
@@ -136,7 +154,7 @@ object ML {
 }
 case class Lambda(lines: List[Expression], protocol: FProtocol) extends SBExpression {
   def eval(ci: RunningInstance): Type = {
-    new TASTFunc(lines, ci)
+    new TASTFunc(lines)
   }
   def toBytecode = {
     val lbc = ML.multiline(lines)
@@ -418,10 +436,23 @@ case class SBWrapper(x: Expression) extends SBExpression {
   def toBytecode = x.toBytecode
 }
 case class Ans(aa: Boolean) extends SBExpression {
-  def eval(ci: RunningInstance): Type = if (aa) ci.answer else ci.ans
+  def eval(ci: RunningInstance): Type = ci match {
+    case ci: RunningInstance => if (aa) ci.answer else ci.ans
+    case _ => TVoid
+  }
   def toBytecode = Array(Bytes(Array[Byte](-0x17, if (aa) 0x55 else 0x54))) // I could have done 0x54 + aa if not for
   // those bloody boolean types
 }
+
+case class Revive(args: List[Expression]) extends SBExpression {
+  def eval(ci: RunningInstance): Type = throw new UnsupportedOperationException
+  def toBytecode = {
+    val l = args.length
+    args.map((arg: Expression) => arg.toBytecode).foldLeft(Array[Bin]()) {(accum, next) => BFuncs.app(accum, next)} ++
+      Array(Bytes(Array[Byte](-0x17, 0x57, (l >> 8).toByte, (l & 255).toByte)))
+  }
+}
+
 /**
  * A parser for the Bag language.
  * @author bluebear94, toddobryan
@@ -552,7 +583,11 @@ class XprInt extends JavaTokenParsers with PackratParsers {
     case (left ~ o ~ right) =>
       Assign(left, right, true)
   }
-  lazy val assign = assignNew | assignOld
+  lazy val assignConst: PackratParser[Expression] = "Const" ~> id ~ ":=" ~ expression ^^ {
+    case (left ~ o ~ right) =>
+      AssignConst(left, right)
+  }
+  lazy val assign = assignNew | assignOld | assignConst
   lazy val delete: PackratParser[Expression] = lvalue ~ ":=" ^^ {
     case (left ~ o) =>
       Delete(left)
@@ -633,14 +668,14 @@ class XprInt extends JavaTokenParsers with PackratParsers {
   /**
    * Loads all the operators.
    */
-  def loadOps = { // Long-ass method to use necessary information about operators to build parsers for them
+  def loadOps() = { // Long-ass method to use necessary information about operators to build parsers for them
     val ll = Global.liblist.keySet.toList
-    print(s"Loading operators from libraries: $ll\n")
+    Logger.println(s"Loading operators from libraries: $ll", 2)
     for (ln <- ll) { // loop over every library loaded
-      print(s"Loading operators from $ln\n")
+      Logger.print(s"Loading operators from $ln\n", 1)
       val cl = Global.liblist(ln)
       val col = cl.ccol
-      println("Operators: " + col.opList.keySet.toList)
+      Logger.println("Operators: " + col.opList.keySet.toList, 0)
       val isStdLib = ln == "std"
       for (cmdsp <- col.opList.toList) {
         val cmd = cmdsp._2
@@ -649,7 +684,7 @@ class XprInt extends JavaTokenParsers with PackratParsers {
           val dir = cmd.isReversed
           val opn = (if (isStdLib) "" else "$" + ln + ":") + cmd.getOpAlias
           val hasOE = cmd.hasAssignmentEquiv
-          print(s"Loading operator $opn\n")
+          Logger.println(s"Loading operator $opn", -1)
           val cp: (PackratParser[(Expression, Expression) => Expression], Boolean) =
             (opn ^^^ { (a: Expression, b: Expression) =>
               if (dir) Operator(opn, b, a)
@@ -658,7 +693,7 @@ class XprInt extends JavaTokenParsers with PackratParsers {
           loadWithPrec(prec, cp)
           // now update the opEq parser, if appropriate
           if (hasOE) {
-            println(s"Loading variation $opn=")
+            Logger.println(s"Loading variation $opn=", -1)
             oeOps += opn
             //opEq = lvalue ~ opn ~ "=" ~ expression ^^ {
             //  case (left ~ o ~ "=" ~ right) => AssignOp(left, right, o)
@@ -667,7 +702,7 @@ class XprInt extends JavaTokenParsers with PackratParsers {
           cmd.getDoubleBase match {
             case Some(t) => {
               ooOps += opn + opn
-              println(s"Loading variation $opn$opn")
+              Logger.println(s"Loading variation $opn$opn", -1)
             }
             case None => ()
           }
@@ -675,11 +710,12 @@ class XprInt extends JavaTokenParsers with PackratParsers {
           val opn = (if (isStdLib) "" else "$" + ln + ":") + cmd.getOpAlias
           val cn = "$" + ln + ":" + cmd.getName
           uOps(opn) = cn
-          println(s"Loading unary operator $opn")
+          Logger.println(s"Loading unary operator $opn", -1)
         }
       }
     }
     // now add the logical `and' and `or' parsers (short-circuit)
+    Logger.println("Loading logical and/or operators", 1)
     val andParser: PackratParser[(Expression, Expression) => Expression] = "&&" ^^^
       { (a: Expression, b: Expression) => Ternary(a, b, Literal(TMountain(0))) }
     val orParser: PackratParser[(Expression, Expression) => Expression] = "||" ^^^

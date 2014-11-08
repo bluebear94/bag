@@ -5,16 +5,13 @@ import scala.collection.mutable._
 /**
  * A void value.
  */
-class TVoid protected extends Atom {
-  def canEqual(that: Any): Boolean = {
-    that.isInstanceOf[TVoid]
+case object TVoid extends Atom {
+  val inst: Type = this
+  def canEqual(that: Any): Boolean = that match {
+    case that: AnyRef => this eq that
+    case _ => false
   }
-  override def equals(that: Any): Boolean = {
-    that match {
-      case other: TVoid => true
-      case _ => false
-    }
-  }
+  override def equals(that: Any): Boolean = canEqual(that)
   def toStringP: String = "Void"
   override def hashCode = 0
   def equalsStrictly(that: Type): Boolean = that.getType == 0
@@ -40,11 +37,4 @@ class TVoid protected extends Atom {
     case 8 => new LMap(HashMap())
     case 9 => new TByteString(Array[Byte]())
   }
-}
-
-object TVoid {
-  /**
-    The void value.
-  */
-  val inst: Type = new TVoid()
 }

@@ -10,4 +10,5 @@ class Len extends Command {
   override def apply(args: Array[Type]): Type = {
     new TMountain(CollectionOps.ctv(_.length)(args(0)))
   }
+  override def isPure = true
 }

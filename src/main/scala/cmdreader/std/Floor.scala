@@ -13,4 +13,5 @@ class Floor extends Command {
   override def apply(args: Array[Type]): Type = {
     MathUtil.floor(args(0))
   }
+  override def isPure = true
 }

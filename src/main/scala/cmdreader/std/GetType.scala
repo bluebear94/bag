@@ -10,4 +10,5 @@ class GetType extends Command {
   override def apply(args: Array[Type]): Type = {
     TMountain(args(0).getType)
   }
+  override def isPure = true
 }

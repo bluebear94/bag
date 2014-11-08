@@ -19,10 +19,10 @@ case class TByteString(aa: Array[Byte]) extends Atom {
   def toBoolean(): Boolean = !a.isEmpty
   override def equals(that: Any): Boolean = {
     that match {
-      case t: TByteString => a.equals(t.a)
+      case t: TByteString => a sameElements t.a
       case t: TString => a.equals(t.s.getBytes())
-      case t: LList => !(a.toList.map((b: Byte) => THill(b.toLong)).zip(t.l).map{
-        case (x, y: TNumerical) => x.n == y.getVal}.contains(false))
+      case t: LList => a.toList.map((b: Byte) => THill(b.toLong)).zip(t.l).forall {
+        case (x, y: TNumerical) => x.n == y.getVal}
       case _ => false
     }
   }

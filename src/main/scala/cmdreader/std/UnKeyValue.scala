@@ -25,4 +25,5 @@ class UnKeyValue extends Command {
       case _ => err
     }
   }
+  override def isPure = true
 }

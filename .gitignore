@@ -57,3 +57,6 @@ git-pissed.html
 
 # Annoying backup files
 *~
+
+# Logs
+log/

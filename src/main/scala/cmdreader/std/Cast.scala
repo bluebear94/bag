@@ -27,4 +27,5 @@ class Cast extends CommandOperator {
       }
     }
   }
+  override def isPure = true
 }
