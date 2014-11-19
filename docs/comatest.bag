@@ -1,0 +1,16 @@
+Let $time := λ;Let t:=$:now();(#1)();$:now()-t;Endλ
+Let $timebatch := λ;Let s:=0;For i,1,1000;s+=$time(#1);EndFor;s\1000;Endλ
+Let con := λ
+ Let a := 0H
+ For i, 1H, 1000001H
+  a += i
+ EndFor
+ a
+Endλ
+$:require("coma
+Let uncon := λ
+ $coma:write(Bytes(5800088000000000000F4240549081084010948083B8), 0)
+ $coma:run(0)
+ $coma:readr(0)
+Endλ
+[$time(con),$time(uncon

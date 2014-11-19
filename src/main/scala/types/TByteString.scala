@@ -5,8 +5,7 @@ import util._
 import scala.collection.mutable._
 import scala.math.BigInt
 
-case class TByteString(aa: Array[Byte]) extends Atom {
-  var a = aa
+case class TByteString(var a: Array[Byte]) extends Atom {
   /**
    * Returns the type identifier of the instance.
    * @return the type ID

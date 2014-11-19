@@ -70,7 +70,9 @@ trait Type {
     new TBinFunc(Array[Byte](-0x1f, getType.toByte) ++
             MakeByteArrays.intToByteArray(bc.length) ++ bc ++ Array[Byte](-0x17, 0x53))
   }
-  
+  def byteValue: Byte = throw new UnsupportedOperationException
+  def intValue(): Int = throw new UnsupportedOperationException
+  def doubleValue(): Double = throw new UnsupportedOperationException
 }
 object Type {
   /**
@@ -121,6 +123,7 @@ object FProtocol {
     The empty protocol, which does not explicitly define which arguments are passed in which method.
   */
   val empty = FProtocol()
+  val single = FProtocol(Set(1))
   private def arrayize(set: Set[Int]): Array[Byte] = {
     set.foldRight(Array[Byte](0, 0)) { (argn, array) =>
       Array[Byte]((argn >> 8).toByte, (argn & 0xFF).toByte) ++ array

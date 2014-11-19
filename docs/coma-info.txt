@@ -1,0 +1,48 @@
+CoVM specs
+
+16-bit instructions.
+
+000000|000|0000000
+instr.|reg|misc.
+bits  |bit|bits
+
+Instr# | Name | Desc.
+
+00 RET (see 23)
+01 TR  The three most significant miscellaneous bits represent the register from which to read the value.
+02 LDV Followed by 64 bits of data.
+03 DR8 Dereferencing. The value in the register is replaced by the value stored at that address.
+04 D16
+05 D32
+06 D64
+07 RD8 Followed by 32 bits for address.
+08 R16
+09 R32
+0A R64
+0B WR8 Followed by 32 bits for address.
+0C W16
+0D W32
+0E W64
+0F LSP Loads the stack pointer into the specified register.
+10 ADD Binary arithmetic operators take the three most significant miscellaneous bits for the other register.
+11 SUB
+12 MUL
+13 DM  If the divisor is 0, the flag is set to 0; otherwise, it is set to 1.
+14 AND
+15 OR
+16 XOR
+17 NEG
+18 NOT
+19 SL  Shift and rotate operators take the six least significant misc bits instead.
+1A SR
+1B SSR
+1C RL
+1D RR
+1E PSH Pushes the value of the register into the stack.
+1F POP Pops from the stack into the register.
+20 JR  The register bits represent the condition for the flag to jump: the most significant shows whether 1 is okay; the one after whether 0 is; the least significant whether -1 is. Can jump 32 bytes back or 31 forward.
+21 JP  Takes 32 bits of data for the address.
+22 CLL Pushes the program counter into the stack and jumps as specified by 32 bits of data.
+23 RET Pops 32 bits from the stack and jumps there.
+24 INC Increments the value.
+25 DEC Decrements the value.

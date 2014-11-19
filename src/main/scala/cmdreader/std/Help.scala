@@ -68,6 +68,7 @@ class Help extends Command {
           val lname = args(1).toString()
           val ll = Global.liblist(lname)
           Main.println("  In library " + lname + ":")
+          Main.println(DocGen.getLibInfo(lname))
           var s = "    "
           for (c <- ll.commandList) {
             s += c._1 + " "

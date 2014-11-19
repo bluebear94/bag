@@ -3,7 +3,7 @@ package types
 import cmdreader.Global
 import scala.collection.mutable.HashMap
 
-class TCmdFunc(name: String, _protocol: FProtocol = FProtocol.empty) extends TFunction with Atom {
+class TCmdFunc(name: String) extends TFunction with Atom {
   override def apply(args: Array[Type]): Type = Global.getCmdno(name)(args)
   def applyWith(args: Array[Type], closure: HashMap[String, Type]) = new TError(1)
   override def equals(that: Any): Boolean = {
@@ -16,5 +16,6 @@ class TCmdFunc(name: String, _protocol: FProtocol = FProtocol.empty) extends TFu
   override def hashCode = name.hashCode
   override def toString = name
   def toStringP: String = name
-  def >/< = new TCmdFunc(new String(name))
+  def >/< = this
+  lazy val _protocol = Global.getCmdno(name).protocol
 }

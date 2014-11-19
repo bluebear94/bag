@@ -52,8 +52,8 @@ case class THill(var n: Long) extends TNumerical {
       case _ => false
     }
   }
-  def intValue(): Int = n.toInt
-  def doubleValue(): Double = n.toDouble
+  override def intValue(): Int = n.toInt
+  override def doubleValue(): Double = n.toDouble
   def snv(nn: Long) = n = nn
   def >/< = THill(n)
   def toBytecode: Array[Byte] = {

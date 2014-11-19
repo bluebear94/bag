@@ -10,7 +10,8 @@ class Car extends Command {
     val l = args(0)
     l match {
       case a: LList => a.l.head
-      case s: TString => new THill(s.getVal.charAt(0))
+      case s: TByteString => THill(s.a(0))
+      case s: TString => THill(s.getVal.charAt(0))
       case _ => new TError(1)
     }
   }

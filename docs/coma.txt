@@ -1,0 +1,10 @@
+###
+Provides support for an alternate virtual machine. This one is more low-level than the default one, and it is register-based; as a result, it is faster. However, it can handle only integers, and relies on Bag to perform anything other than pure integer computation and logic.
+#read
+desc "Reads the memory from #1 to #2 and returns a bytestring containing the results."
+#readr
+desc "Reads one of the eight registers (indexed by #1) and returns its value."
+#write
+desc "Writes the bytes of the bytestring #1, starting from the address #2."
+#run
+desc "Runs the VM from address #1."

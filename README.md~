@@ -19,20 +19,20 @@ I wanted to invent a language that followed the path of TI-Basic. In October, I 
 I made some choices to fulfill the TI-Basic philosophy:
 
 * The interface consists of a top screen (implemented by a BufferedImage, similar to how calculator graphics are implemented) for graphics and a bottom screen resembling the TI-89 homescreen (with the input allowing multiple lines.
-* Unclosed parentheses, brackets, braces, quotes, and guillemets are permitted.
+* Unclosed parentheses, brackets, braces, and quotes are permitted.
 * "Global variables" are actually persistent files.
-* No optimization is performed for you, especially not tail-call optimization. Do it yourself.
+* No optimization is performed for you, especially not tail-call optimization. Do it yourself. OK, fine. You get tail call optimization.
 * No objects or even structures. Use lists or maps.
 * There is a last-answer variable: one accounting for Void return values, and one not. (Apparently, the TI-89 has an `ans()` function, but it's locked in program mode. How scandalous!)
-* There is no passing by reference; only value.
+* There is no passing by reference by default; only value. However, you can use `$:valcopy(0)` to pass by reference (e. g. when you're programming functionally); in fact, it will be the new default in 0.8.
 
 However, I deviated from typical calculator programming languages in order to reduce the annoyance of using it:
 
 * First class functions and lists, including lambdas (You can pass functions as arguments, as well as nest lists as much as you want, or at least as much as your computer can handle).
 * A built-in map type, since maps are frequently used, especially in this code.
 * Three numerical types: arbitrary-precision, 64-bit integers, and 64-bit IEEE floating-points (a. k. a. doubles).
-* Two list types: arrays (like 83+) and linked lists (like 89), because each has its strengths and weaknesses. Plus, their dimensions are limited only by memory.
-* Programs are planned to be stored using bytecode, with an option to compile without running (I think the TI-89's inability to do so was a big annoyance).
+* Two list types: arrays (like 83+) and linked lists (like 89, except the 89 actually uses *fucked* lists), because each has its strengths and weaknesses. Plus, their dimensions are limited only by memory.
+* Programs are stored using bytecode, with an option to compile without running (I think the TI-89's inability to do so was a big annoyance).
 * A Void type and value.
 * Zero-based, rather than one-based, indexing for lists.
 
@@ -49,7 +49,7 @@ Amethyst is usable at this time, but is not in condition to release.
 * Do `git clone https://github.com/bluebear94/bag.git` to get the project (update with `git pull origin master`)
 * Type `sbt`
 * As soon as SBT finishes loading, type `run`
-* Then wait for everything to compile and choose an option: `1` to start the developer console, and `2` to start the GUI program
+* Then wait for everything to compile and choose an option: `gui.Main` is optimal for pre-0.8 versions, and for the 0.8 snapshots and releases, use `main.Main`
 
 Getting Started
 ---------------
@@ -66,6 +66,8 @@ The current types are:
 * Array
 * Linked List
 * Function
+* Map
+* Byte String
 
 The current operators are:
 
@@ -97,16 +99,16 @@ Precedence can, of course, be specified by parentheses, and `&&` and `||` are sh
 
 Variables can be assigned using the `:=` operator, optionally with `Let` in order to create a new variable in the running program (with the right side empty, it just deletes the variable). Global variables are denoted by `$`, and they persist through multiple sessions. Some operators also provide an assignment equivalent, as well as doubled versions that can appear before *or* after an lvalue.
 
-    Let a := 3 _ Assigns 3 to a
-    Let b := 4 _ Assigns 4 to b
-    b := _ Hasta la vista, b
-    a := 5 _ Assigns 5 to a
-    a += 1 _ a is now 6
+    Let a := 3   _ Assigns 3 to a
+    Let b := 4   _ Assigns 4 to b
+    b :=         _ Hasta la vista, b
+    a := 5       _ Assigns 5 to a
+    a += 1       _ a is now 6
     $:hluna(++a) _ shows 7
-    $:hluna(a) _ shows 7
+    $:hluna(a)   _ shows 7
     $:hluna(a**) _ shows 7
-    $:hluna(a) _ shows 14
-    a[3] _ returns ↼1
+    $:hluna(a)   _ shows 14
+    a[3]         _ returns 1H
 
 Functions use lambdas, and the body is delimited with the `λ` and `Endλ` keywords. The last line defines the return value of the function. The number of arguments can be retrieved with `#0`, and each argument can be retrieved with an octothrope preceding a one-indexed value. Therefore, a function to square a number would be defined as:
 
@@ -122,7 +124,7 @@ The `If` keyword, followed by an expression, executes the next line if that expr
     $:hluna("a
     $:hluna("b
 
-will always print `b`. Note that there is no separate Boolean type; instead, `0`, `↼0`, `0.`, `""`, `{}`, and `[]` all evalute to false.
+will always print `b`. Note that there is no separate Boolean type to incite malice; instead, `0`, `0H`, `0.`, `""`, `{}`, `[]`, `Map()`, and `Bytes()` all evalute to false, and everything else to true.
 
 The `If` statement, if the following code is delimited by `Then` and `EndIf`, will execute the whole block conditionally.
 
@@ -132,9 +134,16 @@ The `For` .. `EndFor` loop will execute a block of code for each value of a vari
     (statements)
     EndFor
 
-The `While` .. `EndWhile` loop executes the body while its head expression evaluates to true, while the `Repeat` .. `EndRept` loop defers the check to after the body executes. They are analogous to `while (...) {...}` and `do ... while(!...);` constructs in C-based languages.
+The `While` .. `EndWhile` loop executes the body while its head expression evaluates to true, while the `Repeat` .. `EndRept` loop defers the check to after the body executes. They are analogous to `while (...) {...}` and `do ... while(!...);` constructs in C-based languages, respectively; the keywords were taken from the 83+ equivalents (except, well, those aren't plain `End`s).
+
+For moar, go check out the `$:help` command.
 
 Documentation of Commands
 -------------------------
 
 Use `$:help()` in order to access the documentation system.
+
+マフィン
+------
+
+美味しいです

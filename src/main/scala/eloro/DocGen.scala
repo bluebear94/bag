@@ -66,7 +66,7 @@ object DocGen {
       val l = name.substring(1, name.indexOf(":"))
       val n = name.substring(name.indexOf(":") + 1)
       val lib = if (l.isEmpty) "std" else l
-      val s = Source.fromFile("docs/" + lib + ".txt");
+      val s = Source.fromFile(s"docs/$name.txt");
       var hasFoundHeader = 0
       var details = ""
       def readAndAppend(l: String) = {
@@ -78,6 +78,21 @@ object DocGen {
         else if ((l startsWith "#") && hasFoundHeader == 1) hasFoundHeader = 2
       }
       bp + details
+    }
+  }
+  def getLibInfo(name: String) = {
+    try {
+      val s = Source.fromFile(s"docs/$name.txt")
+      var hasFoundHeader = 0
+      var r = ""
+      for (l <- s.getLines if hasFoundHeader != 2) {
+        if (hasFoundHeader == 1) r += l + "\n"
+        if (l == "###") hasFoundHeader = 1
+        else if (hasFoundHeader == 1 && (l startsWith "#")) hasFoundHeader = 2
+      }
+      r
+    } catch {
+      case e: FileNotFoundException => "This library does not exist."
     }
   }
 }

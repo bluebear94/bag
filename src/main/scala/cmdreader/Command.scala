@@ -25,4 +25,8 @@ abstract class Command {
   * and has no side effects.
   */
   def isPure: Boolean = false
+  /**
+  * Returns the protocol used by this command.
+  */
+  def protocol: FProtocol = FProtocol.empty
 }

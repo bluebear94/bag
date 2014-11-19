@@ -1,3 +1,5 @@
+###
+A library for drawing to the canvas.
 #clrscn
 desc "Clears the draw screen."
 contract ->

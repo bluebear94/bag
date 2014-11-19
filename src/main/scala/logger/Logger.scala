@@ -10,8 +10,9 @@ object Logger {
   def printStream: Option[PrintStream] = ps
   var verbosity: Int = 3
   def open() {
-    val r = new Random(System.currentTimeMillis)
-    var fname = "log/"
+    val now = System.nanoTime
+    val r = new Random(now)
+    var fname = s"log/${(now>>24)&65535}-"
     for (i <- 0 until 4) fname += nextWord(r)
     fname += ".txt"
     val file = new File(fname)
@@ -44,7 +45,9 @@ object Logger {
     "Ishi",
     "Kusa",
     "Tane",
-    "Aka"
+    "Aka",
+    "Ame",
+    "Kaze"
   )
   private def nextWord(r: Random) = words((r.nextLong.abs % words.length).toInt)
   def print(msg: String, priority: Int = 0) {

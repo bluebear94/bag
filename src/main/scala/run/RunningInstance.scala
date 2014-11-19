@@ -60,6 +60,7 @@ class RunningInstance(fn: String, c: RunningInstance, var args: Array[Type]) ext
    * The last-answer variable, but doesn't update to a void value.
    */
   var answer: Type = TVoid.inst
+  var leadsToEnd = new LongMap[Boolean]()
   /**
    * Gets the i<sup>th</sup> argument, one-indexed.
    * @param i the argument index to recall
@@ -140,27 +141,40 @@ class RunningInstance(fn: String, c: RunningInstance, var args: Array[Type]) ext
           val toPush = function match {
             case f: TCmdFunc => {
               if (f.toString == "this") {
-                var tneedle = needle + 4
-                var isTDone = false
-                var ctr = true
-                while (!isTDone) {
-                  val tc = (tus(bytecode(tneedle)) << 8) + tus(bytecode(tneedle + 1))
-                  //Logger.println(s"cmd $tc")
-                  tneedle = tc match {
-                    case 0xE953 => tneedle + 2
-                    case 0xE934 => readInt(tneedle)
-                    case _ => {isTDone = true; ctr = false; tneedle}
+                if (leadsToEnd.isDefinedAt(needle)) {
+                  if (leadsToEnd(needle)) {
+                    //Logger.println("Can tail call")
+                    this.args = realArgs.toArray
+                    needle = -4 // Compensate for adding 4 to the result
                   }
-                  if (tneedle >= bytecode.length - 1) isTDone = true
-                }
-                if (ctr) {
-                  //Logger.println("Can tail call")
-                  this.args = realArgs.toArray
-                  needle = -4 // Compensate for adding 4 to the result
-                }
-                else stack = {
-                  val f = new TBinFunc(bytecode, fn)
-                  f(Type.implementProtocol(realArgs, f.protocol)) :: stack
+                  else stack = {
+                    val f = new TBinFunc(bytecode, fn)
+                    f(Type.implementProtocol(realArgs, f.protocol)) :: stack
+                  }
+                } else {
+                  var tneedle = needle + 4
+                  var isTDone = false
+                  var ctr = true
+                  while (!isTDone) {
+                    val tc = (tus(bytecode(tneedle)) << 8) + tus(bytecode(tneedle + 1))
+                    //Logger.println(s"cmd $tc")
+                    tneedle = tc match {
+                      case 0xE953 => tneedle + 2
+                      case 0xE934 => readInt(tneedle)
+                      case _ => {isTDone = true; ctr = false; tneedle}
+                    }
+                    if (tneedle >= bytecode.length - 1) isTDone = true
+                  }
+                  leadsToEnd(needle) = ctr
+                  if (ctr) {
+                    //Logger.println("Can tail call")
+                    this.args = realArgs.toArray
+                    needle = -4 // Compensate for adding 4 to the result
+                  }
+                  else stack = {
+                    val f = new TBinFunc(bytecode, fn)
+                    f(Type.implementProtocol(realArgs, f.protocol)) :: stack
+                  }
                 }
               }
               else stack = f(Type.implementProtocol(realArgs, f.protocol)) :: stack

@@ -1,3 +1,5 @@
+###
+The standard library. Useful functions here.
 #add
 desc "Adds zero or more values. Will return a value with the most generalized type. If all arguments are strings, then concatenates them."
 contract n/* -> n/
@@ -339,3 +341,13 @@ desc "Returns #3 with the all occurrences of #1 (as a slice) replaced with #2 (a
 desc "Attempts to execute #1 as a function, then if an error is thrown, executes #2 with the error code passed as a parameter."
 #delay
 desc "Sleeps for #1 (1000 by default) milliseconds."
+#cons!
+desc "Prepends #1 to #2; returns nothing but mutates the list."
+#cdr!
+desc "Removes the first element of #1; returns nothing but mutates the list."
+#econs!
+desc "Appends #1 to #2; returns nothing but mutates the list."
+#ecdr!
+desc "Removes the last element of #1; returns nothing but mutates the list."
+#req
+desc "Returns true if the two values compared have the same address in memory; false otherwise."

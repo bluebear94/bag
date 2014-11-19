@@ -14,6 +14,7 @@ class Cons extends Command {
       l match {
         case a: LArray => new LArray((t +: a.l).to[ArrayBuffer])
         case a: LLinked => new LLinked((t +: a.l).to[ListBuffer])
+        case s: TByteString => TByteString(t.byteValue +: s.a)
         case s: TString => {
           new TString(new String(Array[Char](
             t match {

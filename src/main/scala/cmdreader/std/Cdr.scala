@@ -12,6 +12,7 @@ class Cdr extends Command {
     l match {
       case a: LArray => new LArray(a.l.tail.to[ArrayBuffer])
       case a: LLinked => new LLinked(a.l.tail.to[ListBuffer])
+      case a: TByteString => TByteString(a.a drop 1)
       case s: TString => new TString(s.getVal.substring(1))
       case _ => new TError(1)
     }
