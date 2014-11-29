@@ -32,7 +32,7 @@ contract n/ n/+ -> n/
 vector
 throws 1
 #hluna
-desc "Displays the argument to the homescreen in the GUI. It might also be useful to note that the value is also shown in the terminal with the prefix `[hluna]'."
+desc "Displays the argument to the homescreen in the GUI. It might also be useful to note that the value is also shown in the log with the prefix `[hluna]'."
 contract ? -> 0
 #negate
 desc "Returns the additive inverse of an argument."
@@ -236,7 +236,7 @@ desc "Performs the inverse of $:kv; i. e. produces a map given a list of key-val
 #not
 desc "Returns the logical negation of the argument. Guaranteed to return either 0 or 1."
 #and
-desc "Returns the logical conjunction of the two given arguments. Unlike &&, this does not short-circuit and always returns 0 or 1."
+desc "Returns the logical conjunction of the two given arguments. Unlike &amp;&amp;, this does not short-circuit and always returns 0 or 1."
 #or
 desc "Returns the logical disjunction of the two given arguments. Unlike ||, this does not short-circuit and always returns 0 or 1."
 #xor
@@ -263,7 +263,7 @@ vector
 desc "Returns #1 rotated #2 places right."
 vector
 #tt
-desc "Returns #1 to the power of #2.
+desc "Returns #1 to the power of #2."
 vector
 #exp
 desc "Returns the natural exponential function of #1."
@@ -284,7 +284,7 @@ contract ? i -> ?
 #compile
 desc "Compiles a source file into a variable."
 desc "#1 is the name of the variable, without any extension, in the Bag path format."
-desc "The source file is hence located at amw/<pathname in OS format>.bag."
+desc "The source file is hence located at <code>amw/&lt;pathname in OS format&gt;.bag</code>."
 desc "Only the code, without λ...Endλ, is required in that file."
 contract 3 ->
 #hask
@@ -351,3 +351,19 @@ desc "Appends #1 to #2; returns nothing but mutates the list."
 desc "Removes the last element of #1; returns nothing but mutates the list."
 #req
 desc "Returns true if the two values compared have the same address in memory; false otherwise."
+#format
+desc "Formats a string."
+desc "Format specifiers consist of a number in square brackets, with [0] referring to the second argument."
+desc "[lb] and [rb] represent [ and ], respectively."
+#prepare
+desc "Replaces the square brackets with [lb] and [rb]."
+#any
+desc "Returns 1 if the predicate #2 holds for any element in #1."
+#all
+desc "Returns 1 if the predicate #2 holds for every element in #1."
+#ritb
+desc "Returns a random integer in the half-open interval [#1, #2)."
+#srand
+desc "Seeds the random number generator."
+#version
+desc "Returns the version number, calculated by <code>(major &lt;&lt; 16) + (minor &lt;&lt; 8) + revision</code>.

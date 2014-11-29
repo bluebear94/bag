@@ -58,6 +58,7 @@ case class TFish(x: Double) extends TNumerical {
     }
   }
   override def intValue(): Int = x.toInt
+  override def longValue: Long = x.toLong
   override def doubleValue(): Double = x
   def >/< = TFish(x)
   def toBytecode: Array[Byte] = {

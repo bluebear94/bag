@@ -74,38 +74,37 @@ object GFX {
     val t = f.l(2)
     new Font(z.toString, getIntOrChoke(o), getIntOrChoke(t))
   }
-  def test() = { // I had this planned since the birth of the gfx library. Mwahahahaha!
-    var prev = false
-    def nb = {
-      prev = if (Global.r.nextDouble > 0.8) Global.r.nextBoolean else !prev
-      prev
-    }
-    def ttf = 3 + Global.r.nextInt(3)
-    def kagome(x0: Int, x1: Int, y0: Int, y1: Int): Unit = {
-      def dot(x: Int, y: Int) = circ(x * 16, y * 16, 4, true)
-      val vert = nb
-      if (if (vert) Math.abs(x0 - x1) > ttf else Math.abs(y0 - y1) > ttf) {
-        val pct = Global.r.nextDouble * 0.4 + 0.3
-        val dx = x1 - x0
-        val dy = y1 - y0
-        val sp = (if (vert) x0 + pct * dx else y0 + pct * dy).toInt
-        if (vert) {
-          kagome(x0, sp, y0, y1)
-          kagome(sp + 1, x1, y0, y1)
-          for (i <- y0 to y1)
-            dot(sp, i)
-        } else {
-          kagome(x0, x1, y0, sp)
-          kagome(x0, x1, sp + 1, y1)
-          for (i <- x0 to x1)
-            dot(i, sp)
-        }
+  def fromHSV(h: Double, s: Double, v: Double): Int = {
+    // see http://www.rapidtables.com/convert/color/hsv-to-rgb.htm
+    val SIXTY_DEGREES = Math.PI / 3
+    val c = v * s
+    val x = c * (1 - Math.abs((h / SIXTY_DEGREES) % 2.0 - 1))
+    val m = v - c
+    val (rp: Double, gp: Double, bp: Double) =
+      (h / SIXTY_DEGREES).toInt match {
+        case 0 => (c, x, 0.0)
+        case 1 => (x, c, 0.0)
+        case 2 => (0.0, c, x)
+        case 3 => (0.0, x, c)
+        case 4 => (x, 0.0, c)
+        case 5 => (c, 0.0, x)
       }
-    }
-    setcol(Color.GREEN)
-    kagome(0, 40, 0, 30)
-    setcol(Color.WHITE)
-    text("\u30ab\u30b4\u30e1\u30ab\u30b4\u30e1", 550, 20)
+    val (r, g, b) = (rp + m, gp + m, bp + m)
+    val (ri, gi, bi) = ((255 * r).toInt, (255 * g).toInt, (255 * b).toInt)
+    (ri << 16) + (gi << 8) + bi
+  }
+  def test() = { // I had this planned since the birth of the gfx library. Mwahahahaha!
+    iterate((x, y) => {
+      val yp = y - 120
+      if (x > 120 || (Math.pow(x - 120, 2) + Math.pow(yp - 120, 2) < 14400)) {
+        val h = ((y - (x >> 2)) % 360).toRadians
+        fromHSV(h, 0.3, 1.0)
+      } else 0
+    }, false, 0, 120, 640, 360)
+    val old = getf
+    setf(new Font("sans-serif", 0, 40))
+    text("Love Sign - \"Master Spark\"", 100, 100)
+    setf(old)
   }
   /**
    * Method to return a color by name.

@@ -16,6 +16,7 @@ class Help extends Command {
     val TWO = TMountain(2)
     val THREE = TMountain(3)
     val FOUR = TMountain(4)
+    val FIVE = TMountain(5)
     if (args.length != 0) {
       args(0) match {
         case TString(s) => Main.println(DocGen.getHelp(s))
@@ -65,7 +66,7 @@ class Help extends Command {
               |""".stripMargin)
         }
         case THREE => {
-          val lname = args(1).toString()
+          val lname = args(1).toString
           val ll = Global.liblist(lname)
           Main.println("  In library " + lname + ":")
           Main.println(DocGen.getLibInfo(lname))
@@ -79,6 +80,9 @@ class Help extends Command {
           Source.fromFile("docs/style.txt").getLines foreach Main.println
           Main.println("\nThis guide is also accessible in docs/style.txt.")
         }
+        case FIVE => {
+          DocGen.genLibXS(args(1).toString)
+        }
         case _ => Main.println("Unrecognized value")
       }
     } else {
@@ -88,7 +92,8 @@ class Help extends Command {
           |Pass 1 as an argument to see info about this program.
           |Pass 2 as an argument to see a brief introduction to the syntax.
           |Pass 3 and a library name to see all commands in a given library.
-          |Pass 4 to view the Bag style guide.""".stripMargin)
+          |Pass 4 to view the Bag style guide.
+          |Pass 5 to generate an HTML page containing library info.""".stripMargin)
     }
     TVoid.inst
   }

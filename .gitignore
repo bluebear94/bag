@@ -48,6 +48,9 @@ local.properties
 # Amethyst vars
 amw/
 
+# Generated HTML docs
+docs/html/
+
 # swear data
 git-pissed.html
 

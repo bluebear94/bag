@@ -485,7 +485,8 @@ class XprInt extends JavaTokenParsers with PackratParsers {
       case dig ~ _ ~ bs => Literal(new TMountain(BigInt(dig, bs.toInt)))
     }
   lazy val hill: PackratParser[SBExpression] = """↼[-]?\d+""".r ^^ { s => new Literal(new THill(BigInt(s.substring(1)).toLong)) } |
-  """[-]?\d+H""".r ^^ { s => new Literal(new THill(BigInt(s.substring(0, s.length - 1)).toLong)) }
+  """[-]?\d+H""".r ^^ { s => new Literal(new THill(BigInt(s.substring(0, s.length - 1)).toLong)) } |
+  "'" ~> ".".r <~ "'" ^^ { s => Literal(THill(s.charAt(0))) }
   lazy val string: PackratParser[SBExpression] = stringLiteral ^^ { s =>
     UnescapeString.unescape(s.substring(1, s.length - 1)) match {
       case Some(ues) => Literal(new TString(ues))

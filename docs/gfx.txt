@@ -38,7 +38,7 @@ desc "Given a name of a color as a string, returns the corresponding numerical v
 contract 3 -> 1
 #text
 desc "Outputs the text at #1 to (#2, #3). Notice that #3 refers to the baseline y-coordinate."
-desc "In other words, $gfx:text(str, 0, 0) will have the text cut off."
+desc "In other words, <code>$gfx:text(str, 0, 0)</code> will have the text cut off."
 contract 3 i i ->
 #test
 desc "Outputs a test image."
@@ -49,10 +49,12 @@ contract ->
 desc "Draws a polygon, with #1 a list of x-coordinates, #2 a list of y-coordinates, with fill property #3."
 contract <i> <i> b ->
 #ptOn
-desc "Draws a point at (#1, #2).
+desc "Draws a point at (#1, #2)."
 contract i i ->
 #iter
 desc "For a rectangular range (described by #3 - #6 if given, whole screen otherwise), plots a point of a color returned by a function #1, taking alpha into account if #2 is true."
 contract [i i -> i] ->
 contract [i i -> i] b ->
 contract [i i -> i] b i i i i ->
+#fromHSV
+desc "Given a hue (in radians), saturation (0.0 - 1.0), and value (0.0 - 1.0) value, returns an integer representing the resultant color."

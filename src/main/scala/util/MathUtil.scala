@@ -143,35 +143,22 @@ object MathUtil {
   def subtract(x: Type, y: Type): Type = {
     add(x, negate(y))
   }
-  def multiply(x: Type, y: Type): Type = {
-    val xt = x.getType; val yt = y.getType; val err = new TError(1, s"Tried to multiply $x and $y")
-    if ((xt == 5 || xt == 6) && (yt == 5 || yt == 6)) motl(multiply, x.asInstanceOf[LList], y.asInstanceOf[LList])
-    else if ((xt == 5 || xt == 6)) mool(multiply, x.asInstanceOf[LList], y)
-    else if ((yt == 5 || yt == 6)) mool(multiply, y.asInstanceOf[LList], x)
-    else if (xt == 1) {
-      val bi = x.asInstanceOf[TMountain].getVal
-      if (yt == 1) {
-        new TMountain(bi * y.asInstanceOf[TMountain].getVal)
-      } else if (yt == 2) {
-        new TMountain(bi * y.asInstanceOf[THill].getVal)
-      } else if (yt == 4) {
-        new TFish(bi.floatValue() * y.asInstanceOf[TFish].getVal)
-      } else err
-    } else if (xt == 2) {
-      if (yt == 1) multiply(y, x)
-      else {
-        val lg = x.asInstanceOf[THill].getVal
-        if (yt == 2) new THill(lg * y.asInstanceOf[THill].getVal)
-        else if (yt == 4) new TFish(lg * y.asInstanceOf[TFish].getVal)
-        else err
-      }
-    } else if (xt == 4) {
-      if (yt == 1 || yt == 2) multiply(y, x)
-      else if (yt == 4) new TFish(
-        x.asInstanceOf[TFish].getVal *
-          y.asInstanceOf[TFish].getVal)
-      else err
-    } else err
+  def multiply(x: Type, y: Type): Type = (x, y) match {
+    case (x: LList, y: LList) => motl(multiply, x, y)
+    case (x: LList, y) => mool(multiply, x, y)
+    case (x, y: LList) => mool(multiply, y, x)
+    case (TMountain(xt), TMountain(yt)) => TMountain(xt * yt)
+    case (TMountain(xt), THill(yt)) => TMountain(xt * yt)
+    case (TMountain(xt), TFish(yt)) => TFish(xt.floatValue * yt)
+    case (THill(xt), TMountain(yt)) => TMountain(xt * yt)
+    case (THill(xt), THill(yt)) => THill(xt * yt)
+    case (THill(xt), TFish(yt)) => TFish(xt * yt)
+    case (TFish(xt), TMountain(yt)) => TFish(xt * yt.floatValue)
+    case (TFish(xt), THill(yt)) => TFish(xt * yt)
+    case (TFish(xt), TFish(yt)) => TFish(xt * yt)
+    case (TString(s), x: TNumerical) => TString(s * x.intValue)
+    case (x: TNumerical, TString(s)) => TString(s * x.intValue)
+    case _ => new TError(1, s"Tried to multiply $x and $y")
   }
   def recip(x: Type): Type = {
     val xt = x.getType()

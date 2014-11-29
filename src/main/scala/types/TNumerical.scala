@@ -23,6 +23,7 @@ abstract class TNumerical extends Atom {
    * Gets the 64-bit floating-point value of this type.
    */
   override def doubleValue(): Double
+  def longValue: Long
   override def byteValue: Byte = intValue.toByte
   def equalsT(that: Type): Boolean
   override def equals(that: Any): Boolean = {

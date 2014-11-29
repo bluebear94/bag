@@ -15,7 +15,7 @@ class Loader {
         "Ribzpt", "OAug", "Help", "HAsk", "Clone", "ValCopy", "GetType", "OSeq", "Yield", "Stib", "Itsb", "Require",
         "In", "Idx", "Isc", "Ixsc", "Cast", "Idxe", "Idxl", "Ixsce", "Ixscl", "Compile", "KeyValue", "ORol", "ORor",
         "ClrHome", "UnKeyValue", "Idxr", "Ixscr", "Idxre", "Ixscre", "Try", "Delay", "ConsM", "CdrM", "EConsM",
-        "ECdrM", "OReq").map(Global.liblist("std").loadCmd(_, lines))
+        "ECdrM", "OReq", "Format", "Prepare", "Exists", "ForAll", "Ritb", "SRand", "Version").map(Global.liblist("std").loadCmd(_, lines))
     List("Sin", "Cos", "Tan").map({
       s => List(s, s + "h", "A" + s, "A" + s + "h").map(Global.liblist("std").loadCmd(_, lines))
     })

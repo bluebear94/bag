@@ -53,6 +53,7 @@ case class TMountain(var n: BigInt) extends TNumerical {
   }
   override def toBoolean = n != 0
   override def intValue(): Int = n.intValue()
+  override def longValue: Long = n.longValue
   override def doubleValue(): Double = n.doubleValue()
   def si(i: Int, b: Boolean) = {
     n = if (b) n.setBit(i)
